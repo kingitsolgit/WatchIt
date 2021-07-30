@@ -494,6 +494,7 @@ Future<void> main() async {
     MyApp(),
     NotificationTime(),
   ];
+  
   runApp(
     EasyLocalization(
       supportedLocales: [

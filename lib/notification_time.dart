@@ -141,10 +141,6 @@ class _NotificationTimeState extends State<NotificationTime> {
             return Column(
               mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
-                // Text(
-                //   'Shape: ${shape == WearShape.round ? 'round' : 'square'}',
-                // ),
-                // child,
                 Container(
                   padding: EdgeInsets.symmetric(
                     vertical: 0,
@@ -158,7 +154,6 @@ class _NotificationTimeState extends State<NotificationTime> {
                       Icons.alarm,
                       color: Colors.red,
                     ),
-                    //Image.asset('assets/images/clock.png'),
                   ),
                 ),
                 Container(
@@ -189,7 +184,6 @@ class _NotificationTimeState extends State<NotificationTime> {
                         Expanded(
                           child: Text(
                             dosesNames!,
-                            // 'Acyclovir (10mg) ',
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               fontSize: 14,
@@ -378,7 +372,7 @@ class _NotificationTimeState extends State<NotificationTime> {
         print('user dosing id and time');
         print(meducine.medicineId! + meducine.medicineTime!);
         print('user medname');
-        dosesNames = dosesNames! + meducine.medicineName!.toString() + ', ';
+        dosesNames = dosesNames! + meducine.medicineName!.toString() + ' at ';
         print('user dosname string length in for loop ${dosesNames!.length}');
       }
     }
@@ -399,7 +393,10 @@ class _NotificationTimeState extends State<NotificationTime> {
         print('snoozed  dosing');
         print(snoozedMedicine.id);
         print('snoozed medname and time ${snoozedMedicine.dosetime}');
-        dosesNames = dosesNames! + snoozedMedicine.name!.toString() + ', ';
+        dosesNames = dosesNames! +
+            snoozedMedicine.name!.toString() +
+            ' at ' +
+            snoozedMedicine.dosetime!.toString();
         print('snoozed dosname');
       }
     }
@@ -427,7 +424,11 @@ class _NotificationTimeState extends State<NotificationTime> {
         // } else {
         //   dosesNames = dosesNames! + meducine.medicineName!.toString() + ', ';
         // }
-        dosesNames = dosesNames! + meducine.medicineName!.toString() + ', ';
+        dosesNames = dosesNames! +
+            meducine.medicineName!.toString() +
+            ' at ' +
+            meducine.medicineTime!.toString() +
+            '\n';
         print('nextDose dosname');
       }
       print('user dosname strring length ${dosesNames!.length}');
