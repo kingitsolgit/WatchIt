@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
+import 'package:restart_app/restart_app.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:watch_it/account.dart';
@@ -38,7 +39,7 @@ class _LanguagesState extends State<Languages> {
   void initState() {
     super.initState();
     // if (isLangSelected==true&&widget.accesspoint == 0) {
-      
+
     // }
     getData();
   }
@@ -118,7 +119,7 @@ class _LanguagesState extends State<Languages> {
                         saveLanguage();
                       });
                     },
-                    child: menuButtons(
+                    child: LanguageButton(
                       shape: shape,
                       text: 'English',
                       icon: Icons.language,
@@ -132,7 +133,7 @@ class _LanguagesState extends State<Languages> {
                         saveLanguage();
                       });
                     },
-                    child: menuButtons(
+                    child: LanguageButton(
                       shape: shape,
                       text: 'Greek',
                       icon: Icons.language,
@@ -146,7 +147,7 @@ class _LanguagesState extends State<Languages> {
                         saveLanguage();
                       });
                     },
-                    child: menuButtons(
+                    child: LanguageButton(
                       shape: shape,
                       text: 'German',
                       icon: Icons.language,
@@ -160,7 +161,7 @@ class _LanguagesState extends State<Languages> {
                         saveLanguage();
                       });
                     },
-                    child: menuButtons(
+                    child: LanguageButton(
                       shape: shape,
                       text: 'French',
                       icon: Icons.language,
@@ -174,13 +175,6 @@ class _LanguagesState extends State<Languages> {
               ),
             );
           },
-          child: AmbientMode(
-            builder: (context, mode, child) {
-              return Text(
-                'Mode: ${mode == WearMode.active ? 'Active' : 'Ambient'}',
-              );
-            },
-          ),
         ),
       ),
     );
@@ -226,6 +220,7 @@ class _LanguagesState extends State<Languages> {
       }
     });
     sharedPreferences.setBool("languageselected", true);
+    // Restart.restartApp();
     if (widget.accesspoint == 0) {
       Navigator.pushReplacement(
           context, MaterialPageRoute(builder: (context) => AccountScreen()));
@@ -243,13 +238,13 @@ class _LanguagesState extends State<Languages> {
   }
 }
 
-class menuButtons extends StatelessWidget {
+class LanguageButton extends StatelessWidget {
   final String? text;
   final IconData? icon;
   final Color? color;
   final WearShape? shape;
 
-  const menuButtons({
+  const LanguageButton({
     @required this.shape,
     @required this.text,
     @required this.icon,

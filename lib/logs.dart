@@ -106,7 +106,7 @@ class _LogsState extends State<Logs> {
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             List<Log>? logs = snapshot.data as List<Log>?;
-            print('3 days logs are $logs');
+            // print('3 days logs are $logs');
             // Prescription? prescription = snapshot.data as Prescription;
             // print('snapshot length ${prescription.data!.length}');
             if (logList.isNotEmpty) {
@@ -246,20 +246,23 @@ class _LogsState extends State<Logs> {
                           Container(
                             height: Get.height * 0.8,
                             child: ListView.builder(
-                                itemCount: logList.length,
-                                itemBuilder: (context, index) {
-                                  DateFormat newdateFormating =
-                                      DateFormat("yyyy-MM-dd HH:mm", "en_PK");
-
-                                  DateTime newDT = newdateFormating
-                                      .parse(logList[index].takenAt!);
-                                  String s =
-                                      '${logList[index].status} at ${newDT.hour}:${newDT.minute} ${newDT.day}-${newDT.month}-${newDT.year}';
-                                  return LogButtons(
-                                    name: logList[index].medicineName,
-                                    time: s, //logList[index].takenAt,
-                                  );
-                                }),
+                              itemCount: logList.length,
+                              itemBuilder: (context, index) {
+                                DateFormat newdateFormating = DateFormat(
+                                    "yyyy-MM-dd HH:mm",
+                                    context.locale.toString());
+                                // "en_PK");
+                                context.locale;
+                                DateTime newDT = newdateFormating
+                                    .parse(logList[index].takenAt!);
+                                String s =
+                                    '${logList[index].status} at ${newDT.hour}:${newDT.minute} ${newDT.day}-${newDT.month}-${newDT.year}';
+                                return LogButtons(
+                                  name: logList[index].medicineName,
+                                  time: s, //logList[index].takenAt,
+                                );
+                              },
+                            ),
                           ),
                         ],
                       ),
@@ -290,25 +293,90 @@ class _LogsState extends State<Logs> {
           }
         });
   }
+}
+
+class LogButtons extends StatelessWidget {
+  final bool? setHead;
+  final String? name;
+  final String? time;
+  const LogButtons({
+    this.setHead,
+    this.name,
+    this.time,
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Colors.black,
+      child: Column(
+        children: [
+          setHead == true
+              ? Container(
+                  width: Get.width,
+                  color: Colors.deepOrange,
+                  height: 30,
+                  child: Center(
+                    child: Text(
+                      // 'Today',
+                      getDayString(DateTime.now())!,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                )
+              : Container(),
+          Padding(
+            padding: const EdgeInsets.only(
+              left: 10,
+            ),
+            child: Container(
+              padding: EdgeInsets.only(
+                top: 5,
+                bottom: 5,
+                right: 20,
+              ),
+              decoration: BoxDecoration(
+                border: Border(
+                  bottom: BorderSide(
+                    color: Colors.deepOrange,
+                    width: 1,
+                  ),
+                ),
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    name!,
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  Text(
+                    time!,
+                    style: TextStyle(
+                      color: Colors.grey,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 
   String? getDayString(DateTime dateTime) {
-    DateTime d1 = DateTime(2021, 07, 16, 06, 13); //'2021-07-12 14:01';
-    DateTime d2 = DateTime(2021, 07, 14, 06, 13); // '2021-07-14 14:01';
-    // debugPrint('daysttring......');
-    // var cd = d1.compareTo(d2);
-    // var c = dateTime.compareTo(DateTime.now());
-    // Duration duration = d1.difference(d2);
-    // debugPrint('$d1 and $cd ${duration.toString()}');
-
-    // Duration duration2 = DateTime.now().difference(dateTime);
-    // debugPrint('daysttring..duuration  mm....is $duration2');
-    DateFormat dateFormating = DateFormat("yyyy-MM-dd HH:mm");
-    DateTime myDT = dateFormating.parse(dateTime.toString());
-    // dayString = dateFormating.parse(dateTime.toString()).toString();
-    // myDT.toString(); //dateTime.toString();
     String formattedDate = DateFormat('yyyy-MM-dd kk:mm').format(dateTime);
     print(formattedDate);
-
     String? dayString;
     Duration diff = DateTime.now().difference(dateTime);
     if (DateTime.now().day.isEqual(dateTime.day)) {
@@ -321,62 +389,5 @@ class _LogsState extends State<Logs> {
       dayString = DateFormat('dd MMMM yyyy').format(dateTime);
       return dayString;
     }
-  }
-}
-
-class LogButtons extends StatelessWidget {
-  final String? name;
-  final String? time;
-  const LogButtons({
-    this.name,
-    this.time,
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      color: Colors.black,
-      child: Padding(
-        padding: const EdgeInsets.only(
-          left: 30,
-        ),
-        child: Container(
-          padding: EdgeInsets.only(
-            top: 5,
-            bottom: 5,
-            right: 10,
-          ),
-          decoration: BoxDecoration(
-            border: Border(
-              bottom: BorderSide(
-                color: Colors.deepOrange,
-                width: 1,
-              ),
-            ),
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                name!,
-                style: TextStyle(
-                  fontSize: 16,
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              Text(
-                time!,
-                style: TextStyle(
-                  color: Colors.grey,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
   }
 }

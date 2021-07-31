@@ -54,9 +54,13 @@ class Settings extends StatelessWidget {
               children: [
                 InkWell(
                   onTap: () {
-                    Navigator.pushNamed(
+                    Navigator.push(
                       context,
-                      PairScreen.id,
+                      new MaterialPageRoute(
+                        builder: (context) => PairScreen(
+                          accesspoint: 1,
+                        ),
+                      ),
                     );
                   },
                   child: SettingsButton(

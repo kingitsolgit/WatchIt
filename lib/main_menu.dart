@@ -1,5 +1,8 @@
 import 'dart:async';
+import 'dart:convert';
 
+import 'package:android_alarm_manager/android_alarm_manager.dart';
+import 'package:app_launcher/app_launcher.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
@@ -16,6 +19,9 @@ import 'package:watch_it/main.dart';
 import 'package:watch_it/med2.dart';
 import 'package:watch_it/medications.dart';
 import 'package:watch_it/model/eprint.dart';
+import 'package:watch_it/model/meducine.dart';
+import 'package:watch_it/model/prescription.dart';
+import 'package:watch_it/model/snoozedmedicine.dart';
 import 'package:watch_it/model/statics.dart';
 import 'package:watch_it/notification_time.dart';
 import 'package:watch_it/pair_screen.dart';
@@ -23,10 +29,12 @@ import 'package:watch_it/settings.dart';
 import 'package:wear/wear.dart';
 
 class MainMenu extends StatefulWidget {
-  const MainMenu({Key? key, this.pname, this.pemail}) : super(key: key);
+  const MainMenu({Key? key, this.pname, this.pemail, this.pcode})
+      : super(key: key);
   static String id = 'main_menu';
   final String? pname;
   final String? pemail;
+  final String? pcode;
 
   @override
   _MainMenuState createState() => _MainMenuState();
@@ -35,14 +43,19 @@ class MainMenu extends StatefulWidget {
 class _MainMenuState extends State<MainMenu> with WidgetsBindingObserver {
   WearShape? Nshape;
   bool _isInForeground = true;
+  int alarmID = 1;
 
   @override
-  void initState() {
+  initState() {
     super.initState();
+    ePrint('pcode is ${widget.pcode}');
     WidgetsBinding.instance!.addObserver(this);
-    Timer.periodic(Duration(seconds: 10), timerCallBack);
+    // Timer.periodic(Duration(seconds: 10), ontMainMenuCallBack());
+    // WidgetsFlutterBinding.ensureInitialized();
+    // FlutterBackgroundService.initialize(onStartMainMenu);
   }
 
+/*
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     super.didChangeAppLifecycleState(state);
@@ -51,7 +64,6 @@ class _MainMenuState extends State<MainMenu> with WidgetsBindingObserver {
     // showToast();
     switch (state) {
       case AppLifecycleState.resumed:
-        setForegroundServis();
         print("app in resumed//////////////////////");
         break;
       case AppLifecycleState.inactive:
@@ -65,7 +77,7 @@ class _MainMenuState extends State<MainMenu> with WidgetsBindingObserver {
         break;
     }
   }
-
+*/
   @override
   void dispose() {
     super.dispose();
@@ -74,6 +86,7 @@ class _MainMenuState extends State<MainMenu> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
+    mainMenuTimer();
     return Scaffold(
       floatingActionButton: Padding(
         padding: EdgeInsets.all(Nshape == WearShape.round ? 8.0 : 0.0),
@@ -96,12 +109,6 @@ class _MainMenuState extends State<MainMenu> with WidgetsBindingObserver {
               ),
             ),
           ),
-          // Icon(
-          //   Icons.mobile_screen_share_rounded,
-          //   // Icons.task_alt,
-          //   // size: 30,
-          //   color: Colors.white,
-          // ),
         ),
       ),
       backgroundColor: Colors.black,
@@ -111,15 +118,6 @@ class _MainMenuState extends State<MainMenu> with WidgetsBindingObserver {
           return Container(
             width: Get.width,
             height: Get.height,
-            // padding: shape == WearShape.round
-            //     ? EdgeInsets.symmetric(
-            //         vertical: 10,
-            //         horizontal: 10,
-            //       )
-            //     : EdgeInsets.symmetric(
-            //         vertical: 10,
-            //         horizontal: 10,
-            //       ),
             decoration: BoxDecoration(
               borderRadius: shape == WearShape.round
                   ? BorderRadius.circular(100)
@@ -334,15 +332,214 @@ class _MainMenuState extends State<MainMenu> with WidgetsBindingObserver {
     }
   }
 
-  Future<void> setForegroundServis() async {
-    var isRunning = await FlutterBackgroundService().isServiceRunning();
-    if (isRunning) {
-      FlutterBackgroundService().sendData(
-        {"action": "setAsForeground"}, // {"action": "stopService"},
-      );
+  Future<dynamic> onStartMainMenu() async {
+    WidgetsFlutterBinding.ensureInitialized();
+    final service = FlutterBackgroundService();
+    service.setForegroundMode(true);
+    Timer.periodic(
+      Duration(seconds: 5),
+      (timer) async {
+        ePrint('In mainmenu foreground service');
+        var isRunning = await FlutterBackgroundService().isServiceRunning();
+      },
+    );
+  }
+
+  ontMainMenuCallBack() async {
+    ePrint(
+        ' In MainMenu ontMainMenuCallBack Function Start Time ${DateTime.now()}');
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    if (sharedPreferences.getString('p_code') != null) {
+      String? pcode = sharedPreferences.getString('p_code')!;
+      var url =
+          Uri.parse('${BaseUrl.baseurl}/api/patients/${pcode}/prescriptions');
+      final response = await get(url);
+      if (response.statusCode == 200) {
+        ePrint(response.body);
+        // print(akbarPrescription); //in service file
+        var responc = Prescription.fromJson(jsonDecode(response.body));
+        DateFormat dateFormating = DateFormat("dd-MM-yyyy HH:mm");
+        List<String> dosingList = [];
+        for (var i = 0; i < responc.data!.length; i++) {
+          List<MedicineTime>? medicineTime = responc.data![i].medicineTime;
+          for (var j = 0; j < medicineTime!.length; j++) {
+            String timeString =
+                medicineTime[j].date! + ' ' + medicineTime[j].time!;
+            Data preData = responc.data![i];
+            DateTime myDT = dateFormating.parse(timeString);
+            myDT.subtract(Duration(minutes: 1));
+            ePrint('myDT $myDT');
+            DateTime now = DateTime.now();
+            if (now.year == myDT.year &&
+                now.month == myDT.month &&
+                now.day == myDT.day) {
+              debugPrint('Day is same');
+              if (now.hour == myDT.hour && now.minute == myDT.minute) {
+                debugPrint('time is also same');
+                ePrint('at index $i and $j');
+                sharedPreferences.setBool("isDoseTime", true);
+                Meducine meducine = Meducine(
+                  medicineId: preData.sId,
+                  medicineName: preData.medicineName,
+                  dailyDosePill: preData.dailyDosePill,
+                  medicineTime: preData.medicineTime![j].date! +
+                      ' ' +
+                      preData.medicineTime![j].time!,
+                  medicinetimeindex: preData.medicineTime![j].id!,
+                  dateRange: preData.doseTimeDuration,
+                );
+                String jsonn = jsonEncode(meducine);
+                dosingList.add(jsonn);
+                sharedPreferences.setStringList('dosingList', dosingList);
+                // await AppLauncher.openApp(
+                //     androidApplicationId: "com.example.watch_it");
+              } else {
+                ePrint('time is not same');
+                sharedPreferences.setBool("isDoseTime", false);
+              }
+            } else {
+              ePrint('day is not same');
+              sharedPreferences.setBool("isDoseTime", false);
+            }
+          }
+        }
+        if (dosingList.isNotEmpty) {
+          Get.offAll(NotificationTime());
+           Get.offAll(AccountScreen());
+        } else {
+          ePrint('In MainMenu: dosing list is empty');
+        }
+        ///////////code start for next doses
+        List<String> nextDoseList = [];
+        sharedPreferences.remove('nextDoseList');
+        ePrint(' In MainMenu nextDoseList is removed');
+        for (var i = 0; i < responc.data!.length; i++) {
+          Data prescriptionData = responc.data![i];
+          List<MedicineTime>? medicineTime = prescriptionData.medicineTime;
+          for (var j = 0; j < medicineTime!.length; j++) {
+            /////////////////   New code for next doses
+            String timeInString =
+                medicineTime[j].date! + ' ' + medicineTime[j].time!;
+            DateFormat newdateFormating = DateFormat("dd-MM-yyyy HH:mm");
+
+            DateTime newDT = newdateFormating.parse(timeInString);
+            // ePrint('newDT $newDT');
+            if (newDT.isAfter(DateTime.now())) {
+              // ePrint('time isAfter from now');
+              j = medicineTime.length - 1;
+              Meducine meducine = Meducine(
+                medicineId: prescriptionData.sId,
+                medicineName: prescriptionData.medicineName,
+                dailyDosePill: prescriptionData.dailyDosePill,
+                medicineTime: prescriptionData.medicineTime![j].date! +
+                    ' ' +
+                    prescriptionData.medicineTime![j].time!,
+                medicinetimeindex: prescriptionData.medicineTime![j].id!,
+                dateRange: prescriptionData.doseTimeDuration,
+              );
+              String meducineString = jsonEncode(meducine);
+              // ePrint('Next doses Encoded $meducineString end the');
+              nextDoseList.add(meducineString);
+              // ePrint(nextDoseList);
+              sharedPreferences.setStringList('nextDoseList', nextDoseList);
+              ePrint(' In MainMenu next dose added');
+            }
+            // setAsNextMedicines(myDT,responc);
+
+          }
+        }
+//////////////////////////////code ending for next doses
+
+/////////////////////////////////for snooze list checking
+
+        if (sharedPreferences.getStringList('snoozedList') != null) {
+          List<String>? snoozedList =
+              sharedPreferences.getStringList('snoozedList');
+          ePrint(' In MainMenu list assigned of ${snoozedList!.length} length');
+          for (var i = 0; i < snoozedList.length; i++) {
+            ePrint(' In MainMenu snooz loop started////////////////////');
+            ePrint(' In MainMenu list obj $i is ${snoozedList[i]}');
+            Map<String, dynamic> dosingMaplistobj = jsonDecode(snoozedList[0]);
+            var snoozedMed = SnoozedMedicine.fromJson(dosingMaplistobj);
+            ePrint(
+                ' In MainMenu snoozedmedicinename: ${snoozedMed.name}, snoozedmedicinetime:  ${snoozedMed.dosetime}');
+            DateFormat newdateFormating = DateFormat("dd-MM-yyyy HH:mm");
+            DateTime snoozedDT = newdateFormating.parse(snoozedMed.dosetime!);
+            // ///////////////new if structure start
+            if (snoozedMed.snoozedIteration != null &&
+                snoozedMed.snoozedIteration! < 3) {
+              if (DateTime.now().hour.compareTo(snoozedDT.hour) == 0) {
+                ePrint(' In MainMenu snooze hour is same');
+                if (DateTime.now().minute.compareTo(snoozedDT.minute) == 0) {
+                  ePrint('snooze minute is also same');
+                  print('at index $i and j');
+                  sharedPreferences.setBool("isDoseTime", true);
+                  ////////  new code start here
+                  print(' In MainMenu dosing list $dosingList');
+                  Meducine meducine = Meducine(
+                    medicineId: snoozedMed.id, // preData.sId,
+                    medicineName: snoozedMed.name, //preData.medicineName,
+                    dailyDosePill: snoozedMed.routine, //preData.dailyDosePill,
+                    medicineTime: snoozedMed
+                        .dosetime, //preData.medicineTime![j].date! + ' ' + preData.medicineTime![j].time!,
+                    medicinetimeindex:
+                        snoozedMed.timeIndex, //preData.medicineTime![j].id!,
+                    dateRange: snoozedMed.dosetime, // preData.doseTimeDuration,
+                  );
+                  String jsonn = jsonEncode(meducine);
+                  print(' In MainMenu encoded jsonn $jsonn');
+                  dosingList.add(jsonn);
+                  print(' In MainMenu dosing list $dosingList');
+                  sharedPreferences.setStringList('dosingList', dosingList);
+                  // await AppLauncher.openApp(
+                  //     androidApplicationId: "com.example.watch_it");
+                } else {
+                  debugPrint(' In MainMenu minute is also not same');
+                  sharedPreferences.setBool("isDoseTime", false);
+                }
+              } else {
+                debugPrint(' In MainMenu hour is not same');
+                sharedPreferences.setBool("isDoseTime", false);
+              }
+            } else {
+              ePrint(' In MainMenu ${snoozedMed.dosetime}');
+              SharedPreferences sharedPreferences =
+                  await SharedPreferences.getInstance();
+              String patientCode = sharedPreferences.getString('p_code')!;
+              var url = Uri.parse(
+                  '${BaseUrl.baseurl}/api/patients/$patientCode/prescriptions/${snoozedMed.id}');
+              final response = await patch(
+                url,
+                body: {
+                  "status": "Skipped",
+                  "time": snoozedMed.dosetime, // "13:30",
+                  "medicine_time_id": '${snoozedMed.timeIndex}' // 2
+                },
+              );
+              if (response.statusCode == 200) {
+                print(' In MainMenu ${response.body}');
+              } else {
+                print(' In MainMenu ${response.body}');
+              }
+            }
+          }
+          if (dosingList.isNotEmpty) {
+            Get.offAll(NotificationTime());
+          }
+        } else {
+          ePrint('  In MainMenu  equal null');
+        }
+      }
     } else {
-      // FlutterBackgroundService.initialize(onStart);
+      print(' In MainMenu pcode is null');
     }
+    ePrint(
+        ' In MainMenu ontMainMenuCallBack Function End Time ${DateTime.now()}');
+  }
+
+  Future<void> mainMenuTimer() async {
+    await AndroidAlarmManager.periodic(
+        Duration(seconds: 57), alarmID, ontMainMenuCallBack);
   }
 }
 

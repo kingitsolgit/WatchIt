@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:http/http.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:watch_it/model/eprint.dart';
 import 'package:wear/wear.dart';
 
 import 'package:watch_it/links/baserurl.dart';
@@ -197,13 +198,6 @@ class _AccountScreenState extends State<AccountScreen> {
             ),
           );
         },
-        child: AmbientMode(
-          builder: (context, mode, child) {
-            return Text(
-              'Mode: ${mode == WearMode.active ? 'Active' : 'Ambient'}',
-            );
-          },
-        ),
       ),
     );
   }
@@ -223,9 +217,6 @@ class _AccountScreenState extends State<AccountScreen> {
   }
 
   Future<void> pairMe(String password) async {
-    // Future<UserLoginModel> userlogin(
-    //     BuildContext context, email, password) async {
-    // SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     final ProgressDialog progressDialog = ProgressDialog(context);
     progressDialog.style(
       textAlign: TextAlign.center,
@@ -254,16 +245,14 @@ class _AccountScreenState extends State<AccountScreen> {
     );
     // progressDialog.show();
 
-// 00001
     var url = Uri.parse('${BaseUrl.baseurl}/api/patients/$password');
-    // "http://watchit-project.eu/api/patients/$password");
     final response = await get(url);
     if (response.statusCode == 200) {
-      print('response is here');
-      print(response.body);
+      ePrint('response is here');
+      ePrint(response.body);
       Patient pdata = Patient.fromJson(jsonDecode(response.body));
-      print('Patient response is here');
-      print(pdata.data!.toString());
+      // ePrint('Patient response is here');
+      // ePrint(pdata.data!.toString());
       SharedPreferences sharedPreferences =
           await SharedPreferences.getInstance();
       sharedPreferences.setString('p_name', pdata.data!.name.toString());
@@ -274,70 +263,49 @@ class _AccountScreenState extends State<AccountScreen> {
       String s = sharedPreferences.getString('p_name')! +
           sharedPreferences.getString('p_email')! +
           sharedPreferences.getString('p_code')!;
-      print(s);
+      ePrint(s);
 
       goNext();
     } else {
-      print(response.body);
+      ePrint(response.body);
       await progressDialog.hide();
       showMyDialog("Invalid ID");
-      // showDialog(
-      //   context: context,
-      //   builder: (_) => LogoutOverlay(
-      //     message: "Some Error",
-      //   ),
-      // );
     }
   }
 
-  void signInUser(String text) {}
-
   void goNext() {
-    Navigator.pushReplacementNamed(
+    Navigator.pushReplacement(
       context,
-      PairScreen.id,
+      new MaterialPageRoute(
+        builder: (context) => PairScreen(
+          accesspoint: 0,
+        ),
+      ),
     );
-  }
-
-  Future<void> fetchPientData(String pairkey) async {
-    var url = Uri.parse("http://mobistylz.com/api/patients/$pairkey");
-    final response = await get(url);
-    if (response.statusCode == 200) {
-      print('response is here');
-      print(response.body);
-
-      Patient pdata = Patient.fromJson(jsonDecode(response.body));
-      print('Patient response is here');
-      print(pdata.data!);
-      // SharedPreferences sharedPreferences =
-      //     await SharedPreferences.getInstance();
-
-      // sharedPreferences.setStringList('key', pdata);
-      goNext();
-    } else {}
   }
 
   Future showMyDialog(String message) {
     return showDialog(
-        context: context,
-        builder: (context) {
-          return SimpleDialog(
-            backgroundColor: Color.fromARGB(255, 161, 33, 22),
-            titlePadding: EdgeInsets.all(12),
-            title: Center(
-              child: Column(
-                children: [
-                  Text(
-                    message,
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 12,
-                    ),
+      context: context,
+      builder: (context) {
+        return SimpleDialog(
+          backgroundColor: Color.fromARGB(255, 161, 33, 22),
+          titlePadding: EdgeInsets.all(12),
+          title: Center(
+            child: Column(
+              children: [
+                Text(
+                  message,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 12,
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
-          );
-        });
+          ),
+        );
+      },
+    );
   }
 }

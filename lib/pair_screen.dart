@@ -9,7 +9,11 @@ import 'package:watch_it/main_menu.dart';
 import 'package:wear/wear.dart';
 
 class PairScreen extends StatefulWidget {
-  const PairScreen({Key? key}) : super(key: key);
+  final int accesspoint;
+  const PairScreen({
+    required this.accesspoint,
+    Key? key,
+  }) : super(key: key);
   static String id = 'pair';
 
   @override
@@ -151,26 +155,29 @@ class _PairScreenState extends State<PairScreen> {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    IconButton(
-                      onPressed: () {
-                        Restart();
-                        // Restart.restartApp();
-                        Navigator.of(context).pushReplacement(
-                          new MaterialPageRoute(
-                            builder: (BuildContext context) {
-                              return new MainMenu(
-                                pname: pName,
-                                pemail: pEmail,
+                    widget.accesspoint == 0
+                        ? IconButton(
+                            onPressed: () {
+                              Restart();
+                              // Restart.restartApp();
+                              Navigator.of(context).pushReplacement(
+                                new MaterialPageRoute(
+                                  builder: (BuildContext context) {
+                                    return new MainMenu(
+                                      pname: pName,
+                                      pemail: pEmail,
+                                      pcode: pCode
+                                    );
+                                  },
+                                ),
                               );
                             },
-                          ),
-                        );
-                      },
-                      icon: Icon(
-                        Icons.arrow_forward_ios_sharp,
-                        color: Colors.white,
-                      ),
-                    )
+                            icon: Icon(
+                              Icons.arrow_forward_ios_sharp,
+                              color: Colors.white,
+                            ),
+                          )
+                        : Container(),
                   ],
                 ),
               ),

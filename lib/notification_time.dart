@@ -119,11 +119,11 @@ class _NotificationTimeState extends State<NotificationTime> {
       supportedLocales: context.supportedLocales,
       locale: context.locale,
       routes: {
-        PairScreen.id: (context) => PairScreen(),
+        // PairScreen.id: (context) => PairScreen(),
         TakeItNow.id: (context) => TakeItNow(),
         SplashScreen.id: (context) => SplashScreen(),
         AccountScreen.id: (context) => AccountScreen(),
-        PairScreen.id: (context) => PairScreen(),
+        // PairScreen.id: (context) => PairScreen(),
         MainMenu.id: (context) => MainMenu(),
         Settings.id: (context) => Settings(),
         Medications.id: (context) => Medications(),
@@ -372,7 +372,7 @@ class _NotificationTimeState extends State<NotificationTime> {
         print('user dosing id and time');
         print(meducine.medicineId! + meducine.medicineTime!);
         print('user medname');
-        dosesNames = dosesNames! + meducine.medicineName!.toString() + ' at ';
+        dosesNames = dosesNames! + meducine.medicineName!.toString() + ', ';
         print('user dosname string length in for loop ${dosesNames!.length}');
       }
     }
