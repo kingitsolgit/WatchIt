@@ -32,6 +32,23 @@ class Logs extends StatefulWidget {
 class _LogsState extends State<Logs> {
   String? pcode;
   List<Log> logList = [];
+  List<Log> myLogList = [
+    Log(
+      medicineName: 'Panadol 1',
+      status: "Taken",
+      takenAt: '2021-07-29 09:10',
+    ),
+    Log(
+      medicineName: 'Panadol 2',
+      status: "Taken",
+      takenAt: '2021-07-30 09:10',
+    ),
+    Log(
+      medicineName: 'Panadol 3',
+      status: "Taken",
+      takenAt: '2021-07-31 09:10',
+    ),
+  ];
 
   Future getSavedLogList() async {
     logList.clear();
@@ -252,14 +269,24 @@ class _LogsState extends State<Logs> {
                                     "yyyy-MM-dd HH:mm",
                                     context.locale.toString());
                                 // "en_PK");
-                                context.locale;
+                                // context.locale;
                                 DateTime newDT = newdateFormating
                                     .parse(logList[index].takenAt!);
                                 String s =
                                     '${logList[index].status} at ${newDT.hour}:${newDT.minute} ${newDT.day}-${newDT.month}-${newDT.year}';
+                                if (newDT.day == DateTime.now().day) {
+                                  ePrint('In log: the day is today.');
+                                } else if (newDT.isAfter(DateTime.now())) {
+                                  ePrint('In log: is after true.');
+                                }
+                                for (var i = 0; i < 3; i++) {
+                                  for (var j = 0; j < 9; j++) {}
+                                }
                                 return LogButtons(
+                                  setHead: true,
                                   name: logList[index].medicineName,
                                   time: s, //logList[index].takenAt,
+                                  datetime: newDT,
                                 );
                               },
                             ),
@@ -299,10 +326,12 @@ class LogButtons extends StatelessWidget {
   final bool? setHead;
   final String? name;
   final String? time;
+  final DateTime? datetime;
   const LogButtons({
     this.setHead,
     this.name,
     this.time,
+    this.datetime,
     Key? key,
   }) : super(key: key);
 
@@ -320,7 +349,7 @@ class LogButtons extends StatelessWidget {
                   child: Center(
                     child: Text(
                       // 'Today',
-                      getDayString(DateTime.now())!,
+                      getDayString(datetime!)!,
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         color: Colors.white,
@@ -330,7 +359,7 @@ class LogButtons extends StatelessWidget {
                 )
               : Container(),
           Padding(
-            padding: const EdgeInsets.only(
+            padding: EdgeInsets.only(
               left: 10,
             ),
             child: Container(
@@ -375,7 +404,7 @@ class LogButtons extends StatelessWidget {
   }
 
   String? getDayString(DateTime dateTime) {
-    String formattedDate = DateFormat('yyyy-MM-dd kk:mm').format(dateTime);
+    String formattedDate = DateFormat('yyyy-MM-dd HH:mm').format(dateTime);
     print(formattedDate);
     String? dayString;
     Duration diff = DateTime.now().difference(dateTime);

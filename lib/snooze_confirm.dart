@@ -278,6 +278,9 @@ class SnoozeConfirm extends StatelessWidget {
     }
     sharedPreferences.setStringList('snoozedList', snoozedList!);
     ePrint('snoozed added');
+    sharedPreferences.setBool("isDoseTime", false);
+    ePrint('isDoseTime is set false');
+
     SystemNavigator.pop();
   }
 

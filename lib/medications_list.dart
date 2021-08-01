@@ -60,7 +60,6 @@ class _MedicatState extends State<Medicat> {
             print('newDT $newDT');
             if (newDT.isAfter(DateTime.now())) {
               print('time isAfter from now');
-              j = medicineTime.length - 1;
               Meducine meducine = Meducine(
                 medicineId: prescriptionData.sId,
                 medicineName: prescriptionData.medicineName,
@@ -77,6 +76,7 @@ class _MedicatState extends State<Medicat> {
               print(nextDoseList);
               sharedPreferences.setStringList('nextDoseList', nextDoseList);
               ePrint('next dose added');
+              j = medicineTime.length - 1;
             }
             // setAsNextMedicines(myDT,responc);
 
@@ -160,7 +160,7 @@ class _MedicatState extends State<Medicat> {
                                 itemBuilder: (context, index) {
                                   print(index);
                                   return index != prescription.data!.length
-                                      ? MedButton(
+                                      ? MedicineButton(
                                           shape: shape,
                                           name:
                                               '${prescription.data![index].medicineName.toString()} ',
@@ -298,5 +298,108 @@ class _MedicatState extends State<Medicat> {
         }
       }
     }
+  }
+}
+
+class MedicineButton extends StatelessWidget {
+  final String? name;
+  final String? time;
+  final String? medicineDuration;
+  final int? dailydoses;
+  final List<MedicineTime>? times;
+
+  final WearShape? shape;
+  const MedicineButton({
+    this.name,
+    this.time,
+    Key? key,
+    this.times,
+    this.medicineDuration,
+    this.dailydoses,
+    this.shape,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Colors.black,
+      child: Padding(
+        padding: EdgeInsets.only(
+          left: shape == WearShape.round ? 30 : 12,
+        ),
+        child: Container(
+          width: Get.width,
+          padding: EdgeInsets.only(
+            top: 5,
+            bottom: 5,
+            right: 10,
+          ),
+          decoration: BoxDecoration(
+            border: Border(
+              bottom: BorderSide(
+                color: Colors.deepOrange,
+                width: 1,
+              ),
+            ),
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                name!.toUpperCase(),
+                style: TextStyle(
+                  fontSize: 16,
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 4.0),
+                child: Text(
+                  time!,
+                  style: TextStyle(
+                    color: Colors.grey,
+                  ),
+                ),
+              ),
+              SizedBox(
+                height: 28,
+                child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: dailydoses!, // 3, //times!.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      return Padding(
+                        padding: const EdgeInsets.only(right: 4.0),
+                        child: Material(
+                          color: Colors.red,
+                          borderRadius: BorderRadius.circular(8),
+                          child: Center(
+                            child: Padding(
+                              padding: EdgeInsets.all(4),
+                              child: Text(
+                                times![index].time!,
+                                style: TextStyle(
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      );
+                    }),
+              ),
+              Text(
+                medicineDuration!,
+                // '25-10-2020 to 23-23-32',
+                style: TextStyle(
+                  color: Colors.white,
+                ),
+              )
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }

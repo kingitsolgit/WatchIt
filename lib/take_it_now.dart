@@ -4,17 +4,15 @@ import 'dart:convert';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get/get.dart';
 import 'package:http/http.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:wear/wear.dart';
+
 import 'package:watch_it/links/baserurl.dart';
-import 'package:watch_it/main_menu.dart';
-import 'package:watch_it/model/dosing.dart';
 import 'package:watch_it/model/eprint.dart';
 import 'package:watch_it/model/log.dart';
 import 'package:watch_it/model/meducine.dart';
-import 'package:watch_it/pair_screen.dart';
-import 'package:wear/wear.dart';
-import 'package:get/get.dart';
 
 class TakeItNow extends StatefulWidget {
   static String id = 'take_it_now';
@@ -209,10 +207,37 @@ class _TakeItNowState extends State<TakeItNow> {
     if (response.statusCode == 200) {
       print(response.body);
       addLogData(meducine);
+
       return true;
     } else {
       print(response.body);
+      showMyDialog('Some Error Occur');
     }
+  }
+
+  Future showMyDialog(String message) {
+    return showDialog(
+      context: context,
+      builder: (context) {
+        return SimpleDialog(
+          backgroundColor: Color.fromARGB(255, 161, 33, 22),
+          titlePadding: EdgeInsets.all(12),
+          title: Center(
+            child: Column(
+              children: [
+                Text(
+                  message,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 12,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
   }
 
   Future<void> changeUI() async {
@@ -249,6 +274,7 @@ class _TakeItNowState extends State<TakeItNow> {
     logList!.add(logString);
     sharedPreferences.setStringList('logList', logList!);
     ePrint('logAdded');
+    showMyDialog('Done');
     return true;
   }
 

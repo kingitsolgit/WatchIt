@@ -16,7 +16,7 @@ import 'package:watch_it/account.dart';
 import 'package:watch_it/links/baserurl.dart';
 import 'package:watch_it/logs.dart';
 import 'package:watch_it/main.dart';
-import 'package:watch_it/med2.dart';
+import 'package:watch_it/medications_list.dart';
 import 'package:watch_it/medications.dart';
 import 'package:watch_it/model/eprint.dart';
 import 'package:watch_it/model/meducine.dart';
@@ -53,6 +53,14 @@ class _MainMenuState extends State<MainMenu> with WidgetsBindingObserver {
     // Timer.periodic(Duration(seconds: 10), ontMainMenuCallBack());
     // WidgetsFlutterBinding.ensureInitialized();
     // FlutterBackgroundService.initialize(onStartMainMenu);
+    callBack1();
+  }
+
+  callBack1() {
+    Timer.periodic(Duration(seconds: 57), (timer) {
+      myCallBack();
+    });
+    ePrint('In callBack1');
   }
 
 /*
@@ -86,7 +94,7 @@ class _MainMenuState extends State<MainMenu> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
-    mainMenuTimer();
+    ePrint('In build method pcode is ${widget.pcode}');
     return Scaffold(
       floatingActionButton: Padding(
         padding: EdgeInsets.all(Nshape == WearShape.round ? 8.0 : 0.0),
@@ -345,7 +353,8 @@ class _MainMenuState extends State<MainMenu> with WidgetsBindingObserver {
     );
   }
 
-  ontMainMenuCallBack() async {
+  onMainMenuCallBack() async {
+    List<String> dosingList = [];
     ePrint(
         ' In MainMenu ontMainMenuCallBack Function Start Time ${DateTime.now()}');
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
@@ -359,7 +368,7 @@ class _MainMenuState extends State<MainMenu> with WidgetsBindingObserver {
         // print(akbarPrescription); //in service file
         var responc = Prescription.fromJson(jsonDecode(response.body));
         DateFormat dateFormating = DateFormat("dd-MM-yyyy HH:mm");
-        List<String> dosingList = [];
+        // List<String> dosingList = [];
         for (var i = 0; i < responc.data!.length; i++) {
           List<MedicineTime>? medicineTime = responc.data![i].medicineTime;
           for (var j = 0; j < medicineTime!.length; j++) {
@@ -395,20 +404,21 @@ class _MainMenuState extends State<MainMenu> with WidgetsBindingObserver {
                 //     androidApplicationId: "com.example.watch_it");
               } else {
                 ePrint('time is not same');
-                sharedPreferences.setBool("isDoseTime", false);
+                // sharedPreferences.setBool("isDoseTime", false);
               }
             } else {
               ePrint('day is not same');
-              sharedPreferences.setBool("isDoseTime", false);
+              // sharedPreferences.setBool("isDoseTime", false);
             }
           }
         }
-        if (dosingList.isNotEmpty) {
-          Get.offAll(NotificationTime());
-           Get.offAll(AccountScreen());
-        } else {
-          ePrint('In MainMenu: dosing list is empty');
-        }
+        // if (dosingList.isNotEmpty) {
+        //   Get.offAll(NotificationTime());
+        //   // Get.offAll(AccountScreen());
+        // } else {
+        //   sharedPreferences.setBool("isDoseTime", false);
+        //   ePrint('In MainMenu: dosing list is empty');
+        // }
         ///////////code start for next doses
         List<String> nextDoseList = [];
         sharedPreferences.remove('nextDoseList');
@@ -426,7 +436,6 @@ class _MainMenuState extends State<MainMenu> with WidgetsBindingObserver {
             // ePrint('newDT $newDT');
             if (newDT.isAfter(DateTime.now())) {
               // ePrint('time isAfter from now');
-              j = medicineTime.length - 1;
               Meducine meducine = Meducine(
                 medicineId: prescriptionData.sId,
                 medicineName: prescriptionData.medicineName,
@@ -443,14 +452,15 @@ class _MainMenuState extends State<MainMenu> with WidgetsBindingObserver {
               // ePrint(nextDoseList);
               sharedPreferences.setStringList('nextDoseList', nextDoseList);
               ePrint(' In MainMenu next dose added');
+              j = medicineTime.length - 1;
             }
             // setAsNextMedicines(myDT,responc);
 
           }
         }
-//////////////////////////////code ending for next doses
+        ///////////////////code ending for next doses
 
-/////////////////////////////////for snooze list checking
+        /////////////////////////////////for snooze list checking
 
         if (sharedPreferences.getStringList('snoozedList') != null) {
           List<String>? snoozedList =
@@ -495,11 +505,11 @@ class _MainMenuState extends State<MainMenu> with WidgetsBindingObserver {
                   //     androidApplicationId: "com.example.watch_it");
                 } else {
                   debugPrint(' In MainMenu minute is also not same');
-                  sharedPreferences.setBool("isDoseTime", false);
+                  // sharedPreferences.setBool("isDoseTime", false);
                 }
               } else {
                 debugPrint(' In MainMenu hour is not same');
-                sharedPreferences.setBool("isDoseTime", false);
+                // sharedPreferences.setBool("isDoseTime", false);
               }
             } else {
               ePrint(' In MainMenu ${snoozedMed.dosetime}');
@@ -517,29 +527,45 @@ class _MainMenuState extends State<MainMenu> with WidgetsBindingObserver {
                 },
               );
               if (response.statusCode == 200) {
-                print(' In MainMenu ${response.body}');
+                ePrint(' In MainMenu ${response.body}');
               } else {
-                print(' In MainMenu ${response.body}');
+                ePrint(' In MainMenu ${response.body}');
               }
             }
           }
-          if (dosingList.isNotEmpty) {
-            Get.offAll(NotificationTime());
-          }
+          // if (dosingList.isNotEmpty) {
+          //   Get.offAll(NotificationTime());
+          // } else {}
         } else {
           ePrint('  In MainMenu  equal null');
         }
       }
     } else {
-      print(' In MainMenu pcode is null');
+      ePrint(' In MainMenu pcode is null');
+    }
+    if (dosingList.isNotEmpty) {
+      Get.offAll(NotificationTime());
+      // Get.offAll(AccountScreen());
+    } else {
+      sharedPreferences.setBool("isDoseTime", false);
+      ePrint('In MainMenu: dosing list is empty');
     }
     ePrint(
         ' In MainMenu ontMainMenuCallBack Function End Time ${DateTime.now()}');
   }
 
   Future<void> mainMenuTimer() async {
-    await AndroidAlarmManager.periodic(
-        Duration(seconds: 57), alarmID, ontMainMenuCallBack);
+    ePrint('In mainMenuTimer start');
+
+    WidgetsFlutterBinding.ensureInitialized();
+    // await AndroidAlarmManager.periodic(
+    //     Duration(seconds: 57), alarmID, onMainMenuCallBack);
+    ePrint('In mainMenuTimer end');
+  }
+
+  void myCallBack() {
+    ePrint('In myCallBack end');
+    onMainMenuCallBack();
   }
 }
 

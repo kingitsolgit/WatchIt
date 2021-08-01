@@ -22,170 +22,73 @@ class Medications extends StatefulWidget {
 }
 
 class _MedicationsState extends State<Medications> {
-  // User? user;
-  late final mdata;
-  @override
-  void initState() {
-    super.initState();
-    getMedications();
-    // saveMyMedications();
-  }
-
-  Future<void> getMedications() async {
-    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-
-    String patientCode = sharedPreferences.getString('p_code')!;
-    // await SharedPreferences.getInstance();
-    print(patientCode);
-    var url = Uri.parse(
-        "http://mobistylz.com/api/patients/$patientCode/prescriptions");
-    final response = await get(url);
-    if (response.statusCode == 200) {
-      print('response body in mediction before');
-      print('medications data'.toUpperCase());
-      print(response.body);
-      Prescription patPrescription =
-          Prescription.fromJson(jsonDecode(response.body));
-      var presProvider =
-          Provider.of<PrescriptionProvider>(context, listen: false);
-      presProvider.addData(patPrescription);
-
-      print(patPrescription.data!.length);
-      print('response body in mediction if');
-      mdata = patPrescription.data!;
-      print('object');
-      print(mdata.length);
-      print(mdata[0].date);
-      print('object');
-      // setState(() {
-      // hour = true;
-      // hourly = jsonEncode(
-      //     weather.HourlyWeatherModel.fromJson(jsonDecode(response.body)));
-
-      // String hdata = jsonEncode(
-      //     weather.HourlyWeatherModel.fromJson(jsonDecode(response.body)));
-      // sharedPreferences.setString("hourly", hdata);
-      // });
-      // return weather.HourlyWeatherModel.fromJson(jsonDecode(response.body));
-    } else {
-      print('response body in else');
-      print(response.body);
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
-    var prescribedData =
-        Provider.of<PrescriptionProvider>(context, listen: true);
-    Prescription prescription = prescribedData.prescription;
-    print(prescribedData);
-    print(prescription.data![0].medicineName);
-    print('jkl');
     return Scaffold(
       backgroundColor: Colors.black,
       body: WatchShape(
         builder: (context, shape, child) {
           return Container(
-              width: Get.width,
-              height: Get.height,
-              decoration: BoxDecoration(),
-              child: ListView(
-                children: [
-                  Material(
-                    color: Colors.black,
-                    child: Padding(
-                      padding: const EdgeInsets.all(10),
-                      child: Text(
-                        tr('medications'),
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                        ),
+            width: Get.width,
+            height: Get.height,
+            decoration: BoxDecoration(),
+            child: ListView(
+              children: [
+                Material(
+                  color: Colors.black,
+                  child: Padding(
+                    padding: EdgeInsets.all(12),
+                    child: Text(
+                      tr('medications'),
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
                   ),
-                  Container(
-                    width: Get.width,
-                    color: Colors.black,
-                    height: 20,
-                  ),
-                  // InkWell(
-                  //   onTap: () {},
-                  //   child: menuButtons(
-                  //     name: '${Logs.pills[1].name} (${Logs.pills[1].unit})',
-                  //     time:
-                  //         '${Logs.pills[1].routine} at ${Logs.pills[1].dosetime}',
-                  //   ),
-                  // ),
-                  InkWell(
-                    onTap: () {
-                      print('mdata[0].medicineName');
-                    },
-                    child: MedButton(
-                      shape: shape,
-                      name: '{prescription.data![0].medicineName.toString()} ',
-                      time:
-                          '${Logs.pills[2].routine} at ${Logs.pills[2].dosetime}',
-                    ),
-                  ),
-                  InkWell(
-                    onTap: () {},
-                    child: MedButton(
-                      name: '${Logs.pills[3].name} (${Logs.pills[3].unit})',
-                      time:
-                          '${Logs.pills[3].routine} at ${Logs.pills[3].dosetime}',
-                    ),
-                  ),
-                  InkWell(
-                    onTap: () {},
-                    child: MedButton(
-                      name: 'Diazepam (12 mg)',
-                      time: 'Every other day at 17:00',
-                    ),
-                  ),
-                  SizedBox(
-                    height: 30,
-                  ),
-                ],
-              )
-              //  Center(child: CircularProgressIndicator()),
-              );
+                ),
+                Container(
+                  width: Get.width,
+                  color: Colors.black,
+                  height: 5,
+                ),
+                MedButton(
+                  shape: shape,
+                  name: 'Panadol',
+                  time: '2021-07-31 12:10',
+                ),
+                MedButton(
+                  shape: shape,
+                  name: '${Logs.pills[3].name} (${Logs.pills[3].unit})',
+                  time: '${Logs.pills[3].routine} at ${Logs.pills[3].dosetime}',
+                ),
+                MedButton(
+                  shape: shape,
+                  name: 'Diazepam (12 mg)',
+                  time: 'Every other day at 17:00',
+                ),
+                SizedBox(
+                  height: 40,
+                ),
+              ],
+            ),
+          );
         },
-        child: AmbientMode(
-          builder: (context, mode, child) {
-            return Text(
-              'Mode: ${mode == WearMode.active ? 'Active' : 'Ambient'}',
-            );
-          },
-        ),
       ),
     );
-  }
-
-  static Future<void> saveMyMedications() async {
-    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-    sharedPreferences.setString("nextDoseTime", "12:55");
-    sharedPreferences.setBool("isDoseTime", true);
-    // print("12:55");
   }
 }
 
 class MedButton extends StatelessWidget {
   final String? name;
   final String? time;
-  final String? medicineDuration;
-  final int? dailydoses;
-  final List<MedicineTime>? times;
 
   final WearShape? shape;
   const MedButton({
     this.name,
     this.time,
     Key? key,
-    this.times,
-    this.medicineDuration,
-    this.dailydoses,
     this.shape,
   }) : super(key: key);
 
@@ -237,7 +140,7 @@ class MedButton extends StatelessWidget {
                 height: 28,
                 child: ListView.builder(
                     scrollDirection: Axis.horizontal,
-                    itemCount: dailydoses!, // 3, //times!.length,
+                    itemCount: 3, //times!.length,
                     itemBuilder: (BuildContext context, int index) {
                       return Padding(
                         padding: const EdgeInsets.only(right: 4.0),
@@ -248,7 +151,7 @@ class MedButton extends StatelessWidget {
                             child: Padding(
                               padding: EdgeInsets.all(4),
                               child: Text(
-                                times![index].time!,
+                                '${201 + index}',
                                 style: TextStyle(
                                   color: Colors.white,
                                 ),
@@ -260,8 +163,7 @@ class MedButton extends StatelessWidget {
                     }),
               ),
               Text(
-                medicineDuration!,
-                // '25-10-2020 to 23-23-32',
+                '25-10-2020 to 23-23-32',
                 style: TextStyle(
                   color: Colors.white,
                 ),

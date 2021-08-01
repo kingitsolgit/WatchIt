@@ -32,66 +32,6 @@ import 'package:watch_it/snooze_confirm.dart';
 import 'package:watch_it/snooze_time.dart';
 import 'package:watch_it/take_it_now.dart';
 
-bool isAlarmOn = false;
-
-Future<void> playSound() async {
-  isAlarmOn = true;
-  print('in sound callback $isAlarmOn');
-
-  // print('in sound callback $isAlarmOn');
-
-  // await AppLauncher.openApp(
-  //   androidApplicationId: "com.example.watch_it", // "com.whatsapp",
-  // );
-// com.example.watch_it
-
-  final DateTime now = DateTime.now();
-  final int isolateId = Isolate.current.hashCode;
-  print("[$now] Play with, world! isolate=${isolateId} function='$playSound'");
-
-  getmediList();
-
-////////////////////  Check here if it is dose time or not ////////////////////
-  SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-
-  DateFormat dateFormat = DateFormat("yyyy-MM-dd HH:mm");
-  DateTime myDateTime = dateFormat.parse("2021-07-05 15:25");
-  print(myDateTime);
-  // myDateTime.add(Duration(minutes: 10));
-  print('added date is $myDateTime');
-  if (DateTime.now().hour.compareTo(myDateTime.hour) == 0) {
-    print('hour is same');
-    if (DateTime.now().minute.compareTo(myDateTime.minute) == 0) {
-      print('minute is also same');
-      sharedPreferences.setBool("isDoseTime", true);
-      await AppLauncher.openApp(
-        androidApplicationId: "com.example.watch_it", // "com.whatsapp",
-      );
-    } else {
-      sharedPreferences.setBool("isDoseTime", false);
-    }
-  } else {
-    sharedPreferences.setBool("isDoseTime", false);
-  }
-  /////// for on testin and implementation..............
-  // sharedPreferences.setBool("isDoseTime", false);
-////////////////////  checking end   ///////////////////////////
-
-  // FlutterRingtonePlayer.stop();
-  // await FlutterRingtonePlayer.playNotification();
-
-  // void main() {
-  //   runApp(NotificationTime());
-  // }
-}
-
-Future<void> getmediList() async {
-  SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-
-  List<String>? listmedi = sharedPreferences.getStringList("preslist");
-  print(listmedi);
-}
-
 void hitMeicationAPIRecursively() {
   ApiData.getData();
 }
@@ -160,8 +100,7 @@ getAndCheck() async {
 
   if (sharedPreferences.getString('p_code') != null) {
     String? pcode = sharedPreferences.getString('p_code')!;
-    var url =
-        Uri.parse('${BaseUrl.baseurl}/api/patients/${pcode}/prescriptions');
+    var url = Uri.parse('${BaseUrl.baseurl}/api/patients/$pcode/prescriptions');
     final response = await get(url);
     if (response.statusCode == 200) {
       ePrint(response.body);
@@ -193,7 +132,6 @@ getAndCheck() async {
             debugPrint('In Main.dart: Day is same');
             if (now.hour == myDT.hour && now.minute == myDT.minute) {
               debugPrint('In Main.dart: time is also same');
-              int index = i;
               ePrint('In Main.dart: at index $i and $j');
               sharedPreferences.setBool("isDoseTime", true);
               Parameters.isDozeTime = true;
@@ -216,17 +154,20 @@ getAndCheck() async {
               //     androidApplicationId: "com.example.watch_it");
             } else {
               ePrint('In Main.dart: time is not same');
-              sharedPreferences.setBool("isDoseTime", false);
+              // sharedPreferences.setBool("isDoseTime", false);
             }
           } else {
             ePrint('In Main.dart: day is not same');
-            sharedPreferences.setBool("isDoseTime", false);
+            // sharedPreferences.setBool("isDoseTime", false);
           }
         }
       }
-      if (dosingList.isNotEmpty) {
-        await AppLauncher.openApp(androidApplicationId: "com.example.watch_it");
-      }
+      // if (dosingList.isNotEmpty) {
+      //   await AppLauncher.openApp(androidApplicationId: "com.example.watch_it");
+      // } else {
+      //   ePrint('In Main.dart: dosingList is empty');
+      //   sharedPreferences.setBool("isDoseTime", false);
+      // }
       ///////////code start for next doses
       List<String> nextDoseList = [];
       sharedPreferences.remove('nextDoseList');
@@ -244,7 +185,7 @@ getAndCheck() async {
           // ePrint('In Main.dart: newDT $newDT');
           if (newDT.isAfter(DateTime.now())) {
             // ePrint('In Main.dart: time isAfter from now');
-            j = medicineTime.length - 1;
+            // j = medicineTime.length - 1; //at wrong place
             Meducine meducine = Meducine(
               medicineId: prescriptionData.sId,
               medicineName: prescriptionData.medicineName,
@@ -261,6 +202,7 @@ getAndCheck() async {
             // ePrint(In Main.dart: nextDoseList);
             sharedPreferences.setStringList('nextDoseList', nextDoseList);
             ePrint('In Main.dart: next dose added');
+            j = medicineTime.length - 1;
           }
           // setAsNextMedicines(myDT,responc);
 
@@ -294,7 +236,6 @@ getAndCheck() async {
               debugPrint('In Main.dart: snooze hour is same');
               if (DateTime.now().minute.compareTo(snoozedDT.minute) == 0) {
                 debugPrint('In Main.dart: snooze minute is also same');
-                int index = i;
                 print('In Main.dart: at index $i and j');
                 sharedPreferences.setBool("isDoseTime", true);
                 ////////  new code start here
@@ -311,26 +252,27 @@ getAndCheck() async {
                   dateRange: snoozedMed.dosetime, // preData.doseTimeDuration,
                 );
                 String jsonn = jsonEncode(meducine);
-                print('In Main.dart: encoded $jsonn');
+                print('In Main.dart: snoozed encoded $jsonn');
                 dosingList.add(jsonn);
                 print(dosingList);
                 sharedPreferences.setStringList('dosingList', dosingList);
 
-                await AppLauncher.openApp(
-                    androidApplicationId: "com.example.watch_it");
+                // await AppLauncher.openApp(
+                //     androidApplicationId: "com.example.watch_it");
               } else {
-                debugPrint('In Main.dart: minute is also not same');
-                sharedPreferences.setBool("isDoseTime", false);
+                debugPrint('In Main.dart: snoozed minute is also not same');
+                // sharedPreferences.setBool("isDoseTime", false);
               }
             } else {
-              debugPrint('In Main.dart: hour is not same');
-              sharedPreferences.setBool("isDoseTime", false);
+              debugPrint('In Main.dart: snoozed hour is not same');
+              // sharedPreferences.setBool("isDoseTime", false);
             }
           } else {
-            ePrint('In Main.dart: ${snoozedMed.dosetime}');
+            ePrint(
+                'In Main.dart: Snoozed Iteration is greater than equal to 3 and value is ${snoozedMed.snoozedIteration}');
 
-            SharedPreferences sharedPreferences =
-                await SharedPreferences.getInstance();
+            // SharedPreferences sharedPreferences =
+            //     await SharedPreferences.getInstance();
             String patientCode = sharedPreferences.getString('p_code')!;
             var url = Uri.parse(
                 '${BaseUrl.baseurl}/api/patients/$patientCode/prescriptions/${snoozedMed.id}');
@@ -352,7 +294,13 @@ getAndCheck() async {
       } else {
         ePrint('In Main.dart: equal null');
       }
-      // ///////////
+      /////////////
+      if (dosingList.isNotEmpty) {
+        await AppLauncher.openApp(androidApplicationId: "com.example.watch_it");
+      } else {
+        ePrint('In Main.dart: dosingList is empty');
+        sharedPreferences.setBool("isDoseTime", false);
+      }
     }
   } else {
     print('In Main.dart: pcode is null');
@@ -371,8 +319,9 @@ Future<void> main() async {
   await AndroidAlarmManager.initialize();
   WidgetsFlutterBinding.ensureInitialized();
   await EasyLocalization.ensureInitialized();
+  WidgetsFlutterBinding.ensureInitialized();
   await AndroidAlarmManager.periodic(
-      Duration(seconds: 57), alarmID, getAndCheck);
+      Duration(minutes: 1), alarmID, getAndCheck);
   SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
   bool? isDoseTime = sharedPreferences.getBool("isDoseTime");
   print('In servise dosetime $isDoseTime');
@@ -577,6 +526,7 @@ class _SplashScreenState extends State<SplashScreen> {
                 ? new MainMenu(
                     pemail: pEmail,
                     pname: pName,
+                    pcode: pCode,
                   )
                 : sllang == null
                     ? new Languages(accesspoint: 0)
