@@ -17,36 +17,47 @@ class Logs extends StatefulWidget {
   const Logs({Key? key}) : super(key: key);
   static String id = 'logs';
 
-  static List<Pill> pills = [
-    Pill(name: 'Baclofen', unit: '10 mg', dosetime: '1 PM', routine: 'Daily'),
-    Pill(name: 'Citalpram', unit: '10 mg', dosetime: '10 PM', routine: 'Daily'),
-    Pill(name: 'Baclofen', unit: '22 mg', dosetime: '1 PM', routine: 'Daily'),
-    Pill(name: 'Citalopram', unit: '10 mg', dosetime: '8 PM', routine: 'Daily'),
-    Pill(name: 'Baclofen', unit: '14 mg', dosetime: '4 PM', routine: 'Daily'),
-  ];
-
   @override
   _LogsState createState() => _LogsState();
 }
 
 class _LogsState extends State<Logs> {
   String? pcode;
+  List<Log> logList1 = [];
+  List<Log> logList2 = [];
+  List<Log> logList3 = [];
   List<Log> logList = [];
+
   List<Log> myLogList = [
     Log(
       medicineName: 'Panadol 1',
       status: "Taken",
-      takenAt: '2021-07-29 09:10',
+      takenAt: '2021-08-1 09:10',
     ),
     Log(
       medicineName: 'Panadol 2',
       status: "Taken",
-      takenAt: '2021-07-30 09:10',
+      takenAt: '2021-08-1 17:10',
     ),
     Log(
       medicineName: 'Panadol 3',
       status: "Taken",
       takenAt: '2021-07-31 09:10',
+    ),
+    Log(
+      medicineName: 'Panadol 4',
+      status: "Taken",
+      takenAt: '2021-07-31 19:10',
+    ),
+    Log(
+      medicineName: 'Panadol 5',
+      status: "Taken",
+      takenAt: '2021-07-30 09:10',
+    ),
+    Log(
+      medicineName: 'Panadol 6',
+      status: "Taken",
+      takenAt: '2021-07-30 19:10',
     ),
   ];
 
@@ -55,13 +66,14 @@ class _LogsState extends State<Logs> {
     ePrint('getSavedLogList in logs started');
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     if (sharedPreferences.getStringList('logList') != null) {
-      ePrint('not equal null');
+      ePrint('In 3 day Log: logList not equal null.');
       List<String>? logStringList = sharedPreferences.getStringList('logList');
-      ePrint('list assigned of ${logStringList!.length} length');
-      for (var i = 0; i < logStringList.length; i++) {
-        ePrint('loop started');
-        print('list obj $i is ${logStringList[i]}');
-        Map<String, dynamic> dosingMaplistobj = jsonDecode(logStringList[0]);
+      ePrint('In 3 day Log: list assigned of ${logStringList!.length} length');
+      // for (var i = 0; i < logStringList.length; i++) {
+      for (var i = logStringList.length - 1; i >= 0; i--) {
+        ePrint('In 3 day Log: logStringList loop started');
+        print('In 3 day Log: list obj $i is ${logStringList[i]}');
+        Map<String, dynamic> dosingMaplistobj = jsonDecode(logStringList[i]);
         var userDosing = Log.fromJson(dosingMaplistobj);
         print(userDosing.medicineName);
         Log log = Log(
@@ -69,12 +81,29 @@ class _LogsState extends State<Logs> {
           status: userDosing.status,
           takenAt: userDosing.takenAt,
         );
+        DateFormat newdateFormating =
+            DateFormat("yyyy-MM-dd", context.locale.toString());
+        DateTime nowDate = newdateFormating.parse(DateTime.now().toString());
+        DateTime takenAtDate = newdateFormating.parse(userDosing.takenAt!);
+        if (nowDate.difference(takenAtDate) == Duration(hours: 0)) {
+          ePrint('Duration(hours: 0)');
+          logList1.add(log);
+        } else if (nowDate.difference(takenAtDate) == Duration(hours: 24)) {
+          ePrint('Duration(hours: 24)');
+          logList2.add(log);
+        } else if (nowDate.difference(takenAtDate) == Duration(hours: 48)) {
+          ePrint('Duration(hours: 48)');
+          logList3.add(log);
+        }
+        ePrint('In logs nowDate is $nowDate and takeat is $takenAtDate');
+
         logList.add(log);
       }
+      // logList.sort
     } else {
-      ePrint('  equal null');
+      ePrint('In 3 day Log: logList equal null');
     }
-    ePrint(' current locale is ${context.locale}');
+    ePrint('In 3 day Log: current locale is ${context.locale}');
 
     return logList;
   }
@@ -119,221 +148,110 @@ class _LogsState extends State<Logs> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-        future: getSavedLogList(),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            List<Log>? logs = snapshot.data as List<Log>?;
-            // print('3 days logs are $logs');
-            // Prescription? prescription = snapshot.data as Prescription;
-            // print('snapshot length ${prescription.data!.length}');
-            if (logList.isNotEmpty) {
-              return Scaffold(
-                backgroundColor: Colors.black,
-                body: WatchShape(
-                  builder: (context, shape, child) {
-                    return Container(
-                      width: Get.width,
-                      height: Get.height,
-                      decoration: BoxDecoration(),
-                      child: Column(
-                        children: [
-                          Material(
-                            color: Colors.black,
-                            child: Padding(
-                              padding: const EdgeInsets.only(
-                                top: 16,
-                                bottom: 10,
-                              ),
-                              child: Text(
-                                tr('3 days log'),
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                ),
+      future: getSavedLogList(),
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          List<Log>? logs = snapshot.data as List<Log>?;
+          // ePrint('3rd loglist is ${logs![0].takenAt}');
+          // print('3 days logs are $logs');
+          // Prescription? prescription = snapshot.data as Prescription;
+          // print('snapshot length ${prescription.data!.length}');
+          if (logList.isNotEmpty) {
+            return Scaffold(
+              backgroundColor: Colors.black,
+              body: WatchShape(
+                builder: (context, shape, child) {
+                  return Container(
+                    width: Get.width,
+                    height: Get.height,
+                    decoration: BoxDecoration(),
+                    child: Column(
+                      children: [
+                        Material(
+                          color: Colors.black,
+                          child: Padding(
+                            padding: const EdgeInsets.only(
+                              top: 16,
+                              bottom: 10,
+                            ),
+                            child: Text(
+                              tr('3 days log'),
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
                               ),
                             ),
                           ),
-                          // Container(
-                          //   width: Get.width,
-                          //   color: Colors.deepOrange,
-                          //   height: 30,
-                          //   child: Center(
-                          //     child: Text(
-                          //       getDayString(DateTime.now())!,
-                          //       // getDayString(
-                          //       //     logList[logList.length - 2].takenAt!)!,
-                          //       // logList[0]
-                          //       //             .takenAt!
-                          //       //             .day
-                          //       //             .isEqual(DateTime.now().day) ==
-                          //       //         true
-                          //       //     ? 'Today'
-                          //       //     : 'Not sure', // 'Today',
-                          //       textAlign: TextAlign.center,
-                          //       style: TextStyle(
-                          //         color: Colors.white,
-                          //       ),
-                          //     ),
-                          //   ),
-                          // ),
-                          // InkWell(
-                          //   onTap: () {},
-                          //   child: LogButtons(
-                          //     name:
-                          //         '${Logs.pills[1].name}', //'Baclofen (1000 mg)',
-                          //     time: 'Taken at 07:20',
-                          //   ),
-                          // ),
-                          // InkWell(
-                          //   onTap: () {},
-                          //   child: LogButtons(
-                          //     name: 'Citalopram (5 mg)',
-                          //     time: 'Skipped',
-                          //   ),
-                          // ),
-                          // InkWell(
-                          //   onTap: () {},
-                          //   child: LogButtons(
-                          //     name: 'Acyclovir (10 mg)',
-                          //     time: 'Taken at 13:00',
-                          //   ),
-                          // ),
-                          // Container(
-                          //   width: Get.width,
-                          //   color: Colors.deepOrange,
-                          //   height: 30,
-                          //   child: Center(
-                          //     child: Text(
-                          //       getDayString(DateTime(2021, 07, 13, 12,
-                          //           22))!, // 'Wednesday, April 8th',
-                          //       textAlign: TextAlign.center,
-                          //       style: TextStyle(
-                          //         color: Colors.white,
-                          //       ),
-                          //     ),
-                          //   ),
-                          // ),
-                          // InkWell(
-                          //   onTap: () {},
-                          //   child: LogButtons(
-                          //     name: 'Baclofen (1000 mg)',
-                          //     time: 'Taken at 07:00',
-                          //   ),
-                          // ),
-                          // InkWell(
-                          //   onTap: () {},
-                          //   child: LogButtons(
-                          //     name: 'Citalopram (5 mg)',
-                          //     time: 'Taken at 09:00',
-                          //   ),
-                          // ),
-                          // Container(
-                          //   width: Get.width,
-                          //   color: Colors.deepOrange,
-                          //   height: 30,
-                          //   child: Center(
-                          //     child: Text(
-                          //       getDayString(DateTime(2021, 07, 12, 12,
-                          //           22))!, // 'Wednesday, April 8th',
-                          //       textAlign: TextAlign.center,
-                          //       style: TextStyle(
-                          //         color: Colors.white,
-                          //       ),
-                          //     ),
-                          //   ),
-                          // ),
-                          // InkWell(
-                          //   onTap: () {},
-                          //   child: LogButtons(
-                          //     name: 'Baclofen (1000 mg)',
-                          //     time: 'Taken at 07:00',
-                          //   ),
-                          // ),
-                          // InkWell(
-                          //   onTap: () {},
-                          //   child: LogButtons(
-                          //     name: 'Citalopram (5 mg)',
-                          //     time: 'Taken at 09:00',
-                          //   ),
-                          // ),
-                          // SizedBox(
-                          //   height: 30,
-                          // ),
-                          Container(
-                            height: Get.height * 0.8,
-                            child: ListView.builder(
-                              itemCount: logList.length,
-                              itemBuilder: (context, index) {
-                                DateFormat newdateFormating = DateFormat(
-                                    "yyyy-MM-dd HH:mm",
-                                    context.locale.toString());
-                                // "en_PK");
-                                // context.locale;
-                                DateTime newDT = newdateFormating
-                                    .parse(logList[index].takenAt!);
-                                String s =
-                                    '${logList[index].status} at ${newDT.hour}:${newDT.minute} ${newDT.day}-${newDT.month}-${newDT.year}';
-                                if (newDT.day == DateTime.now().day) {
-                                  ePrint('In log: the day is today.');
-                                } else if (newDT.isAfter(DateTime.now())) {
-                                  ePrint('In log: is after true.');
-                                }
-                                for (var i = 0; i < 3; i++) {
-                                  for (var j = 0; j < 9; j++) {}
-                                }
-                                return LogButtons(
-                                  setHead: true,
-                                  name: logList[index].medicineName,
-                                  time: s, //logList[index].takenAt,
-                                  datetime: newDT,
-                                );
-                              },
-                            ),
+                        ),
+                        Container(
+                          height: Get.height * 0.8,
+                          child: ListView.builder(
+                            itemCount: myLogList.length,
+                            itemBuilder: (context, index) {
+                              DateFormat newdateFormating = DateFormat(
+                                "yyyy-MM-dd HH:mm",
+                                context.locale.toString(),
+                              );
+                              DateTime newDT = newdateFormating
+                                  .parse(myLogList[index].takenAt!);
+                              // String s = '${myLogList[index].status} at ${newDT.hour}:${newDT.minute}'; // ${newDT.day}-${newDT.month}-${newDT.year}';
+                              if (newDT.day == DateTime.now().day) {
+                                ePrint('In 3 day log: the day is today.');
+                              } else if (newDT.isAfter(DateTime.now())) {
+                                ePrint('In 3 day log: isAfter is true.');
+                              }
+                              String mTime = DateFormat('HH:mm').format(newDT);
+                              return LogButtons(
+                                setHead: true,
+                                name: myLogList[index].medicineName,
+                                text: 'Taken at $mTime',
+                                // s, // logList[index].takenAt,
+                                datetime: newDT,
+                              );
+                            },
                           ),
-                        ],
-                      ),
-                    );
-                  },
-                  child: AmbientMode(
-                    builder: (context, mode, child) {
-                      return Text(
-                        'Mode: ${mode == WearMode.active ? 'Active' : 'Ambient'}',
-                      );
-                    },
-                  ),
-                ),
-              );
-            } else {
-              return Scaffold(
-                body: Center(
-                  child: Text('No Record Yet'),
-                ),
-              );
-            }
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              ),
+            );
           } else {
             return Scaffold(
               body: Center(
-                child: CircularProgressIndicator(),
+                child: Text('No Record Yet'),
               ),
             );
           }
-        });
+        } else {
+          return Scaffold(
+            body: Center(
+              child: CircularProgressIndicator(),
+            ),
+          );
+        }
+      },
+    );
   }
 }
 
 class LogButtons extends StatelessWidget {
   final bool? setHead;
   final String? name;
-  final String? time;
+  final String? text;
   final DateTime? datetime;
-  const LogButtons({
+  LogButtons({
+    Key? key,
     this.setHead,
     this.name,
-    this.time,
+    this.text,
     this.datetime,
-    Key? key,
   }) : super(key: key);
+  bool? today = false;
+  bool? yesterday = false;
+  bool? nextDay = false;
 
   @override
   Widget build(BuildContext context) {
@@ -360,14 +278,13 @@ class LogButtons extends StatelessWidget {
               : Container(),
           Padding(
             padding: EdgeInsets.only(
-              left: 10,
+              left: 24,
+              top: 5,
+              bottom: 5,
+              // right: 20,
             ),
             child: Container(
-              padding: EdgeInsets.only(
-                top: 5,
-                bottom: 5,
-                right: 20,
-              ),
+              width: Get.width,
               decoration: BoxDecoration(
                 border: Border(
                   bottom: BorderSide(
@@ -389,7 +306,7 @@ class LogButtons extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    time!,
+                    text!,
                     style: TextStyle(
                       color: Colors.grey,
                     ),
@@ -404,7 +321,8 @@ class LogButtons extends StatelessWidget {
   }
 
   String? getDayString(DateTime dateTime) {
-    String formattedDate = DateFormat('yyyy-MM-dd HH:mm').format(dateTime);
+    String nowDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
+    String formattedDate = DateFormat('yyyy-MM-dd').format(dateTime);
     print(formattedDate);
     String? dayString;
     Duration diff = DateTime.now().difference(dateTime);

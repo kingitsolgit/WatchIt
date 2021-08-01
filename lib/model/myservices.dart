@@ -94,7 +94,7 @@ String specialPatient = """{
 }
 }""";
 
-String? akbr = """{
+String? akbar = """{
 "status": true,
 "data": {
 "_id": "60f4fda6473771ded6c4826d",
@@ -119,7 +119,7 @@ String? akbr = """{
 }
 }""";
 
-String? akbarrescription = """{
+String? akbarPrescription = """{
 "status": true,
 "data": [
 {

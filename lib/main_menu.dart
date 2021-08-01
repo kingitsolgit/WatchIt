@@ -20,6 +20,7 @@ import 'package:watch_it/medications_list.dart';
 import 'package:watch_it/medications.dart';
 import 'package:watch_it/model/eprint.dart';
 import 'package:watch_it/model/meducine.dart';
+import 'package:watch_it/model/myservices.dart';
 import 'package:watch_it/model/prescription.dart';
 import 'package:watch_it/model/snoozedmedicine.dart';
 import 'package:watch_it/model/statics.dart';
@@ -365,7 +366,7 @@ class _MainMenuState extends State<MainMenu> with WidgetsBindingObserver {
       final response = await get(url);
       if (response.statusCode == 200) {
         ePrint(response.body);
-        // print(akbarPrescription); //in service file
+        print(akbarPrescription); //in service file
         var responc = Prescription.fromJson(jsonDecode(response.body));
         DateFormat dateFormating = DateFormat("dd-MM-yyyy HH:mm");
         // List<String> dosingList = [];

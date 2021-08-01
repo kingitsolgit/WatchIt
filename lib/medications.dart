@@ -60,8 +60,8 @@ class _MedicationsState extends State<Medications> {
                 ),
                 MedButton(
                   shape: shape,
-                  name: '${Logs.pills[3].name} (${Logs.pills[3].unit})',
-                  time: '${Logs.pills[3].routine} at ${Logs.pills[3].dosetime}',
+                  name: 'Brufen (12 mg)',
+                  time: 'Every other day at 17:00',
                 ),
                 MedButton(
                   shape: shape,
