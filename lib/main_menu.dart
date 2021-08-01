@@ -366,7 +366,7 @@ class _MainMenuState extends State<MainMenu> with WidgetsBindingObserver {
       final response = await get(url);
       if (response.statusCode == 200) {
         ePrint(response.body);
-        print(akbarPrescription); //in service file
+        // print(akbarPrescription); //in service file
         var responc = Prescription.fromJson(jsonDecode(response.body));
         DateFormat dateFormating = DateFormat("dd-MM-yyyy HH:mm");
         // List<String> dosingList = [];

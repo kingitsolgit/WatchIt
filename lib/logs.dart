@@ -187,14 +187,14 @@ class _LogsState extends State<Logs> {
                         Container(
                           height: Get.height * 0.8,
                           child: ListView.builder(
-                            itemCount: myLogList.length,
+                            itemCount: logList.length,
                             itemBuilder: (context, index) {
                               DateFormat newdateFormating = DateFormat(
                                 "yyyy-MM-dd HH:mm",
                                 context.locale.toString(),
                               );
                               DateTime newDT = newdateFormating
-                                  .parse(myLogList[index].takenAt!);
+                                  .parse(logList[index].takenAt!);
                               // String s = '${myLogList[index].status} at ${newDT.hour}:${newDT.minute}'; // ${newDT.day}-${newDT.month}-${newDT.year}';
                               if (newDT.day == DateTime.now().day) {
                                 ePrint('In 3 day log: the day is today.');
@@ -204,7 +204,7 @@ class _LogsState extends State<Logs> {
                               String mTime = DateFormat('HH:mm').format(newDT);
                               return LogButtons(
                                 setHead: true,
-                                name: myLogList[index].medicineName,
+                                name: logList[index].medicineName,
                                 text: 'Taken at $mTime',
                                 // s, // logList[index].takenAt,
                                 datetime: newDT,
@@ -237,7 +237,7 @@ class _LogsState extends State<Logs> {
   }
 }
 
-class LogButtons extends StatelessWidget {
+class LogButtons extends StatefulWidget {
   final bool? setHead;
   final String? name;
   final String? text;
@@ -249,9 +249,15 @@ class LogButtons extends StatelessWidget {
     this.text,
     this.datetime,
   }) : super(key: key);
-  bool? today = false;
-  bool? yesterday = false;
-  bool? nextDay = false;
+
+  @override
+  _LogButtonsState createState() => _LogButtonsState();
+}
+
+class _LogButtonsState extends State<LogButtons> {
+  // bool? today = true;
+  // bool? yesterday = false;
+  // bool? nextDay = false;
 
   @override
   Widget build(BuildContext context) {
@@ -259,7 +265,8 @@ class LogButtons extends StatelessWidget {
       color: Colors.black,
       child: Column(
         children: [
-          setHead == true
+          // widget.setHead == true
+          widget.setHead == false
               ? Container(
                   width: Get.width,
                   color: Colors.deepOrange,
@@ -267,7 +274,7 @@ class LogButtons extends StatelessWidget {
                   child: Center(
                     child: Text(
                       // 'Today',
-                      getDayString(datetime!)!,
+                      getDayString(widget.datetime!)!,
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         color: Colors.white,
@@ -297,16 +304,43 @@ class LogButtons extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    name!,
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.only(right: 8.0),
+                        child: Text(
+                          widget.name!,
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                      Material(
+                        color: Colors.red,
+                        borderRadius: BorderRadius.circular(4),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 4.0,
+                            vertical: 2.0,
+                          ),
+                          child: Text(
+                            // 'Today',
+                            getDayString(widget.datetime!)!,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 10,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                   Text(
-                    text!,
+                    widget.text!,
                     style: TextStyle(
                       color: Colors.grey,
                     ),
@@ -321,15 +355,21 @@ class LogButtons extends StatelessWidget {
   }
 
   String? getDayString(DateTime dateTime) {
-    String nowDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
-    String formattedDate = DateFormat('yyyy-MM-dd').format(dateTime);
+    String nowDateString = DateFormat('yyyy-MM-dd').format(DateTime.now());
+    DateTime nowDate = DateTime.parse(nowDateString);
+    String formattedDateString = DateFormat('yyyy-MM-dd').format(dateTime);
+    DateTime formattedDate = DateTime.parse(formattedDateString);
     print(formattedDate);
     String? dayString;
-    Duration diff = DateTime.now().difference(dateTime);
-    if (DateTime.now().day.isEqual(dateTime.day)) {
+    // Duration diff = DateTime.now().difference(dateTime);
+    if (nowDate.day.isEqual(dateTime.day)) {
       dayString = 'Today';
       return dayString;
-    } else if (diff >= Duration(days: 1) && diff <= Duration(days: 2)) {
+      // } else if (diff >= Duration(days: 1) && diff <= Duration(days: 2)) {
+    } else if (DateTime.now()
+        .subtract(Duration(days: 1))
+        .day
+        .isEqual(dateTime.day)) {
       dayString = 'Yesterday';
       return dayString;
     } else {

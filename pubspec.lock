@@ -85,20 +85,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.3"
-  device_info:
-    dependency: "direct main"
-    description:
-      name: device_info
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "2.0.2"
-  device_info_platform_interface:
-    dependency: transitive
-    description:
-      name: device_info_platform_interface
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "2.0.1"
   easy_localization:
     dependency: "direct main"
     description:
@@ -158,13 +144,6 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
-  flutter_native_timezone:
-    dependency: "direct main"
-    description:
-      name: flutter_native_timezone
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "2.0.0"
   flutter_ringtone_player:
     dependency: "direct main"
     description:
@@ -239,7 +218,7 @@ packages:
     source: hosted
     version: "3.0.2"
   intl:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: intl
       url: "https://pub.dartlang.org"
@@ -371,13 +350,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.2.4"
-  progress_indicators:
-    dependency: "direct main"
-    description:
-      name: progress_indicators
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.0.0"
   provider:
     dependency: "direct main"
     description:
