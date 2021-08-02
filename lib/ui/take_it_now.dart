@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:watch_it/ui/medications_list.dart';
 import 'package:wear/wear.dart';
 
 import 'package:watch_it/links/baserurl.dart';
@@ -45,7 +46,8 @@ class _TakeItNowState extends State<TakeItNow> {
     Timer(
       Duration(seconds: 8),
       () {
-        SystemNavigator.pop();
+        Get.offAll(MedicationList());
+        // SystemNavigator.pop();
       },
     );
   }
@@ -184,7 +186,7 @@ class _TakeItNowState extends State<TakeItNow> {
     ePrint('update status has started');
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     String patientCode = sharedPreferences.getString('p_code')!;
-    print('in updatestatus aftr code in take it now.');
+    print('in updatestatus after code in take it now.');
     var url = Uri.parse(
         '${BaseUrl.baseurl}/api/patients/$patientCode/prescriptions/${meducine.medicineId}');
     final response = await patch(url, body: {

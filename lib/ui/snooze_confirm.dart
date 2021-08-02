@@ -219,7 +219,8 @@ class SnoozeConfirm extends StatelessWidget {
     ePrint('snoozed added');
     sharedPreferences.setBool("isDoseTime", false);
     ePrint('isDoseTime is set false');
-    SystemNavigator.pop();
+    // SystemNavigator.pop();
+    Get.offAll(MedicationList());
   }
 
   List<String>? logList;

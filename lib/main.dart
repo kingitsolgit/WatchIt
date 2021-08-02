@@ -143,7 +143,8 @@ getAndCheck() async {
             sharedPreferences.getStringList('snoozedList');
         ePrint('In Main.dart: list assigned of ${snoozedList!.length} length');
         for (var i = 0; i < snoozedList.length; i++) {
-          ePrint('In Main.dart: snooz loop started////////////////////');
+          ePrint(
+              'In Main.dart: snooz loop started snoozedList Length ${snoozedList.length}');
           ePrint('In Main.dart: list obj $i is ${snoozedList[i]}');
           Map<String, dynamic> dosingMaplistobj = jsonDecode(snoozedList[i]);
           var snoozedMed = SnoozedMedicine.fromJson(dosingMaplistobj);
@@ -153,7 +154,7 @@ getAndCheck() async {
 
           // ///////////////new if structure start
           if (snoozedMed.snoozedIteration != null &&
-              snoozedMed.snoozedIteration! < 3) {
+              snoozedMed.snoozedIteration! <= 3) {
             if (DateTime.now().hour.compareTo(snoozedDT.hour) == 0) {
               debugPrint('In Main.dart: snooze hour is same');
               if (DateTime.now().minute.compareTo(snoozedDT.minute) == 0) {
@@ -177,7 +178,6 @@ getAndCheck() async {
                 dosingList.add(jsonn);
                 print(dosingList);
                 sharedPreferences.setStringList('dosingList', dosingList);
-
                 // await AppLauncher.openApp(
                 //     androidApplicationId: "com.example.watch_it");
               } else {
@@ -205,6 +205,8 @@ getAndCheck() async {
             );
             if (response.statusCode == 200) {
               print('In Main.dart: ${response.body}');
+              snoozedList.removeAt(i);
+              ePrint('removed by index');
             } else {
               print('In Main.dart: ${response.body}');
             }

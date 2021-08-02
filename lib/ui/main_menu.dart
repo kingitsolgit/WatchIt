@@ -345,7 +345,8 @@ class _MainMenuState extends State<MainMenu> with WidgetsBindingObserver {
               sharedPreferences.getStringList('snoozedList');
           ePrint('In MainMenu list assigned of ${snoozedList!.length} length');
           for (var i = 0; i < snoozedList.length; i++) {
-            ePrint('In MainMenu snooz loop started');
+            ePrint(
+                'In MainMenu snooz loop started snoozedList Length ${snoozedList.length}');
             ePrint('In MainMenu list obj $i is ${snoozedList[i]}');
             Map<String, dynamic> dosingMaplistobj = jsonDecode(snoozedList[i]);
             var snoozedMed = SnoozedMedicine.fromJson(dosingMaplistobj);
@@ -388,8 +389,8 @@ class _MainMenuState extends State<MainMenu> with WidgetsBindingObserver {
               }
             } else {
               ePrint('In MainMenu ${snoozedMed.dosetime}');
-              DateTime newDT = newdateFormating.parse(snoozedMed.dosetime!);
-              String mTime = DateFormat('HH:mm').format(newDT);
+              // DateTime newDT = newdateFormating.parse(snoozedMed.dosetime!);
+              // String mTime = DateFormat('HH:mm').format(newDT);
               SharedPreferences sharedPreferences =
                   await SharedPreferences.getInstance();
               String patientCode = sharedPreferences.getString('p_code')!;
@@ -399,12 +400,13 @@ class _MainMenuState extends State<MainMenu> with WidgetsBindingObserver {
                 url,
                 body: {
                   "status": "Skipped",
-                  "time": mTime, // snoozedMed.dosetime, // "13:30",
+                  "time": snoozedMed.dosetime, // "13:30",
                   "medicine_time_id": '${snoozedMed.timeIndex}' // 2
                 },
               );
               if (response.statusCode == 200) {
                 ePrint(' In MainMenu ${response.body}');
+                // snoozedList.removeAt(i);
               } else {
                 ePrint(' In MainMenu ${response.body}');
               }
