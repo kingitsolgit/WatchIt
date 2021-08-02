@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:watch_it/ui/medications_list.dart';
 import 'package:wear/wear.dart';
 
 import 'package:watch_it/links/baserurl.dart';
@@ -167,7 +168,7 @@ class SnoozeConfirm extends StatelessWidget {
     });
     if (response.statusCode == 200) {
       print(response.body);
-      addLogData(meducine);
+      addLogData(meducine, status);
     } else {
       print(response.body);
     }
@@ -202,7 +203,9 @@ class SnoozeConfirm extends StatelessWidget {
         routine: meducine.dailyDosePill,
         timeIndex: meducine.medicinetimeindex,
         isSnoozed: true,
-        snoozedIteration: 0,
+        snoozedIteration: meducine.snoozedIteration == null
+            ? setSnoozedIter(meducine.snoozedIteration)
+            : setSnoozedIter(meducine.snoozedIteration),
         snoozedDurationMins: duration == null ? 10 : duration,
       );
       // snoozedList!.add(medicatedList![i]);
@@ -218,7 +221,7 @@ class SnoozeConfirm extends StatelessWidget {
   }
 
   List<String>? logList;
-  Future<void> addLogData(Meducine meducine) async {
+  Future<void> addLogData(Meducine meducine, String status) async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     if (sharedPreferences.getStringList('logList') == null) {
       ePrint('adlog from else');
@@ -229,8 +232,8 @@ class SnoozeConfirm extends StatelessWidget {
     }
     Log log = Log(
       medicineName: meducine.medicineName,
-      status: 'Taken',
-      takenAt: DateTime.now().toString(),
+      status: status, //'Taken',
+      takenAt: meducine.medicineTime, // DateTime.now().toString(),
     );
     ePrint('$log');
     String logString = jsonEncode(log);
@@ -238,7 +241,8 @@ class SnoozeConfirm extends StatelessWidget {
     logList!.add(logString);
     sharedPreferences.setStringList('logList', logList!);
     ePrint('logAdded');
-    SystemNavigator.pop();
+    // SystemNavigator.pop();
+    Get.offAll(MedicationList());
   }
 
   Future<void> skipNow(BuildContext context) async {
@@ -269,8 +273,21 @@ class SnoozeConfirm extends StatelessWidget {
           meducine.medicinetimeindex!,
           meducine,
         );
-        print('gone');
+        print('gone for skip');
       }
     }
+  }
+
+  setSnoozedIter(int? snoozedIteration) {
+    int? iteration = 0;
+    if (snoozedIteration == null) {
+    } else if (snoozedIteration == 0) {
+      iteration = 1;
+    } else if (snoozedIteration == 1) {
+      iteration = 2;
+    } else if (snoozedIteration == 2) {
+      iteration = 3;
+    }
+    return iteration;
   }
 }

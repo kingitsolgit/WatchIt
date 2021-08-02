@@ -103,7 +103,7 @@ class Settings extends StatelessWidget {
                   },
                   child: SettingsButton(
                     text: tr('log out'),
-                    icon: Icons.exit_to_app,
+                    icon: Icons.logout,
                     shape: shape,
                   ),
                 ),
