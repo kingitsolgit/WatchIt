@@ -4,17 +4,16 @@ import 'dart:convert';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get/get.dart';
 import 'package:http/http.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:wear/wear.dart';
+
 import 'package:watch_it/links/baserurl.dart';
 import 'package:watch_it/model/eprint.dart';
 import 'package:watch_it/model/log.dart';
 import 'package:watch_it/model/meducine.dart';
 import 'package:watch_it/model/snoozedmedicine.dart';
-// import 'package:watch_it/pair.dart';
-import 'package:watch_it/take_it_now.dart';
-import 'package:wear/wear.dart';
-import 'package:get/get.dart';
 
 class SnoozeConfirm extends StatelessWidget {
   //const SnoozeConfirm{Key? key}) : super(key: key);
@@ -22,7 +21,7 @@ class SnoozeConfirm extends StatelessWidget {
   final String? pilname;
   final List<String>? medicatedList;
   String? intervalString;
-  int? duration;
+  int? duration = 10;
 
   SnoozeConfirm({
     Key? key,
@@ -40,10 +39,6 @@ class SnoozeConfirm extends StatelessWidget {
           return Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
-              // Text(
-              //   'Shape: ${shape == WearShape.round ? 'round' : 'square'}',
-              // ),
-              // child,
               Container(
                 padding: EdgeInsets.symmetric(
                   vertical: 0,
@@ -115,9 +110,6 @@ class SnoozeConfirm extends StatelessWidget {
                         children: [
                           InkWell(
                             onTap: () {
-                              // Navigator.pop(context);
-                              // skipNow("","");
-                              // updateStatus('medicineId', 'status', 'time', 2);
                               skipNow(context);
                             },
                             child: CircleAvatar(
@@ -135,7 +127,6 @@ class SnoozeConfirm extends StatelessWidget {
                           ),
                           InkWell(
                             onTap: () {
-                              // Navigator.pop(context);
                               snoozeNow(context);
                             },
                             child: CircleAvatar(
@@ -153,46 +144,12 @@ class SnoozeConfirm extends StatelessWidget {
                     SizedBox(
                       height: 10,
                     ),
-                    // Container(
-                    //   padding: EdgeInsets.only(
-                    //     left: 10,
-                    //   ),
-                    //   child: Row(
-                    //     children: [
-                    //       CircleAvatar(
-                    //         radius: 15,
-                    //         backgroundColor: Colors.blueAccent,
-                    //         child: Icon(
-                    //           Icons.snooze_outlined,
-                    //         ),
-                    //       ),
-                    //       SizedBox(
-                    //         width: 10,
-                    //       ),
-                    //       Text(
-                    //         'Snooz',
-                    //         textAlign: TextAlign.center,
-                    //         style: TextStyle(
-                    //           color: Colors.white,
-                    //           fontWeight: FontWeight.bold,
-                    //         ),
-                    //       ),
-                    //     ],
-                    //   ),
-                    // ),
                   ],
                 ),
               ),
             ],
           );
         },
-        child: AmbientMode(
-          builder: (context, mode, child) {
-            return Text(
-              'Mode: ${mode == WearMode.active ? 'Active' : 'Ambient'}',
-            );
-          },
-        ),
       ),
     );
   }
@@ -226,33 +183,11 @@ class SnoozeConfirm extends StatelessWidget {
     if (sharedPreferences.getStringList('snoozedList') == null) {
       snoozedList = [];
       print('in if in snoozenow');
-      // for (var i = 0; i < medicatedList!.length; i++) {
-      //   print('list obj $i is ${medicatedList![i]}');
-      //   Map<String, dynamic> dosingMaplistobj = jsonDecode(medicatedList![i]);
-      //   Meducine meducine = Meducine.fromJson(dosingMaplistobj);
-      //   SnoozedMedicine snoozedMedicine = SnoozedMedicine(
-      //     id: meducine.medicineId,
-      //     name: meducine.medicineName,
-      //     dosetime: meducine.medicineTime,
-      //     routine: meducine.dailyDosePill,
-      //     timeIndex: meducine.medicinetimeindex,
-      //     isSnoozed: true,
-      //     snoozedDurationMins: duration,
-      //   );
-      //   // snoozedList!.add(medicatedList![i]);
-      //   String snoozeString = jsonEncode(snoozedMedicine);
-      //   snoozedList!.add(snoozeString);
-      //   print('snooxestring is $snoozeString');
-      // }
-      // sharedPreferences.setStringList('snoozedList', snoozedList!);
     } else {
       snoozedList = sharedPreferences.getStringList('snoozedList');
       ePrint('in else in snoozenow');
     }
     for (var i = 0; i < medicatedList!.length; i++) {
-      // print('list obj $i is ${medicatedList![i]}');
-      // ePrint('list obj $i is ${snoozedList![i]}');
-
       Map<String, dynamic> dosingMaplistobj = jsonDecode(medicatedList![i]);
       Meducine meducine = Meducine.fromJson(dosingMaplistobj);
       DateFormat dateFormating =
@@ -260,8 +195,6 @@ class SnoozeConfirm extends StatelessWidget {
       DateTime myDT = dateFormating.parse(meducine.medicineTime!);
       myDT.add(Duration(minutes: n == null ? 10 : n));
       ePrint('n============== ${n == null ? 10 : n} and my DateTime is $myDT');
-      // meducine.medicineTime
-
       SnoozedMedicine snoozedMedicine = SnoozedMedicine(
         id: meducine.medicineId,
         name: meducine.medicineName,
@@ -270,6 +203,7 @@ class SnoozeConfirm extends StatelessWidget {
         timeIndex: meducine.medicinetimeindex,
         isSnoozed: true,
         snoozedDurationMins: duration == null ? 10 : duration,
+        snoozedIteration: 0,
       );
       // snoozedList!.add(medicatedList![i]);
       String snoozeString = jsonEncode(snoozedMedicine);
@@ -280,7 +214,6 @@ class SnoozeConfirm extends StatelessWidget {
     ePrint('snoozed added');
     sharedPreferences.setBool("isDoseTime", false);
     ePrint('isDoseTime is set false');
-
     SystemNavigator.pop();
   }
 

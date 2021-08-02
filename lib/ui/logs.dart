@@ -3,15 +3,11 @@ import 'dart:convert';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:http/http.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wear/wear.dart';
 
-import 'package:watch_it/links/baserurl.dart';
 import 'package:watch_it/model/eprint.dart';
 import 'package:watch_it/model/log.dart';
-import 'package:watch_it/model/pill.dart';
-import 'package:watch_it/model/prescription.dart';
 
 class Logs extends StatefulWidget {
   const Logs({Key? key}) : super(key: key);
@@ -72,10 +68,10 @@ class _LogsState extends State<Logs> {
       // for (var i = 0; i < logStringList.length; i++) {
       for (var i = logStringList.length - 1; i >= 0; i--) {
         ePrint('In 3 day Log: logStringList loop started');
-        print('In 3 day Log: list obj $i is ${logStringList[i]}');
+        ePrint('In 3 day Log: list obj $i is ${logStringList[i]}');
         Map<String, dynamic> dosingMaplistobj = jsonDecode(logStringList[i]);
         var userDosing = Log.fromJson(dosingMaplistobj);
-        print(userDosing.medicineName);
+        ePrint(userDosing.medicineName!);
         Log log = Log(
           medicineName: userDosing.medicineName,
           status: userDosing.status,
@@ -108,43 +104,6 @@ class _LogsState extends State<Logs> {
     return logList;
   }
 
-  Future getPosts() async {
-    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-
-    pcode = sharedPreferences.getString('p_code')!;
-
-    var url = Uri.parse('${BaseUrl.baseurl}/api/patients/$pcode/prescriptions');
-    // "http://watchit-project.eu/api/patients/$pcode/prescriptions");
-    final response = await get(url);
-    if (response.statusCode == 200) {
-      print(response.body);
-
-      ///
-      var responc = Prescription.fromJson(jsonDecode(response.body));
-      var date = responc.data![0].date;
-      print('new extracted date is $date');
-      for (var i = 0; i < responc.data!.length; i++) {
-        for (var j = 0; j < responc.data![i].medicineTime!.length; j++) {
-          // var myInt = int.parse('12345');
-          // assert(myInt is int);
-          print('myInt $i, $j'); // 12345
-          // logList.add(
-          //   Log(
-          //     medicineName: responc.data![i].sId,
-          //     status: 'Taken',
-          //     takenAt: DateTime.now().toString(),
-          //   ),
-          // );
-        }
-      }
-      print(logList.length);
-
-      return Prescription.fromJson(jsonDecode(response.body));
-    } else {
-      print(response.body);
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
@@ -152,10 +111,6 @@ class _LogsState extends State<Logs> {
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           List<Log>? logs = snapshot.data as List<Log>?;
-          // ePrint('3rd loglist is ${logs![0].takenAt}');
-          // print('3 days logs are $logs');
-          // Prescription? prescription = snapshot.data as Prescription;
-          // print('snapshot length ${prescription.data!.length}');
           if (logList.isNotEmpty) {
             return Scaffold(
               backgroundColor: Colors.black,
@@ -195,17 +150,16 @@ class _LogsState extends State<Logs> {
                               );
                               DateTime newDT = newdateFormating
                                   .parse(logList[index].takenAt!);
-                              // String s = '${myLogList[index].status} at ${newDT.hour}:${newDT.minute}'; // ${newDT.day}-${newDT.month}-${newDT.year}';
-                              if (newDT.day == DateTime.now().day) {
-                                ePrint('In 3 day log: the day is today.');
-                              } else if (newDT.isAfter(DateTime.now())) {
-                                ePrint('In 3 day log: isAfter is true.');
-                              }
+                              // if (newDT.day == DateTime.now().day) {
+                              //   ePrint('In 3 day log: the day is today.');
+                              // } else if (newDT.isAfter(DateTime.now())) {
+                              //   ePrint('In 3 day log: isAfter is true.');
+                              // }
                               String mTime = DateFormat('HH:mm').format(newDT);
                               return LogButtons(
                                 setHead: true,
                                 name: logList[index].medicineName,
-                                text: 'Taken at $mTime',
+                                text: '${logList[index].status} at $mTime',
                                 // s, // logList[index].takenAt,
                                 datetime: newDT,
                               );
@@ -265,7 +219,6 @@ class _LogButtonsState extends State<LogButtons> {
       color: Colors.black,
       child: Column(
         children: [
-          // widget.setHead == true
           widget.setHead == false
               ? Container(
                   width: Get.width,
@@ -273,8 +226,7 @@ class _LogButtonsState extends State<LogButtons> {
                   height: 30,
                   child: Center(
                     child: Text(
-                      // 'Today',
-                      getDayString(widget.datetime!)!,
+                      getDayString(widget.datetime!)!, // 'Today',
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         color: Colors.white,
@@ -288,7 +240,6 @@ class _LogButtonsState extends State<LogButtons> {
               left: 24,
               top: 5,
               bottom: 5,
-              // right: 20,
             ),
             child: Container(
               width: Get.width,
@@ -327,8 +278,7 @@ class _LogButtonsState extends State<LogButtons> {
                             vertical: 2.0,
                           ),
                           child: Text(
-                            // 'Today',
-                            getDayString(widget.datetime!)!,
+                            getDayString(widget.datetime!)!, // 'Today',
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               color: Colors.white,
@@ -361,11 +311,9 @@ class _LogButtonsState extends State<LogButtons> {
     DateTime formattedDate = DateTime.parse(formattedDateString);
     print(formattedDate);
     String? dayString;
-    // Duration diff = DateTime.now().difference(dateTime);
     if (nowDate.day.isEqual(dateTime.day)) {
       dayString = 'Today';
       return dayString;
-      // } else if (diff >= Duration(days: 1) && diff <= Duration(days: 2)) {
     } else if (DateTime.now()
         .subtract(Duration(days: 1))
         .day

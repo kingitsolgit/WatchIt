@@ -6,12 +6,12 @@ import 'package:get/get.dart';
 import 'package:http/http.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:watch_it/model/eprint.dart';
 import 'package:wear/wear.dart';
 
 import 'package:watch_it/links/baserurl.dart';
+import 'package:watch_it/model/eprint.dart';
 import 'package:watch_it/model/patient.dart';
-import 'package:watch_it/pair_screen.dart';
+import 'package:watch_it/ui/pair_screen.dart';
 
 class AccountScreen extends StatefulWidget {
   const AccountScreen({Key? key}) : super(key: key);

@@ -1,33 +1,24 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:android_alarm_manager/android_alarm_manager.dart';
-import 'package:app_launcher/app_launcher.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_background_service/flutter_background_service.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:watch_it/account.dart';
+import 'package:wear/wear.dart';
+
 import 'package:watch_it/links/baserurl.dart';
-import 'package:watch_it/logs.dart';
-import 'package:watch_it/main.dart';
-import 'package:watch_it/medications_list.dart';
-import 'package:watch_it/medications.dart';
 import 'package:watch_it/model/eprint.dart';
 import 'package:watch_it/model/meducine.dart';
-import 'package:watch_it/model/myservices.dart';
 import 'package:watch_it/model/prescription.dart';
 import 'package:watch_it/model/snoozedmedicine.dart';
-import 'package:watch_it/model/statics.dart';
-import 'package:watch_it/notification_time.dart';
-import 'package:watch_it/pair_screen.dart';
-import 'package:watch_it/settings.dart';
-import 'package:wear/wear.dart';
+import 'package:watch_it/ui/logs.dart';
+import 'package:watch_it/ui/medications_list.dart';
+import 'package:watch_it/ui/notification_time.dart';
+import 'package:watch_it/ui/settings.dart';
 
 class MainMenu extends StatefulWidget {
   const MainMenu({Key? key, this.pname, this.pemail, this.pcode})
@@ -42,18 +33,13 @@ class MainMenu extends StatefulWidget {
 }
 
 class _MainMenuState extends State<MainMenu> with WidgetsBindingObserver {
-  WearShape? Nshape;
-  bool _isInForeground = true;
-  int alarmID = 1;
+  WearShape? nShape;
 
   @override
   initState() {
     super.initState();
     ePrint('pcode is ${widget.pcode}');
-    WidgetsBinding.instance!.addObserver(this);
-    // Timer.periodic(Duration(seconds: 10), ontMainMenuCallBack());
-    // WidgetsFlutterBinding.ensureInitialized();
-    // FlutterBackgroundService.initialize(onStartMainMenu);
+    // WidgetsBinding.instance!.addObserver(this);
     callBack1();
   }
 
@@ -64,29 +50,6 @@ class _MainMenuState extends State<MainMenu> with WidgetsBindingObserver {
     ePrint('In callBack1');
   }
 
-/*
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    super.didChangeAppLifecycleState(state);
-    _isInForeground = state == AppLifecycleState.resumed;
-    ePrint('In main menu: state is $state at ${DateTime.now()}');
-    // showToast();
-    switch (state) {
-      case AppLifecycleState.resumed:
-        print("app in resumed//////////////////////");
-        break;
-      case AppLifecycleState.inactive:
-        print("app in inactive////////////////////////");
-        break;
-      case AppLifecycleState.paused:
-        print("app in paused////////////////////////");
-        break;
-      case AppLifecycleState.detached:
-        print("app in detached////////////////////");
-        break;
-    }
-  }
-*/
   @override
   void dispose() {
     super.dispose();
@@ -95,10 +58,9 @@ class _MainMenuState extends State<MainMenu> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
-    ePrint('In build method pcode is ${widget.pcode}');
     return Scaffold(
       floatingActionButton: Padding(
-        padding: EdgeInsets.all(Nshape == WearShape.round ? 8.0 : 0.0),
+        padding: EdgeInsets.all(nShape == WearShape.round ? 8.0 : 0.0),
         child: FloatingActionButton(
           mini: true,
           backgroundColor: Colors.transparent,
@@ -123,7 +85,7 @@ class _MainMenuState extends State<MainMenu> with WidgetsBindingObserver {
       backgroundColor: Colors.black,
       body: WatchShape(
         builder: (context, shape, child) {
-          Nshape = shape;
+          nShape = shape;
           return Container(
             width: Get.width,
             height: Get.height,
@@ -177,7 +139,7 @@ class _MainMenuState extends State<MainMenu> with WidgetsBindingObserver {
                     Navigator.push(
                       context,
                       new MaterialPageRoute(
-                        builder: (context) => Medicat(),
+                        builder: (context) => MedicationList(),
                       ),
                     );
                   },
@@ -218,13 +180,6 @@ class _MainMenuState extends State<MainMenu> with WidgetsBindingObserver {
             ),
           );
         },
-        child: AmbientMode(
-          builder: (context, mode, child) {
-            return Text(
-              'Mode: ${mode == WearMode.active ? 'Active' : 'Ambient'}',
-            );
-          },
-        ),
       ),
     );
   }
@@ -240,7 +195,7 @@ class _MainMenuState extends State<MainMenu> with WidgetsBindingObserver {
       print(statuses[Permission.location]);
     }
 
-// You can can also directly ask the permission about its status.
+    // You can can also directly ask the permission about its status.
     if (await Permission.location.isRestricted) {
       // The OS restricts access, for example because of parental controls.
       print('location acces is restrictd');
@@ -255,103 +210,25 @@ class _MainMenuState extends State<MainMenu> with WidgetsBindingObserver {
         'Patient is in Emergency', position.latitude, position.longitude);
   }
 
-  Future<Position> _determinePosition() async {
-    bool serviceEnabled;
-    LocationPermission permission;
-
-    serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      print('Location services are disabled.');
-
-      return Future.error('Location services are disabled.');
-    }
-
-    permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
-        print('Location permissions are denied.');
-
-        return Future.error('Location permissions are denied');
-      }
-    }
-
-    if (permission == LocationPermission.deniedForever) {
-      // Permissions are denied forever, handle appropriately.
-      print(
-          'Location permissions are permanently denied, we cannot request permissions.');
-      return Future.error(
-          'Location permissions are permanently denied, we cannot request permissions.');
-    }
-
-    // When we reach here, permissions are granted and we can
-    // continue accessing the position of the device.
-    return await Geolocator.getCurrentPosition();
-  }
-
   Future<void> emergencyAlertStatus(
     String text,
     double latitude,
     double longitude,
   ) async {
-    // debugPrint('Longitude...=$longitude Latitude...=$latitude');
+    ePrint('Longitude...=$longitude Latitude...=$latitude');
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     String patientCode = sharedPreferences.getString('p_code')!;
     var url = Uri.parse('${BaseUrl.baseurl}/api/emergency/$patientCode');
-    // 'http://watchit-project.eu/api/emergency/$patientCode');
     final response = await post(url, body: {
       "text": text,
       "lat": latitude.toString(),
       "lng": longitude.toString()
     });
     if (response.statusCode == 200) {
-      print(response.body);
+      ePrint(response.body);
     } else {
-      print(response.body);
+      ePrint(response.body);
     }
-  }
-
-  Future<bool?> showTost() {
-    return Fluttertoast.showToast(
-      msg: "This is Center Short Toast",
-      toastLength: Toast.LENGTH_SHORT,
-      gravity: ToastGravity.CENTER,
-      timeInSecForIosWeb: 1,
-      backgroundColor: Colors.red,
-      textColor: Colors.white,
-      fontSize: 16.0,
-    );
-  }
-
-  Future<void> timerCallBack(Timer timer) async {
-    ePrint('In MainMenu: callback is called at ${DateTime.now()}');
-    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-    if (sharedPreferences.getBool("isDoseTime") != null) {
-      var isDoseTime = sharedPreferences.getBool("isDoseTime");
-      var a = Parameters.isDozeTime;
-      ePrint('In MainMenu: a is equal to $a.');
-
-      if (isDoseTime!) {
-        ePrint('In MainMenu: It\'s a dosetime bcz isDoseTime is $isDoseTime.');
-        Get.offAll(NotificationTime());
-      } else {
-        ePrint(
-            'In MainMenu:  It\'s not a dosetime bcz isDoseTime is $isDoseTime.');
-      }
-    }
-  }
-
-  Future<dynamic> onStartMainMenu() async {
-    WidgetsFlutterBinding.ensureInitialized();
-    final service = FlutterBackgroundService();
-    service.setForegroundMode(true);
-    Timer.periodic(
-      Duration(seconds: 5),
-      (timer) async {
-        ePrint('In mainmenu foreground service');
-        var isRunning = await FlutterBackgroundService().isServiceRunning();
-      },
-    );
   }
 
   onMainMenuCallBack() async {
@@ -452,7 +329,7 @@ class _MainMenuState extends State<MainMenu> with WidgetsBindingObserver {
               nextDoseList.add(meducineString);
               // ePrint(nextDoseList);
               sharedPreferences.setStringList('nextDoseList', nextDoseList);
-              ePrint(' In MainMenu next dose added');
+              ePrint('In MainMenu next dose added');
               j = medicineTime.length - 1;
             }
             // setAsNextMedicines(myDT,responc);
@@ -466,27 +343,26 @@ class _MainMenuState extends State<MainMenu> with WidgetsBindingObserver {
         if (sharedPreferences.getStringList('snoozedList') != null) {
           List<String>? snoozedList =
               sharedPreferences.getStringList('snoozedList');
-          ePrint(' In MainMenu list assigned of ${snoozedList!.length} length');
+          ePrint('In MainMenu list assigned of ${snoozedList!.length} length');
           for (var i = 0; i < snoozedList.length; i++) {
-            ePrint(' In MainMenu snooz loop started////////////////////');
-            ePrint(' In MainMenu list obj $i is ${snoozedList[i]}');
+            ePrint('In MainMenu snooz loop started////////////////////');
+            ePrint('In MainMenu list obj $i is ${snoozedList[i]}');
             Map<String, dynamic> dosingMaplistobj = jsonDecode(snoozedList[0]);
             var snoozedMed = SnoozedMedicine.fromJson(dosingMaplistobj);
-            ePrint(
-                ' In MainMenu snoozedmedicinename: ${snoozedMed.name}, snoozedmedicinetime:  ${snoozedMed.dosetime}');
+            // ePrint('In MainMenu snoozedmedicinename: ${snoozedMed.name}, snoozedmedicinetime:  ${snoozedMed.dosetime}');
             DateFormat newdateFormating = DateFormat("dd-MM-yyyy HH:mm");
             DateTime snoozedDT = newdateFormating.parse(snoozedMed.dosetime!);
             // ///////////////new if structure start
             if (snoozedMed.snoozedIteration != null &&
                 snoozedMed.snoozedIteration! < 3) {
               if (DateTime.now().hour.compareTo(snoozedDT.hour) == 0) {
-                ePrint(' In MainMenu snooze hour is same');
+                ePrint('In MainMenu snooze hour is same');
                 if (DateTime.now().minute.compareTo(snoozedDT.minute) == 0) {
                   ePrint('snooze minute is also same');
-                  print('at index $i and j');
+                  print('At index $i and j');
                   sharedPreferences.setBool("isDoseTime", true);
                   ////////  new code start here
-                  print(' In MainMenu dosing list $dosingList');
+                  print('In MainMenu dosing list $dosingList');
                   Meducine meducine = Meducine(
                     medicineId: snoozedMed.id, // preData.sId,
                     medicineName: snoozedMed.name, //preData.medicineName,
@@ -498,18 +374,18 @@ class _MainMenuState extends State<MainMenu> with WidgetsBindingObserver {
                     dateRange: snoozedMed.dosetime, // preData.doseTimeDuration,
                   );
                   String jsonn = jsonEncode(meducine);
-                  print(' In MainMenu encoded jsonn $jsonn');
+                  print('In MainMenu encoded jsonn $jsonn');
                   dosingList.add(jsonn);
-                  print(' In MainMenu dosing list $dosingList');
+                  print('In MainMenu dosing list $dosingList');
                   sharedPreferences.setStringList('dosingList', dosingList);
                   // await AppLauncher.openApp(
                   //     androidApplicationId: "com.example.watch_it");
                 } else {
-                  debugPrint(' In MainMenu minute is also not same');
+                  debugPrint(' In MainMenu minute is also not same.');
                   // sharedPreferences.setBool("isDoseTime", false);
                 }
               } else {
-                debugPrint(' In MainMenu hour is not same');
+                debugPrint(' In MainMenu hour is not same.');
                 // sharedPreferences.setBool("isDoseTime", false);
               }
             } else {

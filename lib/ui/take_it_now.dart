@@ -176,19 +176,10 @@ class _TakeItNowState extends State<TakeItNow> {
             ],
           );
         },
-        child: AmbientMode(
-          builder: (context, mode, child) {
-            return Text(
-              'Mode: ${mode == WearMode.active ? 'Active' : 'Ambient'}',
-            );
-          },
-        ),
       ),
     );
   }
 
-  // Future<void> updateStatus(
-  //     String medicineId, String status, String time, int medTimeIndex) async {
   Future<bool?> updateStatus(Meducine meducine) async {
     ePrint('update status has started');
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
@@ -196,7 +187,6 @@ class _TakeItNowState extends State<TakeItNow> {
     print('in updatestatus aftr code in take it now.');
     var url = Uri.parse(
         '${BaseUrl.baseurl}/api/patients/$patientCode/prescriptions/${meducine.medicineId}');
-    // print('what is happening here now for ${meducine.medicinetimeindex} , ${meducine.medicineId} and ${meducine.medicineTime}');
     final response = await patch(url, body: {
       "status": "Taken", // "Skipped",
       "time": meducine.medicineTime, // "2021-11-22 12:12", // "13:30",
@@ -207,7 +197,6 @@ class _TakeItNowState extends State<TakeItNow> {
     if (response.statusCode == 200) {
       print(response.body);
       addLogData(meducine);
-
       return true;
     } else {
       print(response.body);

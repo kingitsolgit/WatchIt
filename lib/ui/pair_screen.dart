@@ -3,10 +3,10 @@ import 'dart:async';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:restart_app/restart_app.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:watch_it/main_menu.dart';
 import 'package:wear/wear.dart';
+
+import 'package:watch_it/ui/main_menu.dart';
 
 class PairScreen extends StatefulWidget {
   final int accesspoint;
@@ -33,26 +33,12 @@ class _PairScreenState extends State<PairScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // Timer(
-    //   Duration(seconds: 10),
-    //   () => Navigator.of(context).pushReplacement(
-    //     new MaterialPageRoute(
-    //       builder: (BuildContext context) {
-    //         return new MainMenu(
-    //           pname: pName,
-    //           pemail: pEmail,
-    //         );
-    //       },
-    //     ),
-    //   ),
-    // );
     getPatientInfo();
     return Scaffold(
       backgroundColor: Color.fromARGB(255, 81, 17, 6),
       body: WatchShape(
         builder: (context, shape, child) {
           return ListView(
-            // mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
               Container(
                 padding: EdgeInsets.symmetric(
@@ -85,19 +71,6 @@ class _PairScreenState extends State<PairScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    // Padding(
-                    //   padding: EdgeInsets.only(bottom: 8.0),
-                    //   child: Text(
-                    //     // 'Doctor: Ameer Moavia',
-                    //     doctor == null ? '' : 'Doctor: $doctor!',
-                    //     textAlign: TextAlign.center,
-                    //     style: TextStyle(
-                    //       fontSize: 14,
-                    //       color: Colors.white,
-                    //       fontWeight: FontWeight.bold,
-                    //     ),
-                    //   ),
-                    // ),
                     Text(
                       pName == null ? '' : pName!,
                       // 'John Doe',
@@ -126,7 +99,6 @@ class _PairScreenState extends State<PairScreen> {
                   vertical: 0,
                   horizontal: 25,
                 ),
-                // height: Get.height,
                 width: Get.width,
                 color: Color.fromARGB(255, 81, 17, 6),
                 child: Column(
@@ -138,12 +110,6 @@ class _PairScreenState extends State<PairScreen> {
                       width: 35,
                       alignment: Alignment.center,
                       child: Image.asset('assets/images/pair.png'),
-                      // child: Icon(
-                      //   Icons.link_rounded,
-                      // ),
-                      // child: Image.network(
-                      //   'http://cdn.onlinewebfonts.com/svg/img_519173.png',
-                      // ),
                     ),
                     Text(
                       tr('successfully paired') +
@@ -158,16 +124,14 @@ class _PairScreenState extends State<PairScreen> {
                     widget.accesspoint == 0
                         ? IconButton(
                             onPressed: () {
-                              Restart();
                               // Restart.restartApp();
                               Navigator.of(context).pushReplacement(
                                 new MaterialPageRoute(
                                   builder: (BuildContext context) {
                                     return new MainMenu(
-                                      pname: pName,
-                                      pemail: pEmail,
-                                      pcode: pCode
-                                    );
+                                        pname: pName,
+                                        pemail: pEmail,
+                                        pcode: pCode);
                                   },
                                 ),
                               );

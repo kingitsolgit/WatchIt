@@ -1,10 +1,7 @@
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_ringtone_player/flutter_ringtone_player.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:watch_it/notification_time.dart';
-// import 'package:watch_it/pair.dart';
 import 'package:wear/wear.dart';
 
 class SnoozeTime extends StatefulWidget {
@@ -16,10 +13,6 @@ class SnoozeTime extends StatefulWidget {
 }
 
 class _SnoozeTimeState extends State<SnoozeTime> {
-  // bool fiveSelected = true;
-  // bool tenSelected = false;
-  // bool fifteenSelected = false;
-
   int? durationIndex = 0;
 
   WearShape? nShape;
@@ -179,18 +172,13 @@ class SnoozeTimeButton extends StatelessWidget {
         child: Row(
           children: [
             CircleAvatar(
-                radius: 12,
-                backgroundColor: Colors.grey.shade800,
-                child: Image.asset(
-                  'assets/images/$img',
-                  scale: 4,
-                )
-                // Icon(
-                //   icon,
-                //   color: Colors.white,
-                //   size: 15,
-                // ),
-                ),
+              radius: 12,
+              backgroundColor: Colors.grey.shade800,
+              child: Image.asset(
+                'assets/images/$img',
+                scale: 4,
+              ),
+            ),
             SizedBox(
               width: 10,
             ),

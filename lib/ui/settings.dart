@@ -1,15 +1,15 @@
-import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:watch_it/account.dart';
-import 'package:watch_it/main_menu.dart';
-import 'package:watch_it/notification_time.dart';
-import 'package:watch_it/pair_screen.dart';
-import 'package:watch_it/snooze_time.dart';
+import 'package:watch_it/ui/languages.dart';
 import 'package:wear/wear.dart';
 
-import './languages.dart';
+import 'package:watch_it/ui/account.dart';
+import 'package:watch_it/ui/notification_time.dart';
+import 'package:watch_it/ui/pair_screen.dart';
+import 'package:watch_it/ui/snooze_time.dart';
+
 
 class Settings extends StatelessWidget {
   const Settings({Key? key}) : super(key: key);
@@ -145,12 +145,6 @@ class Settings extends StatelessWidget {
 
     Get.offAll(AccountScreen());
 
-    // Navigator.pushReplacement(
-    //   context,
-    //   MaterialPageRoute(
-    //     builder: (context) => new AccountScreen(),
-    //   ),
-    // );
   }
 }
 

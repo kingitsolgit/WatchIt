@@ -1,40 +1,31 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:isolate';
 
 import 'package:android_alarm_manager/android_alarm_manager.dart';
 import 'package:app_launcher/app_launcher.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wear/wear.dart';
 
-import 'package:watch_it/account.dart';
-import 'package:watch_it/languages.dart';
 import 'package:watch_it/links/baserurl.dart';
-import 'package:watch_it/logs.dart';
-import 'package:watch_it/main_menu.dart';
-import 'package:watch_it/medications.dart';
 import 'package:watch_it/model/eprint.dart';
 import 'package:watch_it/model/meducine.dart';
 import 'package:watch_it/model/prescription.dart';
 import 'package:watch_it/model/snoozedmedicine.dart';
-import 'package:watch_it/model/statics.dart';
-import 'package:watch_it/notification_time.dart';
 import 'package:watch_it/provider/languageprovider.dart';
-import 'package:watch_it/services/apidata.dart';
-import 'package:watch_it/settings.dart';
-import 'package:watch_it/snooze_confirm.dart';
-import 'package:watch_it/snooze_time.dart';
-import 'package:watch_it/take_it_now.dart';
-
-void hitMeicationAPIRecursively() {
-  ApiData.getData();
-}
+import 'package:watch_it/ui/account.dart';
+import 'package:watch_it/ui/languages.dart';
+import 'package:watch_it/ui/logs.dart';
+import 'package:watch_it/ui/main_menu.dart';
+import 'package:watch_it/ui/notification_time.dart';
+import 'package:watch_it/ui/settings.dart';
+import 'package:watch_it/ui/snooze_confirm.dart';
+import 'package:watch_it/ui/snooze_time.dart';
+import 'package:watch_it/ui/take_it_now.dart';
 
 Future<void> getMedicationAndSaveIt() async {
   SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
@@ -134,7 +125,6 @@ getAndCheck() async {
               debugPrint('In Main.dart: time is also same');
               ePrint('In Main.dart: at index $i and $j');
               sharedPreferences.setBool("isDoseTime", true);
-              Parameters.isDozeTime = true;
               Meducine meducine = Meducine(
                 medicineId: preData.sId,
                 medicineName: preData.medicineName,
@@ -310,8 +300,6 @@ getAndCheck() async {
 }
 
 Future<void> main() async {
-  // WidgetsFlutterBinding.ensureInitialized();
-  // FlutterBackgroundService.initialize(onStart);
   WidgetsFlutterBinding.ensureInitialized();
   Provider.debugCheckInvalidValueType = null;
   final int alarmID = 0;
@@ -346,61 +334,9 @@ Future<void> main() async {
       ],
       path: "assets/locals",
       saveLocale: true,
-      child: screens[screenindex], // MyApp(), // MyAlertApp(),
+      child: screens[screenindex],
     ),
   );
-  // runApp(MyApp());
-}
-
-void onStart() {
-  WidgetsFlutterBinding.ensureInitialized();
-  final service = FlutterBackgroundService();
-  service.onDataReceived.listen((event) {
-    if (event!["action"] == "setAsForeground") {
-      service.setForegroundMode(true);
-      return;
-    }
-
-    if (event["action"] == "setAsBackground") {
-      service.setForegroundMode(false);
-      service.setNotificationInfo(title: 'Watch It is working in background');
-    }
-
-    if (event["action"] == "stopService") {
-      service.stopBackgroundService();
-    }
-  });
-
-  // bring to foreground
-  service.setForegroundMode(true);
-  Timer.periodic(Duration(seconds: 50), (timer) async {
-    if (!(await service.isServiceRunning())) timer.cancel();
-
-    //   get dose time
-    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-    String? doseTime = sharedPreferences.getString("nextDoseTime");
-    // == null
-    //     ? "2:50"
-    //     : sharedPreferences.getString("nextDoseTime");
-    print('In servise dosetime $doseTime');
-    bool? isDoseTime = sharedPreferences.getBool("isDoseTime");
-    print('In servise dosetime $isDoseTime');
-
-    service.setNotificationInfo(
-      title: "Watch IT",
-      content:
-          "Your Next Dose Time is $doseTime", //${Duration(hours: 13, minutes: 15)}",
-      // content: "Updated at ${DateTime.now()}",
-    );
-
-    service.sendData(
-      {
-        // "current_date": DateTime.now().toIso8601String(),
-        "dose_time":
-            DateTime.now().add(Duration(minutes: 15)).toIso8601String(),
-      },
-    );
-  });
 }
 
 class MyApp extends StatefulWidget {
@@ -431,7 +367,6 @@ class _MyAppState extends State<MyApp> {
           // PairScreen.id: (context) => PairScreen(),
           MainMenu.id: (context) => MainMenu(),
           Settings.id: (context) => Settings(),
-          Medications.id: (context) => Medications(),
           Logs.id: (context) => Logs(),
           NotificationTime.id: (context) => NotificationTime(),
           SnoozeConfirm.id: (context) => SnoozeConfirm(),
@@ -444,7 +379,6 @@ class _MyAppState extends State<MyApp> {
     );
   }
 }
-
 ////////////// Splash Screen ////////////////////////////////////
 
 class SplashScreen extends StatefulWidget {
@@ -509,13 +443,11 @@ class _SplashScreenState extends State<SplashScreen> {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     String? sllang = sharedPreferences.getString("apilang");
     isPaired = sharedPreferences.getBool("isPaired");
-    // print('after pair');
     if (isPaired != null && isPaired == true) {
       pName = sharedPreferences.getString('p_name');
       pEmail = sharedPreferences.getString('p_email');
       pCode = sharedPreferences.getString('p_code');
     }
-    // print('after if condition');
 
     Timer(
       Duration(seconds: 6),
@@ -535,7 +467,7 @@ class _SplashScreenState extends State<SplashScreen> {
         ),
       ),
     );
-    print(sllang);
+    // print(sllang);
     if (sllang != null) {
       setState(() {
         selectedlanguage = sllang;

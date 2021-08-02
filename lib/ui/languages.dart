@@ -1,16 +1,12 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
-import 'package:restart_app/restart_app.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:easy_localization/easy_localization.dart';
-import 'package:watch_it/account.dart';
-import 'package:watch_it/model/eprint.dart';
-import 'package:watch_it/notification_time.dart';
-import 'package:watch_it/pair_screen.dart';
 import 'package:wear/wear.dart';
 
-import 'provider/languageprovider.dart';
+import 'package:watch_it/provider/languageprovider.dart';
+import 'package:watch_it/ui/account.dart';
 
 class Languages extends StatefulWidget {
   final int accesspoint;
@@ -189,34 +185,21 @@ class _LanguagesState extends State<Languages> {
     print(languages[langindex]);
     setState(() {
       if (langindex == 0) {
-        setState(() {
-          context.setLocale(Locale("en", "US"));
-          sharedPreferences.setString("apilang", "en");
-          language.setleanguage("en");
-        });
-        // context.setLocale(Locale("en", "US"));
-        // sharedPreferences.setString("apilang", "en");
-        // language.setleanguage("en");
+        context.setLocale(Locale("en", "US"));
+        sharedPreferences.setString("apilang", "en");
+        language.setleanguage("en");
       } else if (langindex == 1) {
         context.setLocale(Locale("el", "GR"));
-        // debugPrint('context.setLocale(Locale("el", "GR"));');
         sharedPreferences.setString("apilang", "el");
-        // ePrint('sharedPreferences.setString("apilang", "el");');
         language.setleanguage("el");
-        // debugPrint('language.setleanguage("el")');
       } else if (langindex == 2) {
         context.setLocale(Locale("de", "GE"));
         language.setleanguage("de");
         sharedPreferences.setString("apilang", "de");
       } else if (langindex == 3) {
-        setState(() {
-          context.setLocale(Locale("fr", "FR"));
-          sharedPreferences.setString("apilang", "fr");
-          language.setleanguage("fr");
-        });
-        // context.setLocale(Locale("fr", "FR"));
-        // sharedPreferences.setString("apilang", "fr");
-        // language.setleanguage("fr");
+        context.setLocale(Locale("fr", "FR"));
+        sharedPreferences.setString("apilang", "fr");
+        language.setleanguage("fr");
       }
     });
     sharedPreferences.setBool("languageselected", true);
@@ -225,9 +208,6 @@ class _LanguagesState extends State<Languages> {
       Navigator.pushReplacement(
           context, MaterialPageRoute(builder: (context) => AccountScreen()));
     }
-    //  else {
-    //   Navigator.pop(context);
-    // }
   }
 
   void setIndex(int i) {

@@ -9,30 +9,27 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wear/wear.dart';
 
 import 'package:watch_it/links/baserurl.dart';
-import 'package:watch_it/medications.dart';
 import 'package:watch_it/model/eprint.dart';
 import 'package:watch_it/model/meducine.dart';
 import 'package:watch_it/model/prescription.dart';
 
-class Medicat extends StatefulWidget {
-  const Medicat({Key? key}) : super(key: key);
+class MedicationList extends StatefulWidget {
+  const MedicationList({Key? key}) : super(key: key);
 
   @override
-  _MedicatState createState() => _MedicatState();
+  _MedicationListState createState() => _MedicationListState();
 }
 
-class _MedicatState extends State<Medicat> {
-  String? pcode;
+class _MedicationListState extends State<MedicationList> {
+  String? pcode; //  p_code is patient code
 
   getAndSet() async {
     debugPrint('Call back start time ${DateTime.now()}');
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-
     String? pcode = sharedPreferences.getString('p_code')!;
     if (pcode != null) {
       var url =
           Uri.parse('${BaseUrl.baseurl}/api/patients/${pcode}/prescriptions');
-      // "http://watchit-project.eu/api/patients/$pcode/prescriptions");
       final response = await get(url);
       if (response.statusCode == 200) {
         print(response.body);
@@ -40,8 +37,6 @@ class _MedicatState extends State<Medicat> {
 
         var responc = Prescription.fromJson(jsonDecode(response.body));
         // var responc = Prescription.fromJson(jsonDecode(akbarPrescription!));
-
-        ////////////////
         ///////////code start for next doses
         List<String> nextDoseList = [];
         sharedPreferences.remove('nextDoseList');
@@ -193,13 +188,6 @@ class _MedicatState extends State<Medicat> {
                     );
                   }
                 },
-                // child: AmbientMode(
-                //   builder: (context, mode, child) {
-                //     return Text(
-                //       'Mode: ${mode == WearMode.active ? 'Active' : 'Ambient'}',
-                //     );
-                //   },
-                // ),
               ),
             );
           } else if (snapshot.hasError) {
@@ -218,45 +206,6 @@ class _MedicatState extends State<Medicat> {
         },
       ),
     );
-  }
-
-  mediTimeText(List<String>? thisMediTime) {
-    String t = '';
-    switch (thisMediTime!.length) {
-      case 1:
-        t = 'Daily at ${thisMediTime[0]}';
-        break;
-      case 2:
-        t = 'Twice a day at ${thisMediTime[0]} and ${thisMediTime[1]}';
-        break;
-      case 3:
-        t = 'In a day at ${thisMediTime[0]}, ${thisMediTime[1]} and ${thisMediTime[2]}';
-        break;
-      case 4:
-        t = 'In a day at ${thisMediTime[0]}, ${thisMediTime[1]}, ${thisMediTime[2]} and ${thisMediTime[3]}';
-        break;
-      case 5:
-        t = 'In a day at ${thisMediTime[0]}, ${thisMediTime[1]}, ${thisMediTime[2]}, ${thisMediTime[3]} and ${thisMediTime[4]}';
-        break;
-      case 6:
-        t = 'In a day at ${thisMediTime[0]}, ${thisMediTime[1]}, ${thisMediTime[2]}, ${thisMediTime[3]}, ${thisMediTime[4]} and ${thisMediTime[5]}';
-        break;
-      case 7:
-        t = 'In a day at ${thisMediTime[0]}, ${thisMediTime[1]}, ${thisMediTime[2]}, ${thisMediTime[3]}, ${thisMediTime[4]}, ${thisMediTime[5]} and ${thisMediTime[6]}';
-        break;
-      case 8:
-        t = 'In a day at ${thisMediTime[0]}, ${thisMediTime[1]}, ${thisMediTime[2]}, ${thisMediTime[3]}, ${thisMediTime[4]}, ${thisMediTime[5]}, ${thisMediTime[6]} and ${thisMediTime[7]}';
-        break;
-      case 9:
-        t = 'In a day at ${thisMediTime[0]}, ${thisMediTime[1]}, ${thisMediTime[2]}, ${thisMediTime[3]}, ${thisMediTime[4]}, ${thisMediTime[5]}, ${thisMediTime[6]}, ${thisMediTime[7]} and ${thisMediTime[8]}';
-        break;
-      case 10:
-        t = 'In a day at ${thisMediTime[0]}, ${thisMediTime[1]}, ${thisMediTime[2]}, ${thisMediTime[3]}, ${thisMediTime[4]}, ${thisMediTime[5]}, ${thisMediTime[6]}, ${thisMediTime[7]}, ${thisMediTime[8]}  and ${thisMediTime[9]}';
-
-        break;
-      default:
-    }
-    return t;
   }
 
   Future<void> setNextDoses(var body) async {
