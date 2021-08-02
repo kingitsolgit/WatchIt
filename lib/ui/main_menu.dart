@@ -239,7 +239,7 @@ class _MainMenuState extends State<MainMenu> with WidgetsBindingObserver {
     if (sharedPreferences.getString('p_code') != null) {
       String? pcode = sharedPreferences.getString('p_code')!;
       var url =
-          Uri.parse('${BaseUrl.baseurl}/api/patients/${pcode}/prescriptions');
+          Uri.parse('${BaseUrl.baseurl}/api/patients/$pcode/prescriptions');
       final response = await get(url);
       if (response.statusCode == 200) {
         ePrint(response.body);
@@ -339,15 +339,15 @@ class _MainMenuState extends State<MainMenu> with WidgetsBindingObserver {
         ///////////////////code ending for next doses
 
         /////////////////////////////////for snooze list checking
-
+        ePrint('Outside of snoozed list checking');
         if (sharedPreferences.getStringList('snoozedList') != null) {
           List<String>? snoozedList =
               sharedPreferences.getStringList('snoozedList');
           ePrint('In MainMenu list assigned of ${snoozedList!.length} length');
           for (var i = 0; i < snoozedList.length; i++) {
-            ePrint('In MainMenu snooz loop started////////////////////');
+            ePrint('In MainMenu snooz loop started');
             ePrint('In MainMenu list obj $i is ${snoozedList[i]}');
-            Map<String, dynamic> dosingMaplistobj = jsonDecode(snoozedList[0]);
+            Map<String, dynamic> dosingMaplistobj = jsonDecode(snoozedList[i]);
             var snoozedMed = SnoozedMedicine.fromJson(dosingMaplistobj);
             // ePrint('In MainMenu snoozedmedicinename: ${snoozedMed.name}, snoozedmedicinetime:  ${snoozedMed.dosetime}');
             DateFormat newdateFormating = DateFormat("dd-MM-yyyy HH:mm");
@@ -359,37 +359,35 @@ class _MainMenuState extends State<MainMenu> with WidgetsBindingObserver {
                 ePrint('In MainMenu snooze hour is same');
                 if (DateTime.now().minute.compareTo(snoozedDT.minute) == 0) {
                   ePrint('snooze minute is also same');
-                  print('At index $i and j');
+                  ePrint('At index $i and j');
                   sharedPreferences.setBool("isDoseTime", true);
                   ////////  new code start here
                   print('In MainMenu dosing list $dosingList');
                   Meducine meducine = Meducine(
-                    medicineId: snoozedMed.id, // preData.sId,
-                    medicineName: snoozedMed.name, //preData.medicineName,
-                    dailyDosePill: snoozedMed.routine, //preData.dailyDosePill,
-                    medicineTime: snoozedMed
-                        .dosetime, //preData.medicineTime![j].date! + ' ' + preData.medicineTime![j].time!,
-                    medicinetimeindex:
-                        snoozedMed.timeIndex, //preData.medicineTime![j].id!,
-                    dateRange: snoozedMed.dosetime, // preData.doseTimeDuration,
+                    medicineId: snoozedMed.id,
+                    medicineName: snoozedMed.name,
+                    dailyDosePill: snoozedMed.routine,
+                    medicineTime: snoozedMed.dosetime,
+                    medicinetimeindex: snoozedMed.timeIndex,
+                    dateRange: snoozedMed.dosetime,
+                    isSnoozed: snoozedMed.isSnoozed,
+                    snoozedIteration: snoozedMed.snoozedIteration,
                   );
                   String jsonn = jsonEncode(meducine);
-                  print('In MainMenu encoded jsonn $jsonn');
+                  // print('In MainMenu encoded jsonn $jsonn');
                   dosingList.add(jsonn);
-                  print('In MainMenu dosing list $dosingList');
+                  ePrint('In MainMenu dosing list $dosingList');
                   sharedPreferences.setStringList('dosingList', dosingList);
                   // await AppLauncher.openApp(
                   //     androidApplicationId: "com.example.watch_it");
                 } else {
-                  debugPrint(' In MainMenu minute is also not same.');
-                  // sharedPreferences.setBool("isDoseTime", false);
+                  ePrint('In MainMenu minute is also not same.');
                 }
               } else {
-                debugPrint(' In MainMenu hour is not same.');
-                // sharedPreferences.setBool("isDoseTime", false);
+                ePrint('In MainMenu hour is not same.');
               }
             } else {
-              ePrint(' In MainMenu ${snoozedMed.dosetime}');
+              ePrint('In MainMenu ${snoozedMed.dosetime}');
               SharedPreferences sharedPreferences =
                   await SharedPreferences.getInstance();
               String patientCode = sharedPreferences.getString('p_code')!;
@@ -414,11 +412,11 @@ class _MainMenuState extends State<MainMenu> with WidgetsBindingObserver {
           //   Get.offAll(NotificationTime());
           // } else {}
         } else {
-          ePrint('  In MainMenu  equal null');
+          ePrint('In MainMenu shared snoozed list equal null');
         }
       }
     } else {
-      ePrint(' In MainMenu pcode is null');
+      ePrint('In MainMenu pcode is null');
     }
     if (dosingList.isNotEmpty) {
       Get.offAll(NotificationTime());

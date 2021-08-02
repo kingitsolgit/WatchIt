@@ -176,7 +176,6 @@ class SnoozeConfirm extends StatelessWidget {
   static List<String>? snoozedList;
 
   Future<void> snoozeNow(BuildContext context) async {
-    // Timer.periodic(Duration(minutes: 1), (val) {});
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     int? n = duration;
 
@@ -190,20 +189,21 @@ class SnoozeConfirm extends StatelessWidget {
     for (var i = 0; i < medicatedList!.length; i++) {
       Map<String, dynamic> dosingMaplistobj = jsonDecode(medicatedList![i]);
       Meducine meducine = Meducine.fromJson(dosingMaplistobj);
+      ePrint(meducine.medicineId!);
       DateFormat dateFormating =
           DateFormat("dd-MM-yyyy HH:mm", context.locale.toString());
       DateTime myDT = dateFormating.parse(meducine.medicineTime!);
-      myDT.add(Duration(minutes: n == null ? 10 : n));
-      ePrint('n============== ${n == null ? 10 : n} and my DateTime is $myDT');
+      DateTime snoozedDT = myDT.add(Duration(minutes: n == null ? 10 : n));
+      ePrint('n==  ${n == null ? 10 : n} and my snoozedTime is $snoozedDT');
       SnoozedMedicine snoozedMedicine = SnoozedMedicine(
-        id: meducine.medicineId,
+        id: meducine.medicineId!,
         name: meducine.medicineName,
-        dosetime: myDT.toString(), // meducine.medicineTime,
+        dosetime: snoozedDT.toString(),
         routine: meducine.dailyDosePill,
         timeIndex: meducine.medicinetimeindex,
         isSnoozed: true,
-        snoozedDurationMins: duration == null ? 10 : duration,
         snoozedIteration: 0,
+        snoozedDurationMins: duration == null ? 10 : duration,
       );
       // snoozedList!.add(medicatedList![i]);
       String snoozeString = jsonEncode(snoozedMedicine);

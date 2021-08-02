@@ -301,6 +301,7 @@ class _NotificationTimeState extends State<NotificationTime> {
     }
     Timer(Duration(seconds: 50), () {
       FlutterRingtonePlayer.stop();
+      
     });
   }
 

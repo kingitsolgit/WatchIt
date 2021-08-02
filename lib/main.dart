@@ -44,17 +44,16 @@ getAndCheck() async {
       DateFormat dateFormating = DateFormat("dd-MM-yyyy HH:mm");
       List<String> dosingList = [];
       for (var i = 0; i < responc.data!.length; i++) {
-        var dur = responc.data![i].doseTimeDuration;
+        Data preData = responc.data![i];
+        // var dur = responc.data![i].doseTimeDuration;
         // print('Duration is $dur');
         List<MedicineTime>? medicineTime = responc.data![i].medicineTime;
         for (var j = 0; j < medicineTime!.length; j++) {
           String timeString =
               medicineTime[j].date! + ' ' + medicineTime[j].time!;
-          Data preData = responc.data![i];
           DateTime myDT = dateFormating.parse(timeString);
           myDT.subtract(Duration(minutes: 1));
           ePrint('In Main.dart: myDT $myDT');
-
           // if (DateTime.now().hour.compareTo(myDT.hour) == 0) {
           DateTime now = DateTime.now();
           if (now.year == myDT.year &&
@@ -137,7 +136,7 @@ getAndCheck() async {
       }
       //////////////////code ending for next doses
       //////for snooze list checking
-
+      ePrint('Outside of snoozed list checking');
       if (sharedPreferences.getStringList('snoozedList') != null) {
         // ePrint('In Main.dart: not equal null');
         List<String>? snoozedList =
@@ -146,10 +145,9 @@ getAndCheck() async {
         for (var i = 0; i < snoozedList.length; i++) {
           ePrint('In Main.dart: snooz loop started////////////////////');
           ePrint('In Main.dart: list obj $i is ${snoozedList[i]}');
-          Map<String, dynamic> dosingMaplistobj = jsonDecode(snoozedList[0]);
+          Map<String, dynamic> dosingMaplistobj = jsonDecode(snoozedList[i]);
           var snoozedMed = SnoozedMedicine.fromJson(dosingMaplistobj);
-          ePrint(
-              'In Main.dart: snoozedmedicinename: ${snoozedMed.name}, snoozedmedicinetime:  ${snoozedMed.dosetime}');
+          // ePrint('In Main.dart: snoozedmedicinename: ${snoozedMed.name}, snoozedmedicinetime:  ${snoozedMed.dosetime}');
           DateFormat newdateFormating = DateFormat("dd-MM-yyyy HH:mm");
           DateTime snoozedDT = newdateFormating.parse(snoozedMed.dosetime!);
 
@@ -171,6 +169,8 @@ getAndCheck() async {
                   medicineTime: snoozedMed.dosetime,
                   medicinetimeindex: snoozedMed.timeIndex,
                   dateRange: snoozedMed.dosetime,
+                  isSnoozed: snoozedMed.isSnoozed,
+                  snoozedIteration: snoozedMed.snoozedIteration,
                 );
                 String jsonn = jsonEncode(meducine);
                 print('In Main.dart: snoozed encoded $jsonn');
@@ -211,7 +211,7 @@ getAndCheck() async {
           }
         }
       } else {
-        ePrint('In Main.dart: equal null');
+        ePrint('In Main.dart:shared snoozedlist equal null');
       }
       /////////////
       if (dosingList.isNotEmpty) {

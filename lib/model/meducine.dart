@@ -5,6 +5,8 @@ class Meducine {
   String? medicineTime;
   int? medicinetimeindex;
   String? dateRange;
+  bool? isSnoozed;
+  int? snoozedIteration;
 
   Meducine({
     this.medicineId,
@@ -13,6 +15,8 @@ class Meducine {
     this.medicineTime,
     this.medicinetimeindex,
     this.dateRange,
+    this.snoozedIteration,
+    this.isSnoozed,
   });
 
   Meducine.fromJson(Map<String, dynamic> json) {
@@ -22,6 +26,8 @@ class Meducine {
     medicineTime = json['medicineTime'];
     medicinetimeindex = json['medicinetimeindex'];
     dateRange = json['dateRange'];
+    isSnoozed = json['isSnoozed'];
+    snoozedIteration = json['snoozedIteration'];
   }
 
   Map<String, dynamic> toJson() {
@@ -32,6 +38,8 @@ class Meducine {
     data['medicineTime'] = this.medicineTime;
     data['medicinetimeindex'] = this.medicinetimeindex;
     data['dateRange'] = this.dateRange;
+    data['isSnoozed'] = this.isSnoozed;
+    data['snoozedIteration'] = this.snoozedIteration;
     return data;
   }
 }
