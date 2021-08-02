@@ -3,10 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:watch_it/ui/account.dart';
+import 'package:watch_it/ui/pair_screen.dart';
 import 'package:wear/wear.dart';
 
 import 'package:watch_it/provider/languageprovider.dart';
-import 'package:watch_it/ui/account.dart';
 
 class Languages extends StatefulWidget {
   final int accesspoint;
@@ -19,7 +20,6 @@ class Languages extends StatefulWidget {
 
 class _LanguagesState extends State<Languages> {
   int langindex = 0;
-  // var language;
 
   List<String> languages = [
     "English",
@@ -34,9 +34,6 @@ class _LanguagesState extends State<Languages> {
   @override
   void initState() {
     super.initState();
-    // if (isLangSelected==true&&widget.accesspoint == 0) {
-
-    // }
     getData();
   }
 
@@ -63,27 +60,14 @@ class _LanguagesState extends State<Languages> {
         setIndex(3);
         break;
       default:
-      // print('Default English');
-      // setIndex(0);
-      // break;
+        print('Default English');
+        setIndex(0);
+        break;
     }
-    // if (sllang != null) {
-    //   setState(() {
-    //     selectedlanguag = sllang;
-    //   });
-    // } else {
-    //   setState(() {
-    //     selectedlanguag = "en";
-    //   });
-    // }
-    // print('and then ' + selectedlanguage.toString());
-    // var setlanguage = Provider.of<LanguageProvider>(context, listen: false);
-    // setlanguage.setleanguage(selectedlanguage!);
   }
 
   @override
   Widget build(BuildContext context) {
-    // language = Provider.of<LanguageProvider>(context, listen: false);
     return Provider<LanguageProvider>(
       create: (_) => LanguageProvider(),
       child: Scaffold(
@@ -206,7 +190,7 @@ class _LanguagesState extends State<Languages> {
     // Restart.restartApp();
     if (widget.accesspoint == 0) {
       Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => AccountScreen()));
+          context, MaterialPageRoute(builder: (context) => PairScreen()));
     }
   }
 

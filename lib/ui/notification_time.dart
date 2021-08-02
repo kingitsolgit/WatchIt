@@ -6,22 +6,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter_ringtone_player/flutter_ringtone_player.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:watch_it/ui/account.dart';
 import 'package:wear/wear.dart';
 
 import 'package:watch_it/main.dart';
 import 'package:watch_it/model/eprint.dart';
 import 'package:watch_it/model/meducine.dart';
 import 'package:watch_it/model/snoozedmedicine.dart';
-import 'package:watch_it/ui/account.dart';
 import 'package:watch_it/ui/logs.dart';
 import 'package:watch_it/ui/main_menu.dart';
 import 'package:watch_it/ui/settings.dart';
 import 'package:watch_it/ui/snooze_confirm.dart';
-import 'package:watch_it/ui/snooze_time.dart';
+import 'package:watch_it/ui/snooze_duration.dart';
 import 'package:watch_it/ui/take_it_now.dart';
 
 class NotificationTime extends StatefulWidget {
-  //const NotificationTime{Key? key}) : super(key: key);
   static String id = 'notification_time';
 
   @override
@@ -30,7 +29,6 @@ class NotificationTime extends StatefulWidget {
 
 class _NotificationTimeState extends State<NotificationTime> {
   String? selectedlanguage;
-  //  pillName;
   String? intervalString = 'ten';
   final int alarmID = 0;
   int? duration;
@@ -42,18 +40,12 @@ class _NotificationTimeState extends State<NotificationTime> {
   @override
   void initState() {
     super.initState();
-    // await AndroidAlarmManager.initialize();
-    // await AndroidAlarmManager.periodic(
-    //     Duration(minutes: 2), alarmID, playAlarm);
-
-    // getSnoozedData();
     getData();
     ringTheBell();
   }
 
   Future<void> getData() async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-    // pillName = sharedPreferences.getString('currentMediName');
     currentMedicines = sharedPreferences.getStringList('currentMedicines');
     String? sllang = sharedPreferences.getString("apilang");
     isDoseTime = sharedPreferences.getBool('isDoseTime');
@@ -89,9 +81,6 @@ class _NotificationTimeState extends State<NotificationTime> {
         setInterval('ten');
         print('10 is default');
     }
-    // print('and then ' + selectedlanguage.toString());
-    // var setlanguage = Provider.of<LanguageProvider>(context, listen: false);
-    // setlanguage.setleanguage(selectedlanguage!);
     if (isDoseTime != null && isDoseTime == true) {
       getMedicatedData();
       ePrint('its a dose time');
@@ -115,18 +104,15 @@ class _NotificationTimeState extends State<NotificationTime> {
       supportedLocales: context.supportedLocales,
       locale: context.locale,
       routes: {
-        // PairScreen.id: (context) => PairScreen(),
         TakeItNow.id: (context) => TakeItNow(),
         SplashScreen.id: (context) => SplashScreen(),
-        AccountScreen.id: (context) => AccountScreen(),
         MainMenu.id: (context) => MainMenu(),
         Settings.id: (context) => Settings(),
         Logs.id: (context) => Logs(),
         NotificationTime.id: (context) => NotificationTime(),
         SnoozeConfirm.id: (context) => SnoozeConfirm(),
-        SnoozeTime.id: (context) => SnoozeTime(),
+        SnoozeDuration.id: (context) => SnoozeDuration(),
         TakeItNow.id: (context) => TakeItNow(),
-        // Languages.id: (context) => Languages(),
       },
       home: Scaffold(
         body: WatchShape(
@@ -272,9 +258,6 @@ class _NotificationTimeState extends State<NotificationTime> {
                                         'assets/images/$intervalString.png',
                                         scale: 2.5,
                                       ),
-                                      // Icon(
-                                      //   Icons.snooze_outlined,
-                                      // ),
                                     ),
                                     SizedBox(
                                       width: 10,
@@ -319,7 +302,6 @@ class _NotificationTimeState extends State<NotificationTime> {
     Timer(Duration(seconds: 50), () {
       FlutterRingtonePlayer.stop();
     });
-    // FlutterRingtonePlayer.stop();
   }
 
   String? dosesNames = '';

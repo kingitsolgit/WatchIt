@@ -5,24 +5,22 @@ INJECTED from C:\Users\kings\Desktop\Mukhtar\watch_it\android\app\src\main\Andro
 INJECTED from C:\Users\kings\Desktop\Mukhtar\watch_it\android\app\src\main\AndroidManifest.xml:1:1-70:12
 INJECTED from C:\Users\kings\Desktop\Mukhtar\watch_it\android\app\src\main\AndroidManifest.xml:1:1-70:12
 MERGED from C:\Users\kings\Desktop\Mukhtar\watch_it\android\app\src\main\AndroidManifest.xml:1:1-70:12
-MERGED from [:shared_preferences] C:\Users\kings\Desktop\Mukhtar\watch_it\build\shared_preferences\intermediates\library_manifest\debug\AndroidManifest.xml:2:1-7:12
-MERGED from [:wear] C:\Users\kings\Desktop\Mukhtar\watch_it\build\wear\intermediates\library_manifest\debug\AndroidManifest.xml:2:1-20:12
-MERGED from [:path_provider] C:\Users\kings\Desktop\Mukhtar\watch_it\build\path_provider\intermediates\library_manifest\debug\AndroidManifest.xml:2:1-7:12
 MERGED from [:flutter_background_service] C:\Users\kings\Desktop\Mukhtar\watch_it\build\flutter_background_service\intermediates\library_manifest\debug\AndroidManifest.xml:2:1-22:12
-MERGED from [:device_info] C:\Users\kings\Desktop\Mukhtar\watch_it\build\device_info\intermediates\library_manifest\debug\AndroidManifest.xml:2:1-7:12
+MERGED from [:shared_preferences] C:\Users\kings\Desktop\Mukhtar\watch_it\build\shared_preferences\intermediates\library_manifest\debug\AndroidManifest.xml:2:1-7:12
 MERGED from [:flutter_ringtone_player] C:\Users\kings\Desktop\Mukhtar\watch_it\build\flutter_ringtone_player\intermediates\library_manifest\debug\AndroidManifest.xml:2:1-7:12
-MERGED from [:flutter_native_timezone] C:\Users\kings\Desktop\Mukhtar\watch_it\build\flutter_native_timezone\intermediates\library_manifest\debug\AndroidManifest.xml:2:1-9:12
+MERGED from [:wear] C:\Users\kings\Desktop\Mukhtar\watch_it\build\wear\intermediates\library_manifest\debug\AndroidManifest.xml:2:1-20:12
 MERGED from [:fluttertoast] C:\Users\kings\Desktop\Mukhtar\watch_it\build\fluttertoast\intermediates\library_manifest\debug\AndroidManifest.xml:2:1-7:12
+MERGED from [:path_provider] C:\Users\kings\Desktop\Mukhtar\watch_it\build\path_provider\intermediates\library_manifest\debug\AndroidManifest.xml:2:1-7:12
 MERGED from [:restart_app] C:\Users\kings\Desktop\Mukhtar\watch_it\build\restart_app\intermediates\library_manifest\debug\AndroidManifest.xml:2:1-7:12
 MERGED from [:permission_handler] C:\Users\kings\Desktop\Mukhtar\watch_it\build\permission_handler\intermediates\library_manifest\debug\AndroidManifest.xml:2:1-7:12
 MERGED from [:app_launcher] C:\Users\kings\Desktop\Mukhtar\watch_it\build\app_launcher\intermediates\library_manifest\debug\AndroidManifest.xml:2:1-7:12
 MERGED from [:android_alarm_manager] C:\Users\kings\Desktop\Mukhtar\watch_it\build\android_alarm_manager\intermediates\library_manifest\debug\AndroidManifest.xml:2:1-7:12
 MERGED from [:geolocator] C:\Users\kings\Desktop\Mukhtar\watch_it\build\geolocator\intermediates\library_manifest\debug\AndroidManifest.xml:2:1-7:12
 MERGED from [androidx.wear:wear:1.0.0] C:\Users\kings\.gradle\caches\transforms-2\files-2.1\99a3d4e4d3237f6565d0ce5f5fe84420\wear-1.0.0\AndroidManifest.xml:17:1-22:12
-MERGED from [com.google.android.support:wearable:2.8.1] C:\Users\kings\.gradle\caches\transforms-2\files-2.1\5cea7ea360b76d926b2f8dc9a10e771e\jetified-wearable-2.8.1\AndroidManifest.xml:2:1-15:12
 MERGED from [androidx.legacy:legacy-support-core-ui:1.0.0] C:\Users\kings\.gradle\caches\transforms-2\files-2.1\b69d809a7d56669e263a6dd73fa3f3e0\legacy-support-core-ui-1.0.0\AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.legacy:legacy-support-core-utils:1.0.0] C:\Users\kings\.gradle\caches\transforms-2\files-2.1\fead7ea2e43546ae73f7f9d07ac64f5f\legacy-support-core-utils-1.0.0\AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.localbroadcastmanager:localbroadcastmanager:1.0.0] C:\Users\kings\.gradle\caches\transforms-2\files-2.1\b6c34301107cd06a29fdce8c3ef58e3a\localbroadcastmanager-1.0.0\AndroidManifest.xml:17:1-22:12
+MERGED from [com.google.android.support:wearable:2.8.1] C:\Users\kings\.gradle\caches\transforms-2\files-2.1\5cea7ea360b76d926b2f8dc9a10e771e\jetified-wearable-2.8.1\AndroidManifest.xml:2:1-15:12
 MERGED from [androidx.preference:preference:1.1.1] C:\Users\kings\.gradle\caches\transforms-2\files-2.1\5cacf580e9f0952e279be4b97cdd225c\preference-1.1.1\AndroidManifest.xml:17:1-24:12
 MERGED from [androidx.recyclerview:recyclerview:1.1.0] C:\Users\kings\.gradle\caches\transforms-2\files-2.1\5df89e8088c70e401fb8cfb2812809a3\recyclerview-1.1.0\AndroidManifest.xml:17:1-24:12
 MERGED from [androidx.percentlayout:percentlayout:1.0.0] C:\Users\kings\.gradle\caches\transforms-2\files-2.1\785772d886cdeefb0d0ffdc6cac1c503\percentlayout-1.0.0\AndroidManifest.xml:17:1-22:12
@@ -84,10 +82,10 @@ MERGED from [:flutter_background_service] C:\Users\kings\Desktop\Mukhtar\watch_i
 		ADDED from C:\Users\kings\Desktop\Mukhtar\watch_it\android\app\src\main\AndroidManifest.xml:3:22-78
 uses-permission#android.permission.WAKE_LOCK
 ADDED from C:\Users\kings\Desktop\Mukhtar\watch_it\android\app\src\main\AndroidManifest.xml:4:5-67
-MERGED from [:wear] C:\Users\kings\Desktop\Mukhtar\watch_it\build\wear\intermediates\library_manifest\debug\AndroidManifest.xml:11:5-68
-MERGED from [:wear] C:\Users\kings\Desktop\Mukhtar\watch_it\build\wear\intermediates\library_manifest\debug\AndroidManifest.xml:11:5-68
 MERGED from [:flutter_background_service] C:\Users\kings\Desktop\Mukhtar\watch_it\build\flutter_background_service\intermediates\library_manifest\debug\AndroidManifest.xml:9:5-68
 MERGED from [:flutter_background_service] C:\Users\kings\Desktop\Mukhtar\watch_it\build\flutter_background_service\intermediates\library_manifest\debug\AndroidManifest.xml:9:5-68
+MERGED from [:wear] C:\Users\kings\Desktop\Mukhtar\watch_it\build\wear\intermediates\library_manifest\debug\AndroidManifest.xml:11:5-68
+MERGED from [:wear] C:\Users\kings\Desktop\Mukhtar\watch_it\build\wear\intermediates\library_manifest\debug\AndroidManifest.xml:11:5-68
 	android:name
 		ADDED from C:\Users\kings\Desktop\Mukhtar\watch_it\android\app\src\main\AndroidManifest.xml:4:22-65
 uses-permission#android.permission.VIBRATE
@@ -116,10 +114,10 @@ ADDED from C:\Users\kings\Desktop\Mukhtar\watch_it\android\app\src\main\AndroidM
 		ADDED from C:\Users\kings\Desktop\Mukhtar\watch_it\android\app\src\main\AndroidManifest.xml:10:22-76
 application
 ADDED from C:\Users\kings\Desktop\Mukhtar\watch_it\android\app\src\main\AndroidManifest.xml:12:4-69:19
-MERGED from [:wear] C:\Users\kings\Desktop\Mukhtar\watch_it\build\wear\intermediates\library_manifest\debug\AndroidManifest.xml:14:5-18:19
-MERGED from [:wear] C:\Users\kings\Desktop\Mukhtar\watch_it\build\wear\intermediates\library_manifest\debug\AndroidManifest.xml:14:5-18:19
 MERGED from [:flutter_background_service] C:\Users\kings\Desktop\Mukhtar\watch_it\build\flutter_background_service\intermediates\library_manifest\debug\AndroidManifest.xml:11:5-20:19
 MERGED from [:flutter_background_service] C:\Users\kings\Desktop\Mukhtar\watch_it\build\flutter_background_service\intermediates\library_manifest\debug\AndroidManifest.xml:11:5-20:19
+MERGED from [:wear] C:\Users\kings\Desktop\Mukhtar\watch_it\build\wear\intermediates\library_manifest\debug\AndroidManifest.xml:14:5-18:19
+MERGED from [:wear] C:\Users\kings\Desktop\Mukhtar\watch_it\build\wear\intermediates\library_manifest\debug\AndroidManifest.xml:14:5-18:19
 MERGED from [com.google.android.support:wearable:2.8.1] C:\Users\kings\.gradle\caches\transforms-2\files-2.1\5cea7ea360b76d926b2f8dc9a10e771e\jetified-wearable-2.8.1\AndroidManifest.xml:9:5-13:19
 MERGED from [com.google.android.support:wearable:2.8.1] C:\Users\kings\.gradle\caches\transforms-2\files-2.1\5cea7ea360b76d926b2f8dc9a10e771e\jetified-wearable-2.8.1\AndroidManifest.xml:9:5-13:19
 MERGED from [com.google.android.gms:play-services-location:17.0.0] C:\Users\kings\.gradle\caches\transforms-2\files-2.1\340206bb4856bf61e48bd10632b21882\jetified-play-services-location-17.0.0\AndroidManifest.xml:7:5-20
@@ -224,22 +222,18 @@ uses-sdk
 INJECTED from C:\Users\kings\Desktop\Mukhtar\watch_it\android\app\src\main\AndroidManifest.xml reason: use-sdk injection requested
 INJECTED from C:\Users\kings\Desktop\Mukhtar\watch_it\android\app\src\main\AndroidManifest.xml
 INJECTED from C:\Users\kings\Desktop\Mukhtar\watch_it\android\app\src\main\AndroidManifest.xml
-MERGED from [:shared_preferences] C:\Users\kings\Desktop\Mukhtar\watch_it\build\shared_preferences\intermediates\library_manifest\debug\AndroidManifest.xml:5:5-44
-MERGED from [:shared_preferences] C:\Users\kings\Desktop\Mukhtar\watch_it\build\shared_preferences\intermediates\library_manifest\debug\AndroidManifest.xml:5:5-44
-MERGED from [:wear] C:\Users\kings\Desktop\Mukhtar\watch_it\build\wear\intermediates\library_manifest\debug\AndroidManifest.xml:5:5-44
-MERGED from [:wear] C:\Users\kings\Desktop\Mukhtar\watch_it\build\wear\intermediates\library_manifest\debug\AndroidManifest.xml:5:5-44
-MERGED from [:path_provider] C:\Users\kings\Desktop\Mukhtar\watch_it\build\path_provider\intermediates\library_manifest\debug\AndroidManifest.xml:5:5-44
-MERGED from [:path_provider] C:\Users\kings\Desktop\Mukhtar\watch_it\build\path_provider\intermediates\library_manifest\debug\AndroidManifest.xml:5:5-44
 MERGED from [:flutter_background_service] C:\Users\kings\Desktop\Mukhtar\watch_it\build\flutter_background_service\intermediates\library_manifest\debug\AndroidManifest.xml:5:5-44
 MERGED from [:flutter_background_service] C:\Users\kings\Desktop\Mukhtar\watch_it\build\flutter_background_service\intermediates\library_manifest\debug\AndroidManifest.xml:5:5-44
-MERGED from [:device_info] C:\Users\kings\Desktop\Mukhtar\watch_it\build\device_info\intermediates\library_manifest\debug\AndroidManifest.xml:5:5-44
-MERGED from [:device_info] C:\Users\kings\Desktop\Mukhtar\watch_it\build\device_info\intermediates\library_manifest\debug\AndroidManifest.xml:5:5-44
+MERGED from [:shared_preferences] C:\Users\kings\Desktop\Mukhtar\watch_it\build\shared_preferences\intermediates\library_manifest\debug\AndroidManifest.xml:5:5-44
+MERGED from [:shared_preferences] C:\Users\kings\Desktop\Mukhtar\watch_it\build\shared_preferences\intermediates\library_manifest\debug\AndroidManifest.xml:5:5-44
 MERGED from [:flutter_ringtone_player] C:\Users\kings\Desktop\Mukhtar\watch_it\build\flutter_ringtone_player\intermediates\library_manifest\debug\AndroidManifest.xml:5:5-44
 MERGED from [:flutter_ringtone_player] C:\Users\kings\Desktop\Mukhtar\watch_it\build\flutter_ringtone_player\intermediates\library_manifest\debug\AndroidManifest.xml:5:5-44
-MERGED from [:flutter_native_timezone] C:\Users\kings\Desktop\Mukhtar\watch_it\build\flutter_native_timezone\intermediates\library_manifest\debug\AndroidManifest.xml:5:5-7:41
-MERGED from [:flutter_native_timezone] C:\Users\kings\Desktop\Mukhtar\watch_it\build\flutter_native_timezone\intermediates\library_manifest\debug\AndroidManifest.xml:5:5-7:41
+MERGED from [:wear] C:\Users\kings\Desktop\Mukhtar\watch_it\build\wear\intermediates\library_manifest\debug\AndroidManifest.xml:5:5-44
+MERGED from [:wear] C:\Users\kings\Desktop\Mukhtar\watch_it\build\wear\intermediates\library_manifest\debug\AndroidManifest.xml:5:5-44
 MERGED from [:fluttertoast] C:\Users\kings\Desktop\Mukhtar\watch_it\build\fluttertoast\intermediates\library_manifest\debug\AndroidManifest.xml:5:5-44
 MERGED from [:fluttertoast] C:\Users\kings\Desktop\Mukhtar\watch_it\build\fluttertoast\intermediates\library_manifest\debug\AndroidManifest.xml:5:5-44
+MERGED from [:path_provider] C:\Users\kings\Desktop\Mukhtar\watch_it\build\path_provider\intermediates\library_manifest\debug\AndroidManifest.xml:5:5-44
+MERGED from [:path_provider] C:\Users\kings\Desktop\Mukhtar\watch_it\build\path_provider\intermediates\library_manifest\debug\AndroidManifest.xml:5:5-44
 MERGED from [:restart_app] C:\Users\kings\Desktop\Mukhtar\watch_it\build\restart_app\intermediates\library_manifest\debug\AndroidManifest.xml:5:5-44
 MERGED from [:restart_app] C:\Users\kings\Desktop\Mukhtar\watch_it\build\restart_app\intermediates\library_manifest\debug\AndroidManifest.xml:5:5-44
 MERGED from [:permission_handler] C:\Users\kings\Desktop\Mukhtar\watch_it\build\permission_handler\intermediates\library_manifest\debug\AndroidManifest.xml:5:5-44
@@ -252,14 +246,14 @@ MERGED from [:geolocator] C:\Users\kings\Desktop\Mukhtar\watch_it\build\geolocat
 MERGED from [:geolocator] C:\Users\kings\Desktop\Mukhtar\watch_it\build\geolocator\intermediates\library_manifest\debug\AndroidManifest.xml:5:5-44
 MERGED from [androidx.wear:wear:1.0.0] C:\Users\kings\.gradle\caches\transforms-2\files-2.1\99a3d4e4d3237f6565d0ce5f5fe84420\wear-1.0.0\AndroidManifest.xml:20:5-44
 MERGED from [androidx.wear:wear:1.0.0] C:\Users\kings\.gradle\caches\transforms-2\files-2.1\99a3d4e4d3237f6565d0ce5f5fe84420\wear-1.0.0\AndroidManifest.xml:20:5-44
-MERGED from [com.google.android.support:wearable:2.8.1] C:\Users\kings\.gradle\caches\transforms-2\files-2.1\5cea7ea360b76d926b2f8dc9a10e771e\jetified-wearable-2.8.1\AndroidManifest.xml:5:5-7:41
-MERGED from [com.google.android.support:wearable:2.8.1] C:\Users\kings\.gradle\caches\transforms-2\files-2.1\5cea7ea360b76d926b2f8dc9a10e771e\jetified-wearable-2.8.1\AndroidManifest.xml:5:5-7:41
 MERGED from [androidx.legacy:legacy-support-core-ui:1.0.0] C:\Users\kings\.gradle\caches\transforms-2\files-2.1\b69d809a7d56669e263a6dd73fa3f3e0\legacy-support-core-ui-1.0.0\AndroidManifest.xml:20:5-44
 MERGED from [androidx.legacy:legacy-support-core-ui:1.0.0] C:\Users\kings\.gradle\caches\transforms-2\files-2.1\b69d809a7d56669e263a6dd73fa3f3e0\legacy-support-core-ui-1.0.0\AndroidManifest.xml:20:5-44
 MERGED from [androidx.legacy:legacy-support-core-utils:1.0.0] C:\Users\kings\.gradle\caches\transforms-2\files-2.1\fead7ea2e43546ae73f7f9d07ac64f5f\legacy-support-core-utils-1.0.0\AndroidManifest.xml:20:5-44
 MERGED from [androidx.legacy:legacy-support-core-utils:1.0.0] C:\Users\kings\.gradle\caches\transforms-2\files-2.1\fead7ea2e43546ae73f7f9d07ac64f5f\legacy-support-core-utils-1.0.0\AndroidManifest.xml:20:5-44
 MERGED from [androidx.localbroadcastmanager:localbroadcastmanager:1.0.0] C:\Users\kings\.gradle\caches\transforms-2\files-2.1\b6c34301107cd06a29fdce8c3ef58e3a\localbroadcastmanager-1.0.0\AndroidManifest.xml:20:5-44
 MERGED from [androidx.localbroadcastmanager:localbroadcastmanager:1.0.0] C:\Users\kings\.gradle\caches\transforms-2\files-2.1\b6c34301107cd06a29fdce8c3ef58e3a\localbroadcastmanager-1.0.0\AndroidManifest.xml:20:5-44
+MERGED from [com.google.android.support:wearable:2.8.1] C:\Users\kings\.gradle\caches\transforms-2\files-2.1\5cea7ea360b76d926b2f8dc9a10e771e\jetified-wearable-2.8.1\AndroidManifest.xml:5:5-7:41
+MERGED from [com.google.android.support:wearable:2.8.1] C:\Users\kings\.gradle\caches\transforms-2\files-2.1\5cea7ea360b76d926b2f8dc9a10e771e\jetified-wearable-2.8.1\AndroidManifest.xml:5:5-7:41
 MERGED from [androidx.preference:preference:1.1.1] C:\Users\kings\.gradle\caches\transforms-2\files-2.1\5cacf580e9f0952e279be4b97cdd225c\preference-1.1.1\AndroidManifest.xml:20:5-22:41
 MERGED from [androidx.preference:preference:1.1.1] C:\Users\kings\.gradle\caches\transforms-2\files-2.1\5cacf580e9f0952e279be4b97cdd225c\preference-1.1.1\AndroidManifest.xml:20:5-22:41
 MERGED from [androidx.recyclerview:recyclerview:1.1.0] C:\Users\kings\.gradle\caches\transforms-2\files-2.1\5df89e8088c70e401fb8cfb2812809a3\recyclerview-1.1.0\AndroidManifest.xml:20:5-22:41
@@ -340,16 +334,6 @@ INJECTED from C:\Users\kings\Desktop\Mukhtar\watch_it\android\app\src\debug\Andr
 	android:minSdkVersion
 		INJECTED from C:\Users\kings\Desktop\Mukhtar\watch_it\android\app\src\main\AndroidManifest.xml
 		INJECTED from C:\Users\kings\Desktop\Mukhtar\watch_it\android\app\src\debug\AndroidManifest.xml
-uses-feature#android.hardware.type.watch
-ADDED from [:wear] C:\Users\kings\Desktop\Mukhtar\watch_it\build\wear\intermediates\library_manifest\debug\AndroidManifest.xml:8:5-64
-	android:name
-		ADDED from [:wear] C:\Users\kings\Desktop\Mukhtar\watch_it\build\wear\intermediates\library_manifest\debug\AndroidManifest.xml:8:19-61
-meta-data#com.google.android.wearable.standalone
-ADDED from [:wear] C:\Users\kings\Desktop\Mukhtar\watch_it\build\wear\intermediates\library_manifest\debug\AndroidManifest.xml:15:9-17:36
-	android:value
-		ADDED from [:wear] C:\Users\kings\Desktop\Mukhtar\watch_it\build\wear\intermediates\library_manifest\debug\AndroidManifest.xml:17:13-33
-	android:name
-		ADDED from [:wear] C:\Users\kings\Desktop\Mukhtar\watch_it\build\wear\intermediates\library_manifest\debug\AndroidManifest.xml:16:13-66
 uses-permission#android.permission.FOREGROUND_SERVICE
 ADDED from [:flutter_background_service] C:\Users\kings\Desktop\Mukhtar\watch_it\build\flutter_background_service\intermediates\library_manifest\debug\AndroidManifest.xml:7:5-77
 	android:name
@@ -366,6 +350,16 @@ receiver#id.flutter.flutter_background_service.BootReceiver
 ADDED from [:flutter_background_service] C:\Users\kings\Desktop\Mukhtar\watch_it\build\flutter_background_service\intermediates\library_manifest\debug\AndroidManifest.xml:15:9-19:20
 	android:name
 		ADDED from [:flutter_background_service] C:\Users\kings\Desktop\Mukhtar\watch_it\build\flutter_background_service\intermediates\library_manifest\debug\AndroidManifest.xml:15:19-84
+uses-feature#android.hardware.type.watch
+ADDED from [:wear] C:\Users\kings\Desktop\Mukhtar\watch_it\build\wear\intermediates\library_manifest\debug\AndroidManifest.xml:8:5-64
+	android:name
+		ADDED from [:wear] C:\Users\kings\Desktop\Mukhtar\watch_it\build\wear\intermediates\library_manifest\debug\AndroidManifest.xml:8:19-61
+meta-data#com.google.android.wearable.standalone
+ADDED from [:wear] C:\Users\kings\Desktop\Mukhtar\watch_it\build\wear\intermediates\library_manifest\debug\AndroidManifest.xml:15:9-17:36
+	android:value
+		ADDED from [:wear] C:\Users\kings\Desktop\Mukhtar\watch_it\build\wear\intermediates\library_manifest\debug\AndroidManifest.xml:17:13-33
+	android:name
+		ADDED from [:wear] C:\Users\kings\Desktop\Mukhtar\watch_it\build\wear\intermediates\library_manifest\debug\AndroidManifest.xml:16:13-66
 uses-library#com.google.android.wearable
 ADDED from [com.google.android.support:wearable:2.8.1] C:\Users\kings\.gradle\caches\transforms-2\files-2.1\5cea7ea360b76d926b2f8dc9a10e771e\jetified-wearable-2.8.1\AndroidManifest.xml:10:9-12:40
 	android:required

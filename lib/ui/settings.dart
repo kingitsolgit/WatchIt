@@ -3,13 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:watch_it/ui/languages.dart';
+import 'package:watch_it/ui/pair_screen.dart';
 import 'package:wear/wear.dart';
 
-import 'package:watch_it/ui/account.dart';
 import 'package:watch_it/ui/notification_time.dart';
-import 'package:watch_it/ui/pair_screen.dart';
-import 'package:watch_it/ui/snooze_time.dart';
-
+import 'package:watch_it/ui/account.dart';
+import 'package:watch_it/ui/snooze_duration.dart';
 
 class Settings extends StatelessWidget {
   const Settings({Key? key}) : super(key: key);
@@ -21,21 +20,9 @@ class Settings extends StatelessWidget {
       backgroundColor: Colors.black,
       appBar: AppBar(
         toolbarHeight: 40,
-        // leading: IconButton(
-        //   onPressed: () {
-        //     Navigator.pop(context);
-        //   },
-        //   icon: Icon(
-        //     Icons.arrow_back_ios,
-        //     color: Colors.white,
-        //     size: 18,
-        //   ),
-        // ),
         title: Text(
           'settings',
           // tr('settings'),
-          // "${('settings'.tr().toString())}",
-          // 'Settings',
           style: TextStyle(
             color: Colors.white,
             fontSize: 18,
@@ -57,7 +44,7 @@ class Settings extends StatelessWidget {
                     Navigator.push(
                       context,
                       new MaterialPageRoute(
-                        builder: (context) => PairScreen(
+                        builder: (context) => AccountScreen(
                           accesspoint: 1,
                         ),
                       ),
@@ -86,12 +73,12 @@ class Settings extends StatelessWidget {
                   onTap: () {
                     Navigator.pushNamed(
                       context,
-                      SnoozeTime.id,
+                      SnoozeDuration.id,
                     );
                   },
                   child: SettingsButton(
                     shape: shape,
-                    text: tr('snooze time'),
+                    text: tr('snooze duration'),
                     icon: Icons.snooze,
                   ),
                 ),
@@ -127,13 +114,6 @@ class Settings extends StatelessWidget {
             ),
           );
         },
-        child: AmbientMode(
-          builder: (context, mode, child) {
-            return Text(
-              'Mode: ${mode == WearMode.active ? 'Active' : 'Ambient'}',
-            );
-          },
-        ),
       ),
     );
   }
@@ -142,9 +122,8 @@ class Settings extends StatelessWidget {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     sharedPreferences.clear();
     sharedPreferences.setBool('isPaired', false);
-
-    Get.offAll(AccountScreen());
-
+    sharedPreferences.remove('p_code');
+    Get.offAll(PairScreen());
   }
 }
 

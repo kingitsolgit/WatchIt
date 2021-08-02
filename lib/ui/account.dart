@@ -1,20 +1,19 @@
-import 'dart:convert';
+import 'dart:async';
 
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:http/http.dart';
-import 'package:progress_dialog/progress_dialog.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wear/wear.dart';
 
-import 'package:watch_it/links/baserurl.dart';
-import 'package:watch_it/model/eprint.dart';
-import 'package:watch_it/model/patient.dart';
-import 'package:watch_it/ui/pair_screen.dart';
+import 'package:watch_it/ui/main_menu.dart';
 
 class AccountScreen extends StatefulWidget {
-  const AccountScreen({Key? key}) : super(key: key);
+  final int accesspoint;
+  const AccountScreen({
+    required this.accesspoint,
+    Key? key,
+  }) : super(key: key);
   static String id = 'account';
 
   @override
@@ -22,290 +21,153 @@ class AccountScreen extends StatefulWidget {
 }
 
 class _AccountScreenState extends State<AccountScreen> {
-  late String selectedlanguage;
-
-  TextEditingController passwordController = new TextEditingController();
+  String? pName;
+  String? pEmail;
+  String? pCode;
+  String? doctor;
   @override
-  void initState() {
-    super.initState();
-    getAccountInfo();
-  }
+  // void initState() {
+  //   super.initState();
+  //   getPatientInfo();
+  // }
 
   @override
   Widget build(BuildContext context) {
+    getPatientInfo();
     return Scaffold(
+      backgroundColor: Color.fromARGB(255, 81, 17, 6),
       body: WatchShape(
-        builder: (contaxt, shape, child) {
-          return SingleChildScrollView(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: <Widget>[
-                Container(
-                  padding: EdgeInsets.symmetric(
-                    vertical: 0,
-                    horizontal: 25,
+        builder: (context, shape, child) {
+          return ListView(
+            children: <Widget>[
+              Container(
+                padding: EdgeInsets.symmetric(
+                  vertical: 0,
+                  horizontal: 5,
+                ),
+                height: (Get.height / 4) - 20,
+                width: Get.width,
+                color: Colors.black,
+                child: Center(
+                  child: Text(
+                    tr('account'),
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                  height: Get.height / 4,
-                  width: Get.width,
-                  color: Colors.black,
-                  child: Center(
-                    child: Text(
-                      tr('account'),
-                      // 'Account',
+                ),
+              ),
+              Container(
+                padding: EdgeInsets.symmetric(
+                  vertical: 0,
+                  horizontal: 5,
+                ),
+                height: (Get.height / 4) + 10,
+                width: Get.width,
+                color: Colors.black,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text(
+                      pName == null ? '' : pName!,
+                      // 'John Doe',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 18,
+                        color: Colors.white70,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Text(
+                      pEmail == null ? '' : pEmail!,
+                      // 'Johndoe@email.com',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Colors.white70,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Container(
+                padding: EdgeInsets.symmetric(
+                  vertical: 0,
+                  horizontal: 25,
+                ),
+                width: Get.width,
+                color: Color.fromARGB(255, 81, 17, 6),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      padding: EdgeInsets.all(5),
+                      height: 35,
+                      width: 35,
+                      alignment: Alignment.center,
+                      child: Image.asset('assets/images/pair.png'),
+                    ),
+                    Text(
+                      tr('successfully paired') +
+                          ': ' +
+                          "$doctor", //'Ameer Moavia',
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                  ),
-                ),
-                Container(
-                  padding: EdgeInsets.symmetric(
-                    vertical: 0,
-                    horizontal: 25,
-                  ),
-                  height: Get.height / 4,
-                  width: Get.width,
-                  color: Color.fromARGB(255, 161, 33, 22),
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Center(
-                      child: TextField(
-                        controller: passwordController,
-                        textAlign: TextAlign.center,
-                        textAlignVertical: TextAlignVertical.bottom,
-                        // obscureText: true,
-                        // obscuringCharacter: '*',
-                        // maxLength: 6,
-
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 12,
-                        ),
-                        decoration: InputDecoration(
-                          hintText: 'Enter your ID', // "******",
-                          hintStyle: TextStyle(
-                            color: Colors.white,
-                            letterSpacing: 0,
-                            fontSize: 12,
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: new BorderSide(
-                              width: 0.0,
-                              color: Colors.white,
-                            ),
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderSide: new BorderSide(
-                              width: 0.0,
-                              color: Colors.white,
-                            ),
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                        ),
-                        keyboardType: TextInputType.text,
-                        onChanged: (value) {
-                          print(value);
-                        },
-                      ),
-                    ),
-                  ),
-                ),
-                Container(
-                  padding: EdgeInsets.symmetric(vertical: 10, horizontal: 25),
-                  height: Get.height / 1.5,
-                  width: Get.width,
-                  color: Colors.black,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Container(
-                          height: 24,
-                          child: ElevatedButton(
-                            style: ButtonStyle(
-                              backgroundColor: MaterialStateProperty.all(
-                                  Color.fromARGB(255, 161, 33, 22)),
-                            ),
-                            onPressed: () async {
-                              String password =
-                                  passwordController.text.toString();
-                              if (password.isNotEmpty) {
-                                print(password);
-                                if (password == "44294") {
-                                  Navigator.pushNamed(
-                                    context,
-                                    PairScreen.id,
-                                  );
-                                }
-                                pairMe(password);
-                              } else {
-                                showDialog(
-                                    context: context,
-                                    builder: (context) {
-                                      return new SimpleDialog(
-                                        backgroundColor:
-                                            Color.fromARGB(255, 161, 33, 22),
-                                        titlePadding: EdgeInsets.all(12),
-                                        title: Center(
-                                          child: Column(
-                                            children: [
-                                              new Text(
-                                                'Input is Invalid',
-                                                style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 12,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      );
-                                    });
-                              }
+                    widget.accesspoint == 0
+                        ? IconButton(
+                            onPressed: () {
+                              // Restart.restartApp();
+                              Navigator.of(context).pushReplacement(
+                                new MaterialPageRoute(
+                                  builder: (BuildContext context) {
+                                    return new MainMenu(
+                                        pname: pName,
+                                        pemail: pEmail,
+                                        pcode: pCode);
+                                  },
+                                ),
+                              );
                             },
-                            child: Text(tr('done')),
-                          ),
-                        ),
-                      ),
-                      Text(
-                        tr('ask your caretaker'),
-                        // 'Ask your caretaker to enter this code',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      InkWell(
-                        onTap: () {},
-                        child: Text(
-                          'watchit.eu/pair',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            color: Color.fromARGB(255, 161, 33, 22),
-                            //fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
+                            icon: Icon(
+                              Icons.arrow_forward_ios_sharp,
+                              color: Colors.white,
+                            ),
+                          )
+                        : Container(),
+                  ],
                 ),
-              ],
-            ),
+              ),
+            ],
           );
         },
-      ),
-    );
-  }
-
-  Future<void> getAccountInfo() async {
-    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-    String? sllang = sharedPreferences.getString("apilang");
-    if (sllang != null) {
-      setState(() {
-        selectedlanguage = sllang;
-      });
-    } else {
-      setState(() {
-        selectedlanguage = "en";
-      });
-    }
-  }
-
-  Future<void> pairMe(String password) async {
-    final ProgressDialog progressDialog = ProgressDialog(context);
-    progressDialog.style(
-      textAlign: TextAlign.center,
-      message: 'Processing',
-      borderRadius: 2.0,
-      backgroundColor: Colors.white,
-      progressWidget: Container(
-        width: 10,
-        height: 10,
-        child: CircularProgressIndicator(),
-      ),
-      elevation: 10.0,
-      insetAnimCurve: Curves.easeInOut,
-      progress: 0.0,
-      maxProgress: 100.0,
-      progressTextStyle: TextStyle(
-        color: Colors.black,
-        fontSize: 13.0,
-        fontWeight: FontWeight.w400,
-      ),
-      messageTextStyle: TextStyle(
-        color: Colors.black,
-        fontSize: 19.0,
-        fontWeight: FontWeight.w600,
-      ),
-    );
-    // progressDialog.show();
-
-    var url = Uri.parse('${BaseUrl.baseurl}/api/patients/$password');
-    final response = await get(url);
-    if (response.statusCode == 200) {
-      ePrint('response is here');
-      ePrint(response.body);
-      Patient pdata = Patient.fromJson(jsonDecode(response.body));
-      // ePrint('Patient response is here');
-      // ePrint(pdata.data!.toString());
-      SharedPreferences sharedPreferences =
-          await SharedPreferences.getInstance();
-      sharedPreferences.setString('p_name', pdata.data!.name.toString());
-      sharedPreferences.setString('p_email', pdata.data!.email.toString());
-      sharedPreferences.setString('p_code', pdata.data!.code.toString());
-      sharedPreferences.setString('doctor', pdata.data!.doctorName.toString());
-      sharedPreferences.setBool('isPaired', true);
-      String s = sharedPreferences.getString('p_name')! +
-          sharedPreferences.getString('p_email')! +
-          sharedPreferences.getString('p_code')!;
-      ePrint(s);
-
-      goNext();
-    } else {
-      ePrint(response.body);
-      await progressDialog.hide();
-      showMyDialog("Invalid ID");
-    }
-  }
-
-  void goNext() {
-    Navigator.pushReplacement(
-      context,
-      new MaterialPageRoute(
-        builder: (context) => PairScreen(
-          accesspoint: 0,
+        child: AmbientMode(
+          builder: (context, mode, child) {
+            return Text(
+              'Mode: ${mode == WearMode.active ? 'Active' : 'Ambient'}',
+            );
+          },
         ),
       ),
     );
   }
 
-  Future showMyDialog(String message) {
-    return showDialog(
-      context: context,
-      builder: (context) {
-        return SimpleDialog(
-          backgroundColor: Color.fromARGB(255, 161, 33, 22),
-          titlePadding: EdgeInsets.all(12),
-          title: Center(
-            child: Column(
-              children: [
-                Text(
-                  message,
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 12,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        );
-      },
-    );
+  // bool? isPaired = false;
+
+  Future<void> getPatientInfo() async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    // if (isPaired != null && isPaired == true) {
+    pName = sharedPreferences.getString('p_name')!;
+    pEmail = sharedPreferences.getString('p_email')!;
+    pCode = sharedPreferences.getString('p_code')!;
+    doctor = sharedPreferences.getString('doctor')!;
+    // }
   }
 }

@@ -4,16 +4,16 @@ import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wear/wear.dart';
 
-class SnoozeTime extends StatefulWidget {
-  const SnoozeTime({Key? key}) : super(key: key);
+class SnoozeDuration extends StatefulWidget {
+  const SnoozeDuration({Key? key}) : super(key: key);
   static String id = 'snooze_time';
 
   @override
-  _SnoozeTimeState createState() => _SnoozeTimeState();
+  _SnoozeDurationState createState() => _SnoozeDurationState();
 }
 
-class _SnoozeTimeState extends State<SnoozeTime> {
-  int? durationIndex = 0;
+class _SnoozeDurationState extends State<SnoozeDuration> {
+  int? durationIndex = 1;
 
   WearShape? nShape;
   @override
@@ -28,14 +28,22 @@ class _SnoozeTimeState extends State<SnoozeTime> {
       backgroundColor: Colors.black,
       appBar: AppBar(
         toolbarHeight: 40,
-        title: Text(
-          tr('snooze time'),
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 14,
+        leading: Container(
+          height: 1,
+          width: 1,
+        ),
+        title: Padding(
+          padding: const EdgeInsets.only(right: 8.0),
+          child: Text(
+            tr('snooze duration'),
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 12,
+              fontWeight: FontWeight.bold,
+            ),
           ),
         ),
-        centerTitle: nShape == WearShape.round ? true : false,
+        // centerTitle: nShape == WearShape.round ? true : false,
         backgroundColor: Colors.black,
       ),
       body: WatchShape(
@@ -93,13 +101,6 @@ class _SnoozeTimeState extends State<SnoozeTime> {
             ),
           );
         },
-        child: AmbientMode(
-          builder: (context, mode, child) {
-            return Text(
-              'Mode: ${mode == WearMode.active ? 'Active' : 'Ambient'}',
-            );
-          },
-        ),
       ),
     );
   }

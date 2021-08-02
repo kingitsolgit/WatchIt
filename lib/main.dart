@@ -9,6 +9,8 @@ import 'package:get/get.dart';
 import 'package:http/http.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:watch_it/ui/account.dart';
+import 'package:watch_it/ui/pair_screen.dart';
 import 'package:wear/wear.dart';
 
 import 'package:watch_it/links/baserurl.dart';
@@ -17,73 +19,14 @@ import 'package:watch_it/model/meducine.dart';
 import 'package:watch_it/model/prescription.dart';
 import 'package:watch_it/model/snoozedmedicine.dart';
 import 'package:watch_it/provider/languageprovider.dart';
-import 'package:watch_it/ui/account.dart';
 import 'package:watch_it/ui/languages.dart';
 import 'package:watch_it/ui/logs.dart';
 import 'package:watch_it/ui/main_menu.dart';
 import 'package:watch_it/ui/notification_time.dart';
 import 'package:watch_it/ui/settings.dart';
 import 'package:watch_it/ui/snooze_confirm.dart';
-import 'package:watch_it/ui/snooze_time.dart';
+import 'package:watch_it/ui/snooze_duration.dart';
 import 'package:watch_it/ui/take_it_now.dart';
-
-Future<void> getMedicationAndSaveIt() async {
-  SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-
-  Map<String, dynamic> values = new Map<String, dynamic>();
-
-  String? medicString = sharedPreferences.getString("medicString");
-  print(medicString);
-  values = jsonDecode(medicString!);
-  values.forEach((key, value) {
-    // print(value);
-    if (key == 'data') {
-      print('object of keyvalue');
-      print(value.length);
-      print('///WE ARE IN MAIN FILE////');
-      String? date2;
-      List<String>? mediList = [];
-      for (var i = 0; i < value.length; i++) {
-        for (var j = 0; j < value[i]['medicine_time'].length; j++) {
-          print(value[i]['date']);
-          print(value[i]['medicine_time'][j]);
-          date2 = '${value[i]['date']} ${value[i]['medicine_time'][j]}';
-
-          DateFormat dateFormating = DateFormat("dd-MM-yyyy HH:mm");
-          DateTime dateTime2 = dateFormating.parse(date2);
-
-          if (DateTime.now().hour.compareTo(dateTime2.hour) == 0) {
-            if (DateTime.now().minute.compareTo(dateTime2.minute) == 0) {
-              print('Allarm OONNNN');
-              List<String> list = [];
-              list.add(value[i]['_id']);
-              list.add(value[i]['medicine_name']);
-            } else {
-              print('Allarm FAILED IN MINUTE');
-            }
-          } else {
-            print('Allarm  FAILED IN HOUR');
-          }
-        }
-      }
-      print(mediList);
-      print('date2 $date2');
-      DateFormat dateFormat2 = DateFormat("dd-MM-yyyy HH:mm");
-      DateTime myDateTime2 = dateFormat2.parse(date2!);
-      //("20-07-2005 18:26");
-      DateFormat dateFormat = DateFormat("yyyy-MM-dd HH:mm");
-      DateTime myDateTime = dateFormat.parse("2021-07-05 18:26");
-      DateTime myNowDateTime = dateFormat.parse(DateTime.now().toString());
-      ePrint('myNowDateTime is $myNowDateTime');
-
-      print('date is $myDateTime2');
-      print('///111111111111111111111111111111111111111////');
-      print(value[0]['date']);
-      // print(value[0]['medicine_time'][1]['time']);
-      print(value[0]['medicine_time'].length);
-    }
-  });
-}
 
 getAndCheck() async {
   debugPrint('Call back start time ${DateTime.now()}');
@@ -96,11 +39,8 @@ getAndCheck() async {
     if (response.statusCode == 200) {
       ePrint(response.body);
       // print(akbarPrescription);
-
       var responc = Prescription.fromJson(jsonDecode(response.body));
       // var responc = Prescription.fromJson(jsonDecode(akbarPrescription!));
-      // var date = responc.data![0].date;
-      // print('new extracted date is $date');
       DateFormat dateFormating = DateFormat("dd-MM-yyyy HH:mm");
       List<String> dosingList = [];
       for (var i = 0; i < responc.data!.length; i++) {
@@ -140,8 +80,6 @@ getAndCheck() async {
               dosingList.add(jsonn);
               // ePrint(dosingList);
               sharedPreferences.setStringList('dosingList', dosingList);
-              // await AppLauncher.openApp(
-              //     androidApplicationId: "com.example.watch_it");
             } else {
               ePrint('In Main.dart: time is not same');
               // sharedPreferences.setBool("isDoseTime", false);
@@ -175,7 +113,6 @@ getAndCheck() async {
           // ePrint('In Main.dart: newDT $newDT');
           if (newDT.isAfter(DateTime.now())) {
             // ePrint('In Main.dart: time isAfter from now');
-            // j = medicineTime.length - 1; //at wrong place
             Meducine meducine = Meducine(
               medicineId: prescriptionData.sId,
               medicineName: prescriptionData.medicineName,
@@ -200,8 +137,6 @@ getAndCheck() async {
       }
       //////////////////code ending for next doses
       //////for snooze list checking
-      // List<String>? snoozedList;
-      // sharedPreferences.setStringList('snoozedList', snoozedList!);
 
       if (sharedPreferences.getStringList('snoozedList') != null) {
         // ePrint('In Main.dart: not equal null');
@@ -218,7 +153,6 @@ getAndCheck() async {
           DateFormat newdateFormating = DateFormat("dd-MM-yyyy HH:mm");
           DateTime snoozedDT = newdateFormating.parse(snoozedMed.dosetime!);
 
-          // .add(Duration(minutes: snoozedMed.snoozedDurationMins!));
           // ///////////////new if structure start
           if (snoozedMed.snoozedIteration != null &&
               snoozedMed.snoozedIteration! < 3) {
@@ -230,16 +164,13 @@ getAndCheck() async {
                 sharedPreferences.setBool("isDoseTime", true);
                 ////////  new code start here
                 print('In Main.dart: $dosingList');
-
                 Meducine meducine = Meducine(
-                  medicineId: snoozedMed.id, // preData.sId,
-                  medicineName: snoozedMed.name, //preData.medicineName,
-                  dailyDosePill: snoozedMed.routine, //preData.dailyDosePill,
-                  medicineTime: snoozedMed
-                      .dosetime, //preData.medicineTime![j].date! + ' ' + preData.medicineTime![j].time!,
-                  medicinetimeindex:
-                      snoozedMed.timeIndex, //preData.medicineTime![j].id!,
-                  dateRange: snoozedMed.dosetime, // preData.doseTimeDuration,
+                  medicineId: snoozedMed.id,
+                  medicineName: snoozedMed.name,
+                  dailyDosePill: snoozedMed.routine,
+                  medicineTime: snoozedMed.dosetime,
+                  medicinetimeindex: snoozedMed.timeIndex,
+                  dateRange: snoozedMed.dosetime,
                 );
                 String jsonn = jsonEncode(meducine);
                 print('In Main.dart: snoozed encoded $jsonn');
@@ -261,8 +192,6 @@ getAndCheck() async {
             ePrint(
                 'In Main.dart: Snoozed Iteration is greater than equal to 3 and value is ${snoozedMed.snoozedIteration}');
 
-            // SharedPreferences sharedPreferences =
-            //     await SharedPreferences.getInstance();
             String patientCode = sharedPreferences.getString('p_code')!;
             var url = Uri.parse(
                 '${BaseUrl.baseurl}/api/patients/$patientCode/prescriptions/${snoozedMed.id}');
@@ -318,7 +247,6 @@ Future<void> main() async {
     screenindex = 1;
     print('screen index in if is $screenindex');
   }
-
   var screens = [
     MyApp(),
     NotificationTime(),
@@ -363,16 +291,13 @@ class _MyAppState extends State<MyApp> {
         initialRoute: SplashScreen.id,
         routes: {
           SplashScreen.id: (context) => SplashScreen(),
-          AccountScreen.id: (context) => AccountScreen(),
-          // PairScreen.id: (context) => PairScreen(),
           MainMenu.id: (context) => MainMenu(),
           Settings.id: (context) => Settings(),
           Logs.id: (context) => Logs(),
           NotificationTime.id: (context) => NotificationTime(),
           SnoozeConfirm.id: (context) => SnoozeConfirm(),
-          SnoozeTime.id: (context) => SnoozeTime(),
+          SnoozeDuration.id: (context) => SnoozeDuration(),
           TakeItNow.id: (context) => TakeItNow(),
-          // Languages.id: (context) => Languages(),
         },
         // home: MyApp(),
       ),
@@ -384,7 +309,6 @@ class _MyAppState extends State<MyApp> {
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
   static String id = 'splash';
-
   @override
   _SplashScreenState createState() => _SplashScreenState();
 }
@@ -462,7 +386,7 @@ class _SplashScreenState extends State<SplashScreen> {
                   )
                 : sllang == null
                     ? new Languages(accesspoint: 0)
-                    : AccountScreen();
+                    : PairScreen();
           },
         ),
       ),
