@@ -157,6 +157,8 @@ class SnoozeConfirm extends StatelessWidget {
 
   Future<void> updateStatus(String medicineId, String status, String time,
       int medTimeIndex, Meducine meducine) async {
+    // DateTime newDT = newdateFormating.parse(snoozedMed.dosetime!);
+    // String mTime = DateFormat('HH:mm').format(newDT);
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     String patientCode = sharedPreferences.getString('p_code')!;
     var url = Uri.parse(

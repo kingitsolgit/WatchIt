@@ -160,7 +160,6 @@ class _LogsState extends State<Logs> {
                                 setHead: true,
                                 name: logList[index].medicineName,
                                 text: '${logList[index].status} at $mTime',
-                                // s, // logList[index].takenAt,
                                 datetime: newDT,
                               );
                             },

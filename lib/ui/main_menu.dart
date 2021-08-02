@@ -388,6 +388,8 @@ class _MainMenuState extends State<MainMenu> with WidgetsBindingObserver {
               }
             } else {
               ePrint('In MainMenu ${snoozedMed.dosetime}');
+              DateTime newDT = newdateFormating.parse(snoozedMed.dosetime!);
+              String mTime = DateFormat('HH:mm').format(newDT);
               SharedPreferences sharedPreferences =
                   await SharedPreferences.getInstance();
               String patientCode = sharedPreferences.getString('p_code')!;
@@ -397,7 +399,7 @@ class _MainMenuState extends State<MainMenu> with WidgetsBindingObserver {
                 url,
                 body: {
                   "status": "Skipped",
-                  "time": snoozedMed.dosetime, // "13:30",
+                  "time": mTime, // snoozedMed.dosetime, // "13:30",
                   "medicine_time_id": '${snoozedMed.timeIndex}' // 2
                 },
               );
@@ -408,9 +410,6 @@ class _MainMenuState extends State<MainMenu> with WidgetsBindingObserver {
               }
             }
           }
-          // if (dosingList.isNotEmpty) {
-          //   Get.offAll(NotificationTime());
-          // } else {}
         } else {
           ePrint('In MainMenu shared snoozed list equal null');
         }
@@ -420,22 +419,12 @@ class _MainMenuState extends State<MainMenu> with WidgetsBindingObserver {
     }
     if (dosingList.isNotEmpty) {
       Get.offAll(NotificationTime());
-      // Get.offAll(AccountScreen());
     } else {
       sharedPreferences.setBool("isDoseTime", false);
       ePrint('In MainMenu: dosing list is empty');
     }
     ePrint(
         ' In MainMenu ontMainMenuCallBack Function End Time ${DateTime.now()}');
-  }
-
-  Future<void> mainMenuTimer() async {
-    ePrint('In mainMenuTimer start');
-
-    WidgetsFlutterBinding.ensureInitialized();
-    // await AndroidAlarmManager.periodic(
-    //     Duration(seconds: 57), alarmID, onMainMenuCallBack);
-    ePrint('In mainMenuTimer end');
   }
 
   void myCallBack() {
