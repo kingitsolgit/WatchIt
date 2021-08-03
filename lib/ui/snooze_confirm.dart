@@ -220,7 +220,11 @@ class SnoozeConfirm extends StatelessWidget {
     sharedPreferences.setBool("isDoseTime", false);
     ePrint('isDoseTime is set false');
     // SystemNavigator.pop();
-    Get.offAll(MedicationList());
+    // Get.offAll(MedicationList());
+    Navigator.pushAndRemoveUntil(
+        context,
+        new MaterialPageRoute(builder: (context) => MedicationList()),
+        (route) => false);
   }
 
   List<String>? logList;
@@ -268,10 +272,11 @@ class SnoozeConfirm extends StatelessWidget {
         DateFormat newdateFormating =
             DateFormat("dd-MM-yyyy HH:mm", context.locale.toString());
         DateTime newDT = newdateFormating.parse(meducine.medicineTime!);
+        // DateTime newDT = DateFormat("HH:mm").format(meducine.medicineTime!);
         print('new Dt is $newDT');
         updateStatus(
           meducine.medicineId!,
-          "Skipped",
+          "Skipped C",
           meducine.medicineTime!,
           meducine.medicinetimeindex!,
           meducine,
@@ -284,6 +289,7 @@ class SnoozeConfirm extends StatelessWidget {
   setSnoozedIter(int? snoozedIteration) {
     int? iteration = 0;
     if (snoozedIteration == null) {
+      iteration = 0;
     } else if (snoozedIteration == 0) {
       iteration = 1;
     } else if (snoozedIteration == 1) {

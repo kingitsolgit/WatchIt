@@ -59,9 +59,9 @@ getAndCheck() async {
           if (now.year == myDT.year &&
               now.month == myDT.month &&
               now.day == myDT.day) {
-            debugPrint('In Main.dart: Day is same');
+            ePrint('In Main.dart: Day is same');
             if (now.hour == myDT.hour && now.minute == myDT.minute) {
-              debugPrint('In Main.dart: time is also same');
+              ePrint('In Main.dart: time is also same');
               ePrint('In Main.dart: at index $i and $j');
               sharedPreferences.setBool("isDoseTime", true);
               Meducine meducine = Meducine(

@@ -211,10 +211,7 @@ class _MainMenuState extends State<MainMenu> with WidgetsBindingObserver {
   }
 
   Future<void> emergencyAlertStatus(
-    String text,
-    double latitude,
-    double longitude,
-  ) async {
+      String text, double latitude, double longitude) async {
     ePrint('Longitude...=$longitude Latitude...=$latitude');
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     String patientCode = sharedPreferences.getString('p_code')!;
@@ -278,15 +275,11 @@ class _MainMenuState extends State<MainMenu> with WidgetsBindingObserver {
                 String jsonn = jsonEncode(meducine);
                 dosingList.add(jsonn);
                 sharedPreferences.setStringList('dosingList', dosingList);
-                // await AppLauncher.openApp(
-                //     androidApplicationId: "com.example.watch_it");
               } else {
                 ePrint('time is not same');
-                // sharedPreferences.setBool("isDoseTime", false);
               }
             } else {
               ePrint('day is not same');
-              // sharedPreferences.setBool("isDoseTime", false);
             }
           }
         }
@@ -406,7 +399,8 @@ class _MainMenuState extends State<MainMenu> with WidgetsBindingObserver {
               );
               if (response.statusCode == 200) {
                 ePrint(' In MainMenu ${response.body}');
-                // snoozedList.removeAt(i);
+                snoozedList.removeAt(i);
+                ePrint('removed by index');
               } else {
                 ePrint(' In MainMenu ${response.body}');
               }

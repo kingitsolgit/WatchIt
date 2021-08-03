@@ -7,6 +7,7 @@ import 'package:flutter_ringtone_player/flutter_ringtone_player.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:watch_it/ui/account.dart';
+import 'package:watch_it/ui/medications_list.dart';
 import 'package:wear/wear.dart';
 
 import 'package:watch_it/main.dart';
@@ -301,9 +302,78 @@ class _NotificationTimeState extends State<NotificationTime> {
     }
     Timer(Duration(seconds: 50), () {
       FlutterRingtonePlayer.stop();
+      snoozeNow(context);
       
     });
   }
+  late final List<String>? medicatedList;
+
+
+  Future<void> snoozeNow(BuildContext context) async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    int? n = duration;
+
+    if (sharedPreferences.getStringList('snoozedList') == null) {
+      snoozedList = [];
+      print('in if in snoozenow');
+    } else {
+      snoozedList = sharedPreferences.getStringList('snoozedList');
+      ePrint('in else in snoozenow');
+    }
+    for (var i = 0; i < medicatedList!.length; i++) {
+      Map<String, dynamic> dosingMaplistobj = jsonDecode(medicatedList![i]);
+      Meducine meducine = Meducine.fromJson(dosingMaplistobj);
+      ePrint(meducine.medicineId!);
+      DateFormat dateFormating =
+      DateFormat("dd-MM-yyyy HH:mm", context.locale.toString());
+      DateTime myDT = dateFormating.parse(meducine.medicineTime!);
+      DateTime snoozedDT = myDT.add(Duration(minutes: n == null ? 10 : n));
+      ePrint('n==  ${n == null ? 10 : n} and my snoozedTime is $snoozedDT');
+      SnoozedMedicine snoozedMedicine = SnoozedMedicine(
+        id: meducine.medicineId!,
+        name: meducine.medicineName,
+        dosetime: snoozedDT.toString(),
+        routine: meducine.dailyDosePill,
+        timeIndex: meducine.medicinetimeindex,
+        isSnoozed: true,
+        snoozedIteration: meducine.snoozedIteration == null
+            ? setSnoozedIteration(meducine.snoozedIteration)
+            : setSnoozedIteration(meducine.snoozedIteration),
+        snoozedDurationMins: duration == null ? 10 : duration,
+      );
+      // snoozedList!.add(medicatedList![i]);
+      String snoozeString = jsonEncode(snoozedMedicine);
+      snoozedList!.add(snoozeString);
+      print('snooxestring is $snoozeString');
+    }
+    sharedPreferences.setStringList('snoozedList', snoozedList!);
+    ePrint('snoozed added');
+    sharedPreferences.setBool("isDoseTime", false);
+    ePrint('isDoseTime is set false');
+    // SystemNavigator.pop();
+    // Get.offAll(MedicationList());
+    Navigator.pushAndRemoveUntil(
+        context,
+        new MaterialPageRoute(builder: (context) => MedicationList()),
+            (route) => false);
+  }
+
+
+  setSnoozedIteration(int? snoozedIteration) {
+    int? iteration = 0;
+    if (snoozedIteration == null) {
+      iteration=0;
+    } else if (snoozedIteration == 0) {
+      iteration = 1;
+    } else if (snoozedIteration == 1) {
+      iteration = 2;
+    } else if (snoozedIteration == 2) {
+      iteration = 3;
+    }
+    return iteration;
+  }
+
+
 
   String? dosesNames = '';
   List<String>? encodedStringList;
@@ -366,9 +436,9 @@ class _NotificationTimeState extends State<NotificationTime> {
             ' at ' +
             meducine.medicineTime!.toString() +
             '\n';
-        ePrint('nextDose dosname');
+        ePrint('nextDose dose name');
       }
-      ePrint('user dosname strring length ${dosesNames!.length}');
+      ePrint('user dose name string length ${dosesNames!.length}');
     }
   }
 }
