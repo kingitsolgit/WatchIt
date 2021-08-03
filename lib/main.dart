@@ -151,8 +151,7 @@ getAndCheck() async {
           // ePrint('In Main.dart: snoozedmedicinename: ${snoozedMed.name}, snoozedmedicinetime:  ${snoozedMed.dosetime}');
           DateFormat newdateFormating = DateFormat("dd-MM-yyyy HH:mm");
           DateTime snoozedDT = newdateFormating.parse(snoozedMed.dosetime!);
-
-          // ///////////////new if structure start
+          //                        new if structure start
           if (snoozedMed.snoozedIteration != null &&
               snoozedMed.snoozedIteration! <= 3) {
             if (DateTime.now().hour.compareTo(snoozedDT.hour) == 0) {

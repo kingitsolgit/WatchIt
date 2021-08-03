@@ -303,11 +303,10 @@ class _NotificationTimeState extends State<NotificationTime> {
     Timer(Duration(seconds: 50), () {
       FlutterRingtonePlayer.stop();
       snoozeNow(context);
-      
     });
   }
-  late final List<String>? medicatedList;
 
+  late final List<String>? medicatedList;
 
   Future<void> snoozeNow(BuildContext context) async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
@@ -325,7 +324,7 @@ class _NotificationTimeState extends State<NotificationTime> {
       Meducine meducine = Meducine.fromJson(dosingMaplistobj);
       ePrint(meducine.medicineId!);
       DateFormat dateFormating =
-      DateFormat("dd-MM-yyyy HH:mm", context.locale.toString());
+          DateFormat("dd-MM-yyyy HH:mm", context.locale.toString());
       DateTime myDT = dateFormating.parse(meducine.medicineTime!);
       DateTime snoozedDT = myDT.add(Duration(minutes: n == null ? 10 : n));
       ePrint('n==  ${n == null ? 10 : n} and my snoozedTime is $snoozedDT');
@@ -355,14 +354,13 @@ class _NotificationTimeState extends State<NotificationTime> {
     Navigator.pushAndRemoveUntil(
         context,
         new MaterialPageRoute(builder: (context) => MedicationList()),
-            (route) => false);
+        (route) => false);
   }
-
 
   setSnoozedIteration(int? snoozedIteration) {
     int? iteration = 0;
     if (snoozedIteration == null) {
-      iteration=0;
+      iteration = 0;
     } else if (snoozedIteration == 0) {
       iteration = 1;
     } else if (snoozedIteration == 1) {
@@ -372,8 +370,6 @@ class _NotificationTimeState extends State<NotificationTime> {
     }
     return iteration;
   }
-
-
 
   String? dosesNames = '';
   List<String>? encodedStringList;
