@@ -156,7 +156,7 @@ class SnoozeConfirm extends StatelessWidget {
   }
 
   Future<void> updateStatus(String medicineId, String status, String time,
-      int medTimeIndex, Meducine meducine) async {
+      int medTimeIndex, Meducine meducine, BuildContext context) async {
     // DateTime newDT = newdateFormating.parse(snoozedMed.dosetime!);
     // String mTime = DateFormat('HH:mm').format(newDT);
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
@@ -170,7 +170,7 @@ class SnoozeConfirm extends StatelessWidget {
     });
     if (response.statusCode == 200) {
       print(response.body);
-      addLogData(meducine, status);
+      addLogData(meducine, status, context);
     } else {
       print(response.body);
     }
@@ -228,7 +228,8 @@ class SnoozeConfirm extends StatelessWidget {
   }
 
   List<String>? logList;
-  Future<void> addLogData(Meducine meducine, String status) async {
+  Future<void> addLogData(
+      Meducine meducine, String status, BuildContext context) async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     if (sharedPreferences.getStringList('logList') == null) {
       ePrint('adlog from else');
@@ -249,7 +250,11 @@ class SnoozeConfirm extends StatelessWidget {
     sharedPreferences.setStringList('logList', logList!);
     ePrint('logAdded');
     // SystemNavigator.pop();
-    Get.offAll(MedicationList());
+    // Get.offAll(MedicationList());
+    Navigator.pushAndRemoveUntil(
+        context,
+        new MaterialPageRoute(builder: (context) => MedicationList()),
+        (route) => false);
   }
 
   Future<void> skipNow(BuildContext context) async {
@@ -276,10 +281,11 @@ class SnoozeConfirm extends StatelessWidget {
         print('new Dt is $newDT');
         updateStatus(
           meducine.medicineId!,
-          "Skipped C",
+          "Skipped",
           meducine.medicineTime!,
           meducine.medicinetimeindex!,
           meducine,
+          context,
         );
         print('gone for skip');
       }

@@ -46,8 +46,12 @@ class _TakeItNowState extends State<TakeItNow> {
     Timer(
       Duration(seconds: 8),
       () {
-        Get.offAll(MedicationList());
+        // Get.offAll(MedicationList());
         // SystemNavigator.pop();
+        Navigator.pushAndRemoveUntil(
+            context,
+            new MaterialPageRoute(builder: (context) => MedicationList()),
+            (route) => false);
       },
     );
   }
