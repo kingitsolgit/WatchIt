@@ -15,12 +15,11 @@
     "taken at": "Pris à",
     "skipped": "Sauté",
     "notifications": "Notifications",
-    "snooze duration":"Durée de sommeil",
-    "snooze time":"Temps de répétition",
+    "snooze duration": "Durée de sommeil",
+    "snooze time": "Temps de répétition",
     "languages": "Langues",
-    "log out":"Se déconnecter",
-    "five minutes":"Cinq minutes",
-    "ten minutes":"Dix minutes",
-    "fifteen minutes":"Quinze minutes"
-    
+    "log out": "Se déconnecter",
+    "five minutes": "Cinq minutes",
+    "ten minutes": "Dix minutes",
+    "fifteen minutes": "Quinze minutes"
 }

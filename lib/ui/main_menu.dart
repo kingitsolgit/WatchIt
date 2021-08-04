@@ -250,15 +250,16 @@ class _MainMenuState extends State<MainMenu> with WidgetsBindingObserver {
             String timeString =
                 medicineTime[j].date! + ' ' + medicineTime[j].time!;
             Data preData = responc.data![i];
-            DateTime myDT = dateFormating.parse(timeString);
-            myDT.subtract(Duration(minutes: 1));
-            ePrint('myDT $myDT');
+            DateTime medicineDT = dateFormating.parse(timeString);
+            DateTime medicineSubDT = medicineDT.subtract(Duration(minutes: 1));
+            ePrint('mySubDT $medicineSubDT');
             DateTime now = DateTime.now();
-            if (now.year == myDT.year &&
-                now.month == myDT.month &&
-                now.day == myDT.day) {
+            if (now.year == medicineSubDT.year &&
+                now.month == medicineSubDT.month &&
+                now.day == medicineSubDT.day) {
               debugPrint('Day is same');
-              if (now.hour == myDT.hour && now.minute == myDT.minute) {
+              if (now.hour == medicineSubDT.hour &&
+                  now.minute == medicineSubDT.minute) {
                 debugPrint('time is also same');
                 ePrint('at index $i and $j');
                 sharedPreferences.setBool("isDoseTime", true);
@@ -283,13 +284,6 @@ class _MainMenuState extends State<MainMenu> with WidgetsBindingObserver {
             }
           }
         }
-        // if (dosingList.isNotEmpty) {
-        //   Get.offAll(NotificationTime());
-        //   // Get.offAll(AccountScreen());
-        // } else {
-        //   sharedPreferences.setBool("isDoseTime", false);
-        //   ePrint('In MainMenu: dosing list is empty');
-        // }
         ///////////code start for next doses
         List<String> nextDoseList = [];
         sharedPreferences.remove('nextDoseList');
@@ -302,7 +296,6 @@ class _MainMenuState extends State<MainMenu> with WidgetsBindingObserver {
             String timeInString =
                 medicineTime[j].date! + ' ' + medicineTime[j].time!;
             DateFormat newdateFormating = DateFormat("dd-MM-yyyy HH:mm");
-
             DateTime newDT = newdateFormating.parse(timeInString);
             // ePrint('newDT $newDT');
             if (newDT.isAfter(DateTime.now())) {
@@ -398,11 +391,14 @@ class _MainMenuState extends State<MainMenu> with WidgetsBindingObserver {
                 },
               );
               if (response.statusCode == 200) {
-                ePrint(' In MainMenu ${response.body}');
+                ePrint('In MainMenu ${response.body}');
                 snoozedList.removeAt(i);
-                ePrint('removed by index');
+                ePrint(
+                    'In MainMenu: removed by index and snoozedList is $snoozedList');
+                sharedPreferences.setStringList('snoozedList', snoozedList);
+                ePrint('In MainMenu: snooze list submitted after skipped');
               } else {
-                ePrint(' In MainMenu ${response.body}');
+                ePrint('In MainMenu ${response.body}');
               }
             }
           }

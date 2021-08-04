@@ -15,12 +15,11 @@
     "taken at": "Λήφθηκε στις",
     "skipped": "Παραλείφθηκε",
     "notifications": "Ειδοποιήσεις",
-    "snooze duration":"Διάρκεια αναβολής",
-    "snooze time":"Ώρα αναβολής",
+    "snooze duration": "Διάρκεια αναβολής",
+    "snooze time": "Ώρα αναβολής",
     "languages": "Γλώσσες",
-    "log out":"Αποσύνδεση",
-    "five minutes":"Πέντε λεπτά",
-    "ten minutes":"Δέκα λεπτά",
-    "fifteen minutes":"Δεκαπέντε λεπτά"
-    
+    "log out": "Αποσύνδεση",
+    "five minutes": "Πέντε λεπτά",
+    "ten minutes": "Δέκα λεπτά",
+    "fifteen minutes": "Δεκαπέντε λεπτά"
 }

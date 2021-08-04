@@ -150,11 +150,6 @@ class _LogsState extends State<Logs> {
                               );
                               DateTime newDT = newdateFormating
                                   .parse(logList[index].takenAt!);
-                              // if (newDT.day == DateTime.now().day) {
-                              //   ePrint('In 3 day log: the day is today.');
-                              // } else if (newDT.isAfter(DateTime.now())) {
-                              //   ePrint('In 3 day log: isAfter is true.');
-                              // }
                               String mTime = DateFormat('HH:mm').format(newDT);
                               return LogButtons(
                                 setHead: true,

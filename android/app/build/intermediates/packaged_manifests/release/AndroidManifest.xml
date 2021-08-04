@@ -16,10 +16,8 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <!-- Flags the app as a Wear app -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" /> <!-- Flags the app as a Wear app -->
     <uses-feature android:name="android.hardware.type.watch" />
-
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <application
         android:appComponentFactory="androidx.core.app.CoreComponentFactory"
@@ -91,10 +89,6 @@
             </intent-filter>
         </receiver>
 
-        <meta-data
-            android:name="com.google.android.wearable.standalone"
-            android:value="true" />
-
         <service android:name="id.flutter.flutter_background_service.BackgroundService" />
 
         <receiver android:name="id.flutter.flutter_background_service.WatchdogReceiver" />
@@ -103,6 +97,10 @@
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
+
+        <meta-data
+            android:name="com.google.android.wearable.standalone"
+            android:value="true" />
 
         <uses-library
             android:name="com.google.android.wearable"

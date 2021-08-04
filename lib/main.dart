@@ -9,8 +9,6 @@ import 'package:get/get.dart';
 import 'package:http/http.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:watch_it/ui/account.dart';
-import 'package:watch_it/ui/pair_screen.dart';
 import 'package:wear/wear.dart';
 
 import 'package:watch_it/links/baserurl.dart';
@@ -23,13 +21,14 @@ import 'package:watch_it/ui/languages.dart';
 import 'package:watch_it/ui/logs.dart';
 import 'package:watch_it/ui/main_menu.dart';
 import 'package:watch_it/ui/notification_time.dart';
+import 'package:watch_it/ui/pair_screen.dart';
 import 'package:watch_it/ui/settings.dart';
 import 'package:watch_it/ui/snooze_confirm.dart';
 import 'package:watch_it/ui/snooze_duration.dart';
 import 'package:watch_it/ui/take_it_now.dart';
 
 getAndCheck() async {
-  debugPrint('Call back start time ${DateTime.now()}');
+  ePrint('Call back start time ${DateTime.now()}');
   SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
 
   if (sharedPreferences.getString('p_code') != null) {
@@ -38,22 +37,19 @@ getAndCheck() async {
     final response = await get(url);
     if (response.statusCode == 200) {
       ePrint(response.body);
-      // print(akbarPrescription);
       var responc = Prescription.fromJson(jsonDecode(response.body));
-      // var responc = Prescription.fromJson(jsonDecode(akbarPrescription!));
       DateFormat dateFormating = DateFormat("dd-MM-yyyy HH:mm");
       List<String> dosingList = [];
       for (var i = 0; i < responc.data!.length; i++) {
         Data preData = responc.data![i];
-        // var dur = responc.data![i].doseTimeDuration;
-        // print('Duration is $dur');
         List<MedicineTime>? medicineTime = responc.data![i].medicineTime;
         for (var j = 0; j < medicineTime!.length; j++) {
           String timeString =
               medicineTime[j].date! + ' ' + medicineTime[j].time!;
-          DateTime myDT = dateFormating.parse(timeString);
-          myDT.subtract(Duration(minutes: 1));
-          ePrint('In Main.dart: myDT $myDT');
+          DateTime myDT =
+              dateFormating.parse(timeString).subtract(Duration(minutes: 1));
+          // myDT.subtract(Duration(minutes: 1));
+          ePrint('In Main.dart: subtracted myDT $myDT');
           // if (DateTime.now().hour.compareTo(myDT.hour) == 0) {
           DateTime now = DateTime.now();
           if (now.year == myDT.year &&
@@ -89,12 +85,6 @@ getAndCheck() async {
           }
         }
       }
-      // if (dosingList.isNotEmpty) {
-      //   await AppLauncher.openApp(androidApplicationId: "com.example.watch_it");
-      // } else {
-      //   ePrint('In Main.dart: dosingList is empty');
-      //   sharedPreferences.setBool("isDoseTime", false);
-      // }
       ///////////code start for next doses
       List<String> nextDoseList = [];
       sharedPreferences.remove('nextDoseList');
@@ -107,7 +97,6 @@ getAndCheck() async {
           String timeInString =
               medicineTime[j].date! + ' ' + medicineTime[j].time!;
           DateFormat newdateFormating = DateFormat("dd-MM-yyyy HH:mm");
-
           DateTime newDT = newdateFormating.parse(timeInString);
           // ePrint('In Main.dart: newDT $newDT');
           if (newDT.isAfter(DateTime.now())) {
@@ -131,7 +120,6 @@ getAndCheck() async {
             j = medicineTime.length - 1;
           }
           // setAsNextMedicines(myDT,responc);
-
         }
       }
       //////////////////code ending for next doses
@@ -151,17 +139,17 @@ getAndCheck() async {
           // ePrint('In Main.dart: snoozedmedicinename: ${snoozedMed.name}, snoozedmedicinetime:  ${snoozedMed.dosetime}');
           DateFormat newdateFormating = DateFormat("dd-MM-yyyy HH:mm");
           DateTime snoozedDT = newdateFormating.parse(snoozedMed.dosetime!);
-          //                        new if structure start
+          //                 new if structure start
           if (snoozedMed.snoozedIteration != null &&
               snoozedMed.snoozedIteration! <= 3) {
             if (DateTime.now().hour.compareTo(snoozedDT.hour) == 0) {
-              debugPrint('In Main.dart: snooze hour is same');
+              ePrint('In Main.dart: snooze hour is same');
               if (DateTime.now().minute.compareTo(snoozedDT.minute) == 0) {
-                debugPrint('In Main.dart: snooze minute is also same');
-                print('In Main.dart: at index $i and j');
+                ePrint('In Main.dart: snooze minute is also same');
+                ePrint('In Main.dart: at index $i and j');
                 sharedPreferences.setBool("isDoseTime", true);
                 ////////  new code start here
-                print('In Main.dart: $dosingList');
+                ePrint('In Main.dart: $dosingList');
                 Meducine meducine = Meducine(
                   medicineId: snoozedMed.id,
                   medicineName: snoozedMed.name,
@@ -173,27 +161,23 @@ getAndCheck() async {
                   snoozedIteration: snoozedMed.snoozedIteration,
                 );
                 String jsonn = jsonEncode(meducine);
-                print('In Main.dart: snoozed encoded $jsonn');
+                ePrint('In Main.dart: snoozed encoded $jsonn');
                 dosingList.add(jsonn);
-                print(dosingList);
+                ePrint(dosingList);
                 sharedPreferences.setStringList('dosingList', dosingList);
-                // await AppLauncher.openApp(
-                //     androidApplicationId: "com.example.watch_it");
               } else {
-                debugPrint('In Main.dart: snoozed minute is also not same');
-                // sharedPreferences.setBool("isDoseTime", false);
+                ePrint('In Main.dart: snoozed minute is also not same');
               }
             } else {
-              debugPrint('In Main.dart: snoozed hour is not same');
-              // sharedPreferences.setBool("isDoseTime", false);
+              ePrint('In Main.dart: snoozed hour is not same');
             }
           } else {
             ePrint(
                 'In Main.dart: Snoozed Iteration is greater than equal to 3 and value is ${snoozedMed.snoozedIteration}');
-
             String patientCode = sharedPreferences.getString('p_code')!;
             var url = Uri.parse(
                 '${BaseUrl.baseurl}/api/patients/$patientCode/prescriptions/${snoozedMed.id}');
+
             final response = await patch(
               url,
               body: {
@@ -203,11 +187,14 @@ getAndCheck() async {
               },
             );
             if (response.statusCode == 200) {
-              print('In Main.dart: ${response.body}');
+              ePrint('In Main.dart: snooze skip response ${response.body}');
               snoozedList.removeAt(i);
-              ePrint('removed by index');
+              ePrint(
+                  'In Main.dart: removed by index and snoozedList is $snoozedList');
+              sharedPreferences.setStringList('snoozedList', snoozedList);
+              ePrint('In Main.dart: snooze list submitted after skipped');
             } else {
-              print('In Main.dart: ${response.body}');
+              ePrint('In Main.dart: ${response.body}');
             }
           }
         }
@@ -223,7 +210,7 @@ getAndCheck() async {
       }
     }
   } else {
-    print('In Main.dart: pcode is null');
+    ePrint('In Main.dart: pcode is null');
   }
 
   ePrint('In Main.dart: Call back end time ${DateTime.now()}');
@@ -242,11 +229,11 @@ Future<void> main() async {
       Duration(minutes: 1), alarmID, getAndCheck);
   SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
   bool? isDoseTime = sharedPreferences.getBool("isDoseTime");
-  print('In servise dosetime $isDoseTime');
+  ePrint('In servise dosetime $isDoseTime');
   int screenindex = 0;
   if (isDoseTime == true) {
     screenindex = 1;
-    print('screen index in if is $screenindex');
+    ePrint('screen index in if is $screenindex');
   }
   var screens = [
     MyApp(),
@@ -363,8 +350,7 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   Future<void> getData() async {
-    print('in splash getdata');
-
+    ePrint('in splash getdata');
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     String? sllang = sharedPreferences.getString("apilang");
     isPaired = sharedPreferences.getBool("isPaired");
@@ -402,7 +388,7 @@ class _SplashScreenState extends State<SplashScreen> {
         selectedlanguage = "en";
       });
     }
-    print(selectedlanguage);
+    ePrint(selectedlanguage!);
     // print('and then ' + selectedlanguage.toString());
     var setlanguage = Provider.of<LanguageProvider>(context, listen: false);
     setlanguage.setleanguage(selectedlanguage!);

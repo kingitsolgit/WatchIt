@@ -57,11 +57,6 @@ class _TakeItNowState extends State<TakeItNow> {
   }
 
   @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: WatchShape(
@@ -70,10 +65,7 @@ class _TakeItNowState extends State<TakeItNow> {
             mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
               Container(
-                padding: EdgeInsets.symmetric(
-                  vertical: 0,
-                  horizontal: 25,
-                ),
+                padding: EdgeInsets.symmetric(horizontal: 25),
                 height: Get.height / 4,
                 width: Get.width,
                 color: Colors.black,
@@ -85,10 +77,7 @@ class _TakeItNowState extends State<TakeItNow> {
                 ),
               ),
               Container(
-                padding: EdgeInsets.symmetric(
-                  vertical: 0,
-                  horizontal: 25,
-                ),
+                padding: EdgeInsets.symmetric(horizontal: 25),
                 height: Get.height / 4,
                 width: Get.width,
                 color: Colors.black,
@@ -119,10 +108,7 @@ class _TakeItNowState extends State<TakeItNow> {
                 ),
               ),
               Container(
-                padding: EdgeInsets.symmetric(
-                  vertical: 0,
-                  horizontal: 20,
-                ),
+                padding: EdgeInsets.symmetric(horizontal: 20),
                 height: Get.height / 2,
                 width: Get.width,
                 color: bgColor,
@@ -186,30 +172,6 @@ class _TakeItNowState extends State<TakeItNow> {
     );
   }
 
-  Future<bool?> updateStatus(Meducine meducine) async {
-    ePrint('update status has started');
-    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-    String patientCode = sharedPreferences.getString('p_code')!;
-    print('in updatestatus after code in take it now.');
-    var url = Uri.parse(
-        '${BaseUrl.baseurl}/api/patients/$patientCode/prescriptions/${meducine.medicineId}');
-    final response = await patch(url, body: {
-      "status": "Taken", // "Skipped",
-      "time": meducine.medicineTime, // "2021-11-22 12:12", // "13:30",
-      "medicine_time_id": '${meducine.medicinetimeindex}'
-    });
-    print('what is happening here');
-
-    if (response.statusCode == 200) {
-      print(response.body);
-      addLogData(meducine);
-      return true;
-    } else {
-      print(response.body);
-      showMyDialog('Some Error Occur');
-    }
-  }
-
   Future showMyDialog(String message) {
     return showDialog(
       context: context,
@@ -245,11 +207,58 @@ class _TakeItNowState extends State<TakeItNow> {
     });
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     sharedPreferences.setBool("isDoseTime", false);
-    ePrint('In Take it now: Dosetime is set to false');
+    ePrint('In Take it now: Dose time is set to false');
+  }
+
+  Future<bool?> takeIt() async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    if (sharedPreferences.getStringList('dosingList') != null) {
+      List<String>? encodedStringList =
+          sharedPreferences.getStringList('dosingList');
+      for (var i = 0; i < encodedStringList!.length; i++) {
+        ePrint('list obj $i is ${encodedStringList[i]}');
+        Map<String, dynamic> dosingMaplistobj =
+            jsonDecode(encodedStringList[i]);
+        Meducine meducine = Meducine.fromJson(dosingMaplistobj);
+        ePrint('meducine medicineId is ${meducine.medicineId}');
+        ePrint('meducine time is ${meducine.medicineTime}');
+        DateFormat newdateFormating =
+            DateFormat("dd-MM-yyyy HH:mm", context.locale.toString());
+        // DateFormat newdateFormating = DateFormat("yyyy-MM-dd HH:mm");
+        DateTime newDT = newdateFormating.parse(meducine.medicineTime!);
+        ePrint('new Dt is $newDT');
+        ePrint('gone');
+        return updateStatus(meducine);
+      }
+    }
+  }
+
+  Future<bool?> updateStatus(Meducine meducine) async {
+    ePrint('update status has started');
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    String patientCode = sharedPreferences.getString('p_code')!;
+    print('in update status after code in take it now.');
+    var url = Uri.parse(
+        '${BaseUrl.baseurl}/api/patients/$patientCode/prescriptions/${meducine.medicineId}');
+    final response = await patch(url, body: {
+      "status": "Taken", // "Skipped",
+      "time": meducine.medicineTime, // "13:30",
+      "medicine_time_id": '${meducine.medicinetimeindex}'
+    });
+    print('what is happening here');
+
+    if (response.statusCode == 200) {
+      print(response.body);
+      addLogData(meducine);
+      return true;
+    } else {
+      print(response.body);
+      showMyDialog('Some Error Occur');
+    }
   }
 
   Future<bool?> addLogData(Meducine meducine) async {
-    ePrint('addloogdata started');
+    ePrint('addlogdata started');
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     if (sharedPreferences.getStringList('logList') == null) {
       ePrint('ad log from else');
@@ -271,28 +280,5 @@ class _TakeItNowState extends State<TakeItNow> {
     ePrint('logAdded');
     showMyDialog('Done');
     return true;
-  }
-
-  Future<bool?> takeIt() async {
-    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-    if (sharedPreferences.getStringList('dosingList') != null) {
-      List<String>? encodedStringList =
-          sharedPreferences.getStringList('dosingList');
-      for (var i = 0; i < encodedStringList!.length; i++) {
-        ePrint('list obj $i is ${encodedStringList[i]}');
-        Map<String, dynamic> dosingMaplistobj =
-            jsonDecode(encodedStringList[i]);
-        Meducine meducine = Meducine.fromJson(dosingMaplistobj);
-        ePrint('meducine time is ${meducine.medicineId}');
-        ePrint('meducine time is ${meducine.medicineTime}');
-        DateFormat newdateFormating =
-            DateFormat("dd-MM-yyyy HH:mm", context.locale.toString());
-        // DateFormat newdateFormating = DateFormat("yyyy-MM-dd HH:mm");
-        DateTime newDT = newdateFormating.parse(meducine.medicineTime!);
-        ePrint('new Dt is $newDT');
-        ePrint('gone');
-        return updateStatus(meducine);
-      }
-    }
   }
 }
