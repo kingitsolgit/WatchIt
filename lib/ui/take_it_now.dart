@@ -224,7 +224,7 @@ class _TakeItNowState extends State<TakeItNow> {
         ePrint('meducine time is ${meducine.medicineTime}');
         DateFormat newdateFormating =
             DateFormat("dd-MM-yyyy HH:mm", context.locale.toString());
-        // DateFormat newdateFormating = DateFormat("yyyy-MM-dd HH:mm");
+        // DateFormat dateFormating = DateFormat("yyyy-MM-dd HH:mm");
         DateTime newDT = newdateFormating.parse(meducine.medicineTime!);
         ePrint('new Dt is $newDT');
         ePrint('gone');
@@ -274,7 +274,7 @@ class _TakeItNowState extends State<TakeItNow> {
     );
     ePrint('$log');
     String logString = jsonEncode(log);
-    ePrint('encoded logstring $logString');
+    ePrint('encoded log string $logString');
     logList!.add(logString);
     sharedPreferences.setStringList('logList', logList!);
     ePrint('logAdded');

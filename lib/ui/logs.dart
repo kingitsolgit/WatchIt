@@ -71,28 +71,28 @@ class _LogsState extends State<Logs> {
         ePrint('In 3 day Log: list obj $i is ${logStringList[i]}');
         Map<String, dynamic> dosingMaplistobj = jsonDecode(logStringList[i]);
         var userDosing = Log.fromJson(dosingMaplistobj);
-        ePrint(userDosing.medicineName!);
+        ePrint(userDosing.takenAt!);
         Log log = Log(
           medicineName: userDosing.medicineName,
           status: userDosing.status,
           takenAt: userDosing.takenAt,
         );
         DateFormat newdateFormating =
-            DateFormat("yyyy-MM-dd", context.locale.toString());
+            DateFormat("dd-MM-yyyy", context.locale.toString());
+        // DateFormat("yyyy-MM-dd", context.locale.toString());
         DateTime nowDate = newdateFormating.parse(DateTime.now().toString());
         DateTime takenAtDate = newdateFormating.parse(userDosing.takenAt!);
-        if (nowDate.difference(takenAtDate) == Duration(hours: 0)) {
-          ePrint('Duration(hours: 0)');
-          logList1.add(log);
-        } else if (nowDate.difference(takenAtDate) == Duration(hours: 24)) {
-          ePrint('Duration(hours: 24)');
-          logList2.add(log);
-        } else if (nowDate.difference(takenAtDate) == Duration(hours: 48)) {
-          ePrint('Duration(hours: 48)');
-          logList3.add(log);
-        }
+        // if (nowDate.difference(takenAtDate) == Duration(hours: 0)) {
+        //   ePrint('Duration(hours: 0)');
+        //   logList1.add(log);
+        // } else if (nowDate.difference(takenAtDate) == Duration(hours: 24)) {
+        //   ePrint('Duration(hours: 24)');
+        //   logList2.add(log);
+        // } else if (nowDate.difference(takenAtDate) == Duration(hours: 48)) {
+        //   ePrint('Duration(hours: 48)');
+        //   logList3.add(log);
+        // }
         ePrint('In logs nowDate is $nowDate and takeat is $takenAtDate');
-
         logList.add(log);
       }
       // logList.sort
@@ -144,12 +144,21 @@ class _LogsState extends State<Logs> {
                           child: ListView.builder(
                             itemCount: logList.length,
                             itemBuilder: (context, index) {
-                              DateFormat newdateFormating = DateFormat(
-                                "yyyy-MM-dd HH:mm",
-                                context.locale.toString(),
-                              );
+                              DateFormat newdateFormating;
+                              if (logList[index].status == "Taken") {
+                                newdateFormating = DateFormat(
+                                  "yyyy-MM-dd HH:mm",
+                                  context.locale.toString(),
+                                );
+                              } else {
+                                newdateFormating = DateFormat(
+                                  "dd-MM-yyyy HH:mm",
+                                  context.locale.toString(),
+                                );
+                              }
                               DateTime newDT = newdateFormating
                                   .parse(logList[index].takenAt!);
+                              ePrint('NEW DT  IS this $newDT');
                               String mTime = DateFormat('HH:mm').format(newDT);
                               return LogButtons(
                                 setHead: true,
@@ -315,7 +324,7 @@ class _LogButtonsState extends State<LogButtons> {
       dayString = 'Yesterday';
       return dayString;
     } else {
-      dayString = DateFormat('dd MMMM yyyy').format(dateTime);
+      dayString = DateFormat('dd MMM yyyy').format(dateTime);
       return dayString;
     }
   }
