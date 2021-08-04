@@ -142,7 +142,7 @@ class _LogsState extends State<Logs> {
                         Container(
                           height: Get.height * 0.8,
                           child: ListView.builder(
-                            itemCount: logList.length,
+                            itemCount: logList.length + 1,
                             itemBuilder: (context, index) {
                               DateFormat newdateFormating;
                               if (logList[index].status == "Taken") {
@@ -158,14 +158,19 @@ class _LogsState extends State<Logs> {
                               }
                               DateTime newDT = newdateFormating
                                   .parse(logList[index].takenAt!);
-                              ePrint('NEW DT  IS this $newDT');
+                              ePrint('NEW DT $index IS this $newDT');
                               String mTime = DateFormat('HH:mm').format(newDT);
-                              return LogButtons(
-                                setHead: true,
-                                name: logList[index].medicineName,
-                                text: '${logList[index].status} at $mTime',
-                                datetime: newDT,
-                              );
+                              return index != logList.length
+                                  ? LogButtons(
+                                      setHead: true,
+                                      name: logList[index].medicineName,
+                                      text:
+                                          '${logList[index].status} at $mTime',
+                                      datetime: newDT,
+                                    )
+                                  : SizedBox(
+                                      height: 50,
+                                    );
                             },
                           ),
                         ),

@@ -271,7 +271,7 @@ class _MyAppState extends State<MyApp> {
           },
         ),
       ],
-      child: GetMaterialApp(
+      child: MaterialApp(
         localizationsDelegates: context.localizationDelegates,
         supportedLocales: context.supportedLocales,
         locale: context.locale,
