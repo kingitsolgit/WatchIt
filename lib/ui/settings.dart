@@ -123,7 +123,10 @@ class Settings extends StatelessWidget {
     sharedPreferences.clear();
     sharedPreferences.setBool('isPaired', false);
     sharedPreferences.remove('p_code');
-    Get.offAll(PairScreen());
+    Navigator.pushAndRemoveUntil(
+        context,
+        new MaterialPageRoute(builder: (context) => PairScreen()),
+        (route) => false);
   }
 }
 

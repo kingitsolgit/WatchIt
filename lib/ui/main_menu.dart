@@ -44,7 +44,8 @@ class _MainMenuState extends State<MainMenu> with WidgetsBindingObserver {
   }
 
   callBack1() {
-    Timer.periodic(Duration(seconds: 57), (timer) {
+    Timer.periodic(Duration(minutes: 1), (timer) {
+      //seconds: 57
       myCallBack();
     });
     ePrint('In callBack1');
@@ -229,10 +230,13 @@ class _MainMenuState extends State<MainMenu> with WidgetsBindingObserver {
   }
 
   onMainMenuCallBack() async {
+    DateTime nowExact = DateTime.now();
     List<String> dosingList = [];
     ePrint(
-        ' In MainMenu ontMainMenuCallBack Function Start Time ${DateTime.now()}');
+        'In MainMenu ontMainMenuCallBack FunctionStartTime ${DateTime.now()}');
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    String? saved = sharedPreferences.getString('responseString');
+    ePrint('saved response $saved');
     if (sharedPreferences.getString('p_code') != null) {
       String? pcode = sharedPreferences.getString('p_code')!;
       var url =
@@ -251,17 +255,18 @@ class _MainMenuState extends State<MainMenu> with WidgetsBindingObserver {
                 medicineTime[j].date! + ' ' + medicineTime[j].time!;
             Data preData = responc.data![i];
             DateTime medicineDT = dateFormating.parse(timeString);
+            ePrint('MainMenu myDT $medicineDT');
             DateTime medicineSubDT = medicineDT.subtract(Duration(minutes: 1));
-            ePrint('mySubDT $medicineSubDT');
-            DateTime now = DateTime.now();
-            if (now.year == medicineSubDT.year &&
-                now.month == medicineSubDT.month &&
-                now.day == medicineSubDT.day) {
-              debugPrint('Day is same');
-              if (now.hour == medicineSubDT.hour &&
-                  now.minute == medicineSubDT.minute) {
-                debugPrint('time is also same');
-                ePrint('at index $i and $j');
+            ePrint('MainMenu mySubDT $medicineSubDT');
+            // DateTime now = DateTime.now();
+            if (nowExact.year == medicineSubDT.year &&
+                nowExact.month == medicineSubDT.month &&
+                nowExact.day == medicineSubDT.day) {
+              ePrint('MainMenu Day is same');
+              if (nowExact.hour == medicineSubDT.hour &&
+                  nowExact.minute == medicineSubDT.minute) {
+                debugPrint('MainMenu time is also same');
+                // ePrint('at index $i and $j');
                 sharedPreferences.setBool("isDoseTime", true);
                 Meducine meducine = Meducine(
                   medicineId: preData.sId,
@@ -273,21 +278,21 @@ class _MainMenuState extends State<MainMenu> with WidgetsBindingObserver {
                   medicinetimeindex: preData.medicineTime![j].id!,
                   dateRange: preData.doseTimeDuration,
                 );
-                String jsonn = jsonEncode(meducine);
-                dosingList.add(jsonn);
+                String meducineString = jsonEncode(meducine);
+                dosingList.add(meducineString);
                 sharedPreferences.setStringList('dosingList', dosingList);
               } else {
-                ePrint('time is not same');
+                ePrint('MainMenu time is not same');
               }
             } else {
-              ePrint('day is not same');
+              ePrint('MainMenu day is not same');
             }
           }
         }
         ///////////code start for next doses
         List<String> nextDoseList = [];
         sharedPreferences.remove('nextDoseList');
-        ePrint(' In MainMenu nextDoseList is removed');
+        ePrint('In MainMenu nextDoseList is removed');
         for (var i = 0; i < responc.data!.length; i++) {
           Data prescriptionData = responc.data![i];
           List<MedicineTime>? medicineTime = prescriptionData.medicineTime;
@@ -332,7 +337,7 @@ class _MainMenuState extends State<MainMenu> with WidgetsBindingObserver {
           ePrint('In MainMenu list assigned of ${snoozedList!.length} length');
           for (var i = 0; i < snoozedList.length; i++) {
             ePrint(
-                'In MainMenu snooz loop started snoozedList Length ${snoozedList.length}');
+                'In MainMenu snooze loop started snoozedList Length ${snoozedList.length}');
             ePrint('In MainMenu list obj $i is ${snoozedList[i]}');
             Map<String, dynamic> dosingMaplistobj = jsonDecode(snoozedList[i]);
             var snoozedMed = SnoozedMedicine.fromJson(dosingMaplistobj);
@@ -410,18 +415,204 @@ class _MainMenuState extends State<MainMenu> with WidgetsBindingObserver {
       ePrint('In MainMenu pcode is null');
     }
     if (dosingList.isNotEmpty) {
-      Get.offAll(NotificationTime());
+      Navigator.pushAndRemoveUntil(
+          context,
+          new MaterialPageRoute(builder: (context) => NotificationTime()),
+          (route) => false);
     } else {
       sharedPreferences.setBool("isDoseTime", false);
       ePrint('In MainMenu: dosing list is empty');
     }
-    ePrint(
-        ' In MainMenu ontMainMenuCallBack Function End Time ${DateTime.now()}');
+    ePrint('In MainMenu ontMainMenuCallBack FunctionEndTime ${DateTime.now()}');
   }
 
   void myCallBack() {
     ePrint('In myCallBack end');
     onMainMenuCallBack();
+  }
+
+  Future<void> onMainMenuCallBack2() async {
+    ////////////////////////////////////////////////////////////////////////
+    DateTime nowExact = DateTime.now();
+    ePrint('In MainMenu FunctionStartTime ${DateTime.now()}');
+    List<String> dosingList = [];
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    String? saved = sharedPreferences.getString('responseString');
+    ePrint('saved response $saved');
+    var responc = Prescription.fromJson(jsonDecode(saved!));
+    DateFormat dateFormating = DateFormat("dd-MM-yyyy HH:mm");
+    for (var i = 0; i < responc.data!.length; i++) {
+      List<MedicineTime>? medicineTime = responc.data![i].medicineTime;
+      for (var j = 0; j < medicineTime!.length; j++) {
+        String timeString = medicineTime[j].date! + ' ' + medicineTime[j].time!;
+        Data preData = responc.data![i];
+        DateTime medicineDT = dateFormating.parse(timeString);
+        ePrint('MainMenu myDT $medicineDT');
+        DateTime medicineSubDT = medicineDT.subtract(Duration(minutes: 1));
+        ePrint('MainMenu mySubDT $medicineSubDT');
+        // DateTime now = DateTime.now();
+        if (nowExact.year == medicineSubDT.year &&
+            nowExact.month == medicineSubDT.month &&
+            nowExact.day == medicineSubDT.day) {
+          ePrint('MainMenu Day is same');
+          if (nowExact.hour == medicineSubDT.hour &&
+              nowExact.minute == medicineSubDT.minute) {
+            debugPrint('MainMenu time is also same');
+            // ePrint('at index $i and $j');
+            sharedPreferences.setBool("isDoseTime", true);
+            Meducine meducine = Meducine(
+              medicineId: preData.sId,
+              medicineName: preData.medicineName,
+              dailyDosePill: preData.dailyDosePill,
+              medicineTime: preData.medicineTime![j].date! +
+                  ' ' +
+                  preData.medicineTime![j].time!,
+              medicinetimeindex: preData.medicineTime![j].id!,
+              dateRange: preData.doseTimeDuration,
+            );
+            String meducineString = jsonEncode(meducine);
+            dosingList.add(meducineString);
+            sharedPreferences.setStringList('dosingList', dosingList);
+          } else {
+            ePrint('MainMenu time is not same');
+          }
+        } else {
+          ePrint('MainMenu day is not same');
+        }
+      }
+    }
+    ///////////code start for next doses
+    List<String> nextDoseList = [];
+    sharedPreferences.remove('nextDoseList');
+    ePrint('In MainMenu nextDoseList is removed');
+    for (var i = 0; i < responc.data!.length; i++) {
+      Data prescriptionData = responc.data![i];
+      List<MedicineTime>? medicineTime = prescriptionData.medicineTime;
+      for (var j = 0; j < medicineTime!.length; j++) {
+        /////////////////   New code for next doses
+        String timeInString =
+            medicineTime[j].date! + ' ' + medicineTime[j].time!;
+        DateFormat newdateFormating = DateFormat("dd-MM-yyyy HH:mm");
+        DateTime newDT = newdateFormating.parse(timeInString);
+        // ePrint('newDT $newDT');
+        if (newDT.isAfter(DateTime.now())) {
+          // ePrint('time isAfter from now');
+          Meducine meducine = Meducine(
+            medicineId: prescriptionData.sId,
+            medicineName: prescriptionData.medicineName,
+            dailyDosePill: prescriptionData.dailyDosePill,
+            medicineTime: prescriptionData.medicineTime![j].date! +
+                ' ' +
+                prescriptionData.medicineTime![j].time!,
+            medicinetimeindex: prescriptionData.medicineTime![j].id!,
+            dateRange: prescriptionData.doseTimeDuration,
+          );
+          String meducineString = jsonEncode(meducine);
+          // ePrint('Next doses Encoded $meducineString end the');
+          nextDoseList.add(meducineString);
+          // ePrint(nextDoseList);
+          sharedPreferences.setStringList('nextDoseList', nextDoseList);
+          ePrint('In MainMenu next dose added');
+          j = medicineTime.length - 1;
+        }
+        // setAsNextMedicines(myDT,responc);
+
+      }
+    }
+    ///////////////////code ending for next doses
+
+    /////////////////////////////////for snooze list checking
+    ePrint('Outside of snoozed list checking');
+    if (sharedPreferences.getStringList('snoozedList') != null) {
+      List<String>? snoozedList =
+          sharedPreferences.getStringList('snoozedList');
+      ePrint('In MainMenu list assigned of ${snoozedList!.length} length');
+      for (var i = 0; i < snoozedList.length; i++) {
+        ePrint(
+            'In MainMenu snooze loop started snoozedList Length ${snoozedList.length}');
+        ePrint('In MainMenu list obj $i is ${snoozedList[i]}');
+        Map<String, dynamic> dosingMaplistobj = jsonDecode(snoozedList[i]);
+        var snoozedMed = SnoozedMedicine.fromJson(dosingMaplistobj);
+        // ePrint('In MainMenu snoozedmedicinename: ${snoozedMed.name}, snoozedmedicinetime:  ${snoozedMed.dosetime}');
+        DateFormat newdateFormating = DateFormat("dd-MM-yyyy HH:mm");
+        DateTime snoozedDT = newdateFormating.parse(snoozedMed.dosetime!);
+        //             new if structure start
+        if (snoozedMed.snoozedIteration != null &&
+            snoozedMed.snoozedIteration! < 3) {
+          if (DateTime.now().hour.compareTo(snoozedDT.hour) == 0) {
+            ePrint('In MainMenu snooze hour is same');
+            if (DateTime.now().minute.compareTo(snoozedDT.minute) == 0) {
+              ePrint('snooze minute is also same');
+              ePrint('At index $i and j');
+              sharedPreferences.setBool("isDoseTime", true);
+              ////////  new code start here
+              print('In MainMenu dosing list $dosingList');
+              Meducine meducine = Meducine(
+                medicineId: snoozedMed.id,
+                medicineName: snoozedMed.name,
+                dailyDosePill: snoozedMed.routine,
+                medicineTime: snoozedMed.dosetime,
+                medicinetimeindex: snoozedMed.timeIndex,
+                dateRange: snoozedMed.dosetime,
+                isSnoozed: snoozedMed.isSnoozed,
+                snoozedIteration: snoozedMed.snoozedIteration,
+              );
+              String jsonn = jsonEncode(meducine);
+              // print('In MainMenu encoded jsonn $jsonn');
+              dosingList.add(jsonn);
+              ePrint('In MainMenu dosing list $dosingList');
+              sharedPreferences.setStringList('dosingList', dosingList);
+              // await AppLauncher.openApp(
+              //     androidApplicationId: "com.example.watch_it");
+            } else {
+              ePrint('In MainMenu minute is also not same.');
+            }
+          } else {
+            ePrint('In MainMenu hour is not same.');
+          }
+        } else {
+          ePrint('In MainMenu ${snoozedMed.dosetime}');
+          // DateTime newDT = newdateFormating.parse(snoozedMed.dosetime!);
+          // String mTime = DateFormat('HH:mm').format(newDT);
+          SharedPreferences sharedPreferences =
+              await SharedPreferences.getInstance();
+          String patientCode = sharedPreferences.getString('p_code')!;
+          var url = Uri.parse(
+              '${BaseUrl.baseurl}/api/patients/$patientCode/prescriptions/${snoozedMed.id}');
+          final response = await patch(
+            url,
+            body: {
+              "status": "Skipped",
+              "time": snoozedMed.dosetime, // "13:30",
+              "medicine_time_id": '${snoozedMed.timeIndex}' // 2
+            },
+          );
+          if (response.statusCode == 200) {
+            ePrint('In MainMenu ${response.body}');
+            snoozedList.removeAt(i);
+            ePrint(
+                'In MainMenu: removed by index and snoozedList is $snoozedList');
+            sharedPreferences.setStringList('snoozedList', snoozedList);
+            ePrint('In MainMenu: snooze list submitted after skipped');
+          } else {
+            ePrint('In MainMenu ${response.body}');
+          }
+        }
+      }
+    } else {
+      ePrint('In MainMenu shared snoozed list equal null');
+    }
+    if (dosingList.isNotEmpty) {
+      Navigator.pushAndRemoveUntil(
+          context,
+          new MaterialPageRoute(builder: (context) => NotificationTime()),
+          (route) => false);
+    } else {
+      sharedPreferences.setBool("isDoseTime", false);
+      ePrint('In MainMenu: dosing list is empty');
+    }
+    ePrint('In MainMenu ontMainMenuCallBack FunctionEndTime ${DateTime.now()}');
+    ////////////////////////////////////////////////////////////////////////
   }
 }
 
@@ -465,10 +656,13 @@ class MenuButton extends StatelessWidget {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  text!,
-                  style: TextStyle(
-                    color: Colors.white,
+                Container(
+                  child: Text(
+                    text!,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      color: Colors.white,
+                    ),
                   ),
                 ),
               ],

@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:watch_it/ui/main_menu.dart';
 import 'package:watch_it/ui/medications_list.dart';
 import 'package:wear/wear.dart';
 
@@ -33,7 +34,10 @@ class _TakeItNowState extends State<TakeItNow> {
   Color bgColor = Colors.blueGrey.shade400;
   IconData icon = Icons.task_alt;
   double iconSize = 20;
-
+  String? pName;
+  String? pEmail;
+  String? pCode;
+  String? doctor;
   String? medID;
 
   List<String>? logList;
@@ -44,20 +48,35 @@ class _TakeItNowState extends State<TakeItNow> {
 
   timer() {
     Timer(
-      Duration(seconds: 8),
+      Duration(seconds: 4),
       () {
         // Get.offAll(MedicationList());
         // SystemNavigator.pop();
+
         Navigator.pushAndRemoveUntil(
             context,
-            new MaterialPageRoute(builder: (context) => MedicationList()),
+            new MaterialPageRoute(
+              builder: (context) =>
+                  MainMenu(pcode: pCode, pemail: pEmail, pname: pName),
+            ),
             (route) => false);
       },
     );
   }
 
+  Future<void> getPatientInfo() async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    // if (isPaired != null && isPaired == true) {
+    pName = sharedPreferences.getString('p_name')!;
+    pEmail = sharedPreferences.getString('p_email')!;
+    pCode = sharedPreferences.getString('p_code')!;
+    doctor = sharedPreferences.getString('doctor')!;
+    // }
+  }
+
   @override
   Widget build(BuildContext context) {
+    getPatientInfo();
     return Scaffold(
       body: WatchShape(
         builder: (context, shape, child) {

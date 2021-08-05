@@ -75,7 +75,7 @@ class _LanguagesState extends State<Languages> {
         appBar: AppBar(
           toolbarHeight: 40,
           title: Text(
-            'Languages',
+            tr('languages'), // 'Languages',
             style: TextStyle(
               color: Colors.white,
               fontSize: 14,

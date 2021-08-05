@@ -28,18 +28,21 @@ import 'package:watch_it/ui/snooze_duration.dart';
 import 'package:watch_it/ui/take_it_now.dart';
 
 getAndCheck() async {
-  ePrint('Call back start time ${DateTime.now()}');
+  DateTime nowExact = DateTime.now();
+  ePrint('In Main.dart: getAndCheck Call back start time ${DateTime.now()}');
+  List<String> dosingList = [];
   SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-
   if (sharedPreferences.getString('p_code') != null) {
     String? pcode = sharedPreferences.getString('p_code')!;
     var url = Uri.parse('${BaseUrl.baseurl}/api/patients/$pcode/prescriptions');
     final response = await get(url);
     if (response.statusCode == 200) {
       ePrint(response.body);
+      sharedPreferences.setString('responseString', response.body);
+      ePrint('Response Saved');
       var responc = Prescription.fromJson(jsonDecode(response.body));
       DateFormat dateFormating = DateFormat("dd-MM-yyyy HH:mm");
-      List<String> dosingList = [];
+      // List<String> dosingList = [];
       for (var i = 0; i < responc.data!.length; i++) {
         Data preData = responc.data![i];
         List<MedicineTime>? medicineTime = responc.data![i].medicineTime;
@@ -51,12 +54,12 @@ getAndCheck() async {
           // myDT.subtract(Duration(minutes: 1));
           ePrint('In Main.dart: subtracted myDT $myDT');
           // if (DateTime.now().hour.compareTo(myDT.hour) == 0) {
-          DateTime now = DateTime.now();
-          if (now.year == myDT.year &&
-              now.month == myDT.month &&
-              now.day == myDT.day) {
+          // DateTime now = DateTime.now();
+          if (nowExact.year == myDT.year &&
+              nowExact.month == myDT.month &&
+              nowExact.day == myDT.day) {
             ePrint('In Main.dart: Day is same');
-            if (now.hour == myDT.hour && now.minute == myDT.minute) {
+            if (nowExact.hour == myDT.hour && nowExact.minute == myDT.minute) {
               ePrint('In Main.dart: time is also same');
               ePrint('In Main.dart: at index $i and $j');
               sharedPreferences.setBool("isDoseTime", true);
@@ -77,11 +80,9 @@ getAndCheck() async {
               sharedPreferences.setStringList('dosingList', dosingList);
             } else {
               ePrint('In Main.dart: time is not same');
-              // sharedPreferences.setBool("isDoseTime", false);
             }
           } else {
             ePrint('In Main.dart: day is not same');
-            // sharedPreferences.setBool("isDoseTime", false);
           }
         }
       }
@@ -123,97 +124,97 @@ getAndCheck() async {
         }
       }
       //////////////////code ending for next doses
-      //////for snooze list checking
-      ePrint('Outside of snoozed list checking');
-      if (sharedPreferences.getStringList('snoozedList') != null) {
-        // ePrint('In Main.dart: not equal null');
-        List<String>? snoozedList =
-            sharedPreferences.getStringList('snoozedList');
-        ePrint('In Main.dart: list assigned of ${snoozedList!.length} length');
-        for (var i = 0; i < snoozedList.length; i++) {
-          ePrint(
-              'In Main.dart: snooz loop started snoozedList Length ${snoozedList.length}');
-          ePrint('In Main.dart: list obj $i is ${snoozedList[i]}');
-          Map<String, dynamic> dosingMaplistobj = jsonDecode(snoozedList[i]);
-          var snoozedMed = SnoozedMedicine.fromJson(dosingMaplistobj);
-          // ePrint('In Main.dart: snoozedmedicinename: ${snoozedMed.name}, snoozedmedicinetime:  ${snoozedMed.dosetime}');
-          DateFormat newdateFormating = DateFormat("dd-MM-yyyy HH:mm");
-          DateTime snoozedDT = newdateFormating.parse(snoozedMed.dosetime!);
-          //                 new if structure start
-          if (snoozedMed.snoozedIteration != null &&
-              snoozedMed.snoozedIteration! <= 3) {
-            if (DateTime.now().hour.compareTo(snoozedDT.hour) == 0) {
-              ePrint('In Main.dart: snooze hour is same');
-              if (DateTime.now().minute.compareTo(snoozedDT.minute) == 0) {
-                ePrint('In Main.dart: snooze minute is also same');
-                ePrint('In Main.dart: at index $i and j');
-                sharedPreferences.setBool("isDoseTime", true);
-                ////////  new code start here
-                ePrint('In Main.dart: $dosingList');
-                Meducine meducine = Meducine(
-                  medicineId: snoozedMed.id,
-                  medicineName: snoozedMed.name,
-                  dailyDosePill: snoozedMed.routine,
-                  medicineTime: snoozedMed.dosetime,
-                  medicinetimeindex: snoozedMed.timeIndex,
-                  dateRange: snoozedMed.dosetime,
-                  isSnoozed: snoozedMed.isSnoozed,
-                  snoozedIteration: snoozedMed.snoozedIteration,
-                );
-                String jsonn = jsonEncode(meducine);
-                ePrint('In Main.dart: snoozed encoded $jsonn');
-                dosingList.add(jsonn);
-                ePrint(dosingList);
-                sharedPreferences.setStringList('dosingList', dosingList);
-              } else {
-                ePrint('In Main.dart: snoozed minute is also not same');
-              }
-            } else {
-              ePrint('In Main.dart: snoozed hour is not same');
-            }
-          } else {
-            ePrint(
-                'In Main.dart: Snoozed Iteration is greater than equal to 3 and value is ${snoozedMed.snoozedIteration}');
-            String patientCode = sharedPreferences.getString('p_code')!;
-            var url = Uri.parse(
-                '${BaseUrl.baseurl}/api/patients/$patientCode/prescriptions/${snoozedMed.id}');
 
-            final response = await patch(
-              url,
-              body: {
-                "status": "Skipped",
-                "time": snoozedMed.dosetime, // "13:30",
-                "medicine_time_id": '${snoozedMed.timeIndex}' // 2
-              },
-            );
-            if (response.statusCode == 200) {
-              ePrint('In Main.dart: snooze skip response ${response.body}');
-              snoozedList.removeAt(i);
-              ePrint(
-                  'In Main.dart: removed by index and snoozedList is $snoozedList');
-              sharedPreferences.setStringList('snoozedList', snoozedList);
-              ePrint('In Main.dart: snooze list submitted after skipped');
-            } else {
-              ePrint('In Main.dart: ${response.body}');
-            }
-          }
-        }
-      } else {
-        ePrint('In Main.dart:shared snoozedlist equal null');
-      }
-      /////////////
-      if (dosingList.isNotEmpty) {
-        await AppLauncher.openApp(androidApplicationId: "com.example.watch_it");
-      } else {
-        ePrint('In Main.dart: dosingList is empty');
-        sharedPreferences.setBool("isDoseTime", false);
-      }
+    } else {
+      ePrint(response.body);
     }
   } else {
     ePrint('In Main.dart: pcode is null');
   }
-
-  ePrint('In Main.dart: Call back end time ${DateTime.now()}');
+  //////for snooze list checking
+  ePrint('Outside of snoozed list checking');
+  List<String>? snoozedList;
+  if (sharedPreferences.getStringList('snoozedList') != null) {
+    // ePrint('In Main.dart: not equal null');
+    snoozedList = sharedPreferences.getStringList('snoozedList');
+    ePrint('In Main.dart: list assigned of ${snoozedList!.length} length');
+    for (var i = 0; i < snoozedList.length; i++) {
+      // ePrint('In Main.dart: snooz loop started snoozedList Length ${snoozedList.length}');
+      ePrint('In Main.dart: list obj $i is ${snoozedList[i]}');
+      Map<String, dynamic> dosingMaplistobj = jsonDecode(snoozedList[i]);
+      var snoozedMed = SnoozedMedicine.fromJson(dosingMaplistobj);
+      // ePrint('In Main.dart: snoozedmedicinename: ${snoozedMed.name}, snoozedmedicinetime:  ${snoozedMed.dosetime}');
+      DateFormat newdateFormating = DateFormat("dd-MM-yyyy HH:mm");
+      DateTime snoozedDT = newdateFormating.parse(snoozedMed.dosetime!);
+      //                 new if structure start
+      if (snoozedMed.snoozedIteration != null &&
+          snoozedMed.snoozedIteration! <= 3) {
+        if (nowExact.hour.compareTo(snoozedDT.hour) == 0) {
+          // ePrint('In Main.dart: snooze hour is same');
+          if (nowExact.minute.compareTo(snoozedDT.minute) == 0) {
+            // ePrint('In Main.dart: snooze minute is same');
+            sharedPreferences.setBool("isDoseTime", true);
+            ////////  new code start here
+            ePrint('In Main.dart: $dosingList');
+            Meducine meducine = Meducine(
+              medicineId: snoozedMed.id,
+              medicineName: snoozedMed.name,
+              dailyDosePill: snoozedMed.routine,
+              medicineTime: snoozedMed.dosetime,
+              medicinetimeindex: snoozedMed.timeIndex,
+              dateRange: snoozedMed.dosetime,
+              isSnoozed: snoozedMed.isSnoozed,
+              snoozedIteration: snoozedMed.snoozedIteration,
+            );
+            String jsonn = jsonEncode(meducine);
+            // ePrint('In Main.dart: snoozed encoded $jsonn');
+            dosingList.add(jsonn);
+            ePrint('dosingList encoded $dosingList');
+            sharedPreferences.setStringList('dosingList', dosingList);
+          } else {
+            ePrint('In Main.dart: snoozed minute is also not same');
+          }
+        } else {
+          ePrint('In Main.dart: snoozed hour is not same');
+        }
+      } else {
+        ePrint(
+            'In Main.dart: SnoozedIteration >= 3 and value is ${snoozedMed.snoozedIteration}');
+        String patientCode = sharedPreferences.getString('p_code')!;
+        var url = Uri.parse(
+            '${BaseUrl.baseurl}/api/patients/$patientCode/prescriptions/${snoozedMed.id}');
+        final response = await patch(
+          url,
+          body: {
+            "status": "Skipped",
+            "time": snoozedMed.dosetime, // "13:30",
+            "medicine_time_id": '${snoozedMed.timeIndex}' // 2
+          },
+        );
+        if (response.statusCode == 200) {
+          ePrint('In Main.dart: snooze skip response ${response.body}');
+          snoozedList.removeAt(i);
+          ePrint(
+              'In Main.dart: removed by index and snoozedList is $snoozedList');
+          sharedPreferences.setStringList('snoozedList', snoozedList);
+          ePrint('In Main.dart: snooze list submitted after skipped');
+        } else {
+          ePrint('In Main.dart: ${response.body}');
+        }
+      }
+    }
+  } else {
+    ePrint('In Main.dart:shared snoozedlist equal null');
+  }
+  /////////////  snoozed checking end
+  /////////////  lauching code
+  if (dosingList.isNotEmpty) {
+    await AppLauncher.openApp(androidApplicationId: "com.example.watch_it");
+  } else {
+    ePrint('In Main.dart: dosingList is empty');
+    sharedPreferences.setBool("isDoseTime", false);
+  }
+  ePrint('In Main.dart: getAndCheck Call back end time ${DateTime.now()}');
 }
 
 Future<void> main() async {
@@ -229,7 +230,7 @@ Future<void> main() async {
       Duration(minutes: 1), alarmID, getAndCheck);
   SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
   bool? isDoseTime = sharedPreferences.getBool("isDoseTime");
-  ePrint('In servise dosetime $isDoseTime');
+  ePrint('In main() dosetime $isDoseTime');
   int screenindex = 0;
   if (isDoseTime == true) {
     screenindex = 1;

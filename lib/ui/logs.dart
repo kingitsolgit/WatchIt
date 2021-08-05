@@ -142,7 +142,7 @@ class _LogsState extends State<Logs> {
                         Container(
                           height: Get.height * 0.8,
                           child: ListView.builder(
-                            itemCount: logList.length + 1,
+                            itemCount: logList.length,
                             itemBuilder: (context, index) {
                               DateFormat newdateFormating;
                               if (logList[index].status == "Taken") {
@@ -160,17 +160,18 @@ class _LogsState extends State<Logs> {
                                   .parse(logList[index].takenAt!);
                               ePrint('NEW DT $index IS this $newDT');
                               String mTime = DateFormat('HH:mm').format(newDT);
-                              return index != logList.length
-                                  ? LogButtons(
-                                      setHead: true,
-                                      name: logList[index].medicineName,
-                                      text:
-                                          '${logList[index].status} at $mTime',
-                                      datetime: newDT,
-                                    )
-                                  : SizedBox(
-                                      height: 50,
-                                    );
+                              return
+                                  //  index == logList.length
+                                  //     ? SizedBox(
+                                  //         height: 50,
+                                  //       )
+                                  //     :
+                                  LogButtons(
+                                setHead: true,
+                                name: logList[index].medicineName,
+                                text: '${logList[index].status} at $mTime',
+                                datetime: newDT,
+                              );
                             },
                           ),
                         ),

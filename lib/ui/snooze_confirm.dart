@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:watch_it/ui/main_menu.dart';
 import 'package:watch_it/ui/medications_list.dart';
 import 'package:wear/wear.dart';
 
@@ -17,12 +18,16 @@ import 'package:watch_it/model/meducine.dart';
 import 'package:watch_it/model/snoozedmedicine.dart';
 
 class SnoozeConfirm extends StatelessWidget {
-  //const SnoozeConfirm{Key? key}) : super(key: key);
   static String id = 'snooze_confirm';
   final String? pilname;
   final List<String>? medicatedList;
   String? intervalString;
   int? duration = 10;
+
+  late String pName;
+  late String pEmail;
+  late String pCode;
+  late String doctor;
 
   SnoozeConfirm({
     Key? key,
@@ -31,6 +36,16 @@ class SnoozeConfirm extends StatelessWidget {
     this.intervalString,
     this.duration,
   }) : super(key: key);
+
+  Future<void> getPatientInfo() async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    // if (isPaired != null && isPaired == true) {
+    pName = sharedPreferences.getString('p_name')!;
+    pEmail = sharedPreferences.getString('p_email')!;
+    pCode = sharedPreferences.getString('p_code')!;
+    doctor = sharedPreferences.getString('doctor')!;
+    // }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -223,7 +238,10 @@ class SnoozeConfirm extends StatelessWidget {
     // Get.offAll(MedicationList());
     Navigator.pushAndRemoveUntil(
         context,
-        new MaterialPageRoute(builder: (context) => MedicationList()),
+        new MaterialPageRoute(
+          builder: (context) =>
+              MainMenu(pname: pName, pemail: pEmail, pcode: pCode),
+        ),
         (route) => false);
   }
 
@@ -253,7 +271,10 @@ class SnoozeConfirm extends StatelessWidget {
     // Get.offAll(MedicationList());
     Navigator.pushAndRemoveUntil(
         context,
-        new MaterialPageRoute(builder: (context) => MedicationList()),
+        new MaterialPageRoute(
+          builder: (context) =>
+              MainMenu(pname: pName, pemail: pEmail, pcode: pCode),
+        ),
         (route) => false);
   }
 

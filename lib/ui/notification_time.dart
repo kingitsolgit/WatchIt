@@ -152,9 +152,9 @@ class _NotificationTimeState extends State<NotificationTime> {
                         Text(
                           dosesNames!.isNotEmpty
                               ? isDoseTime == false
-                                  ? 'Next Doses are'
+                                  ? tr('next doses are')
                                   : tr('its time for')
-                              : 'No Medicine Yet..!',
+                              : tr('no medicine'),
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             fontSize: 16,
@@ -290,7 +290,7 @@ class _NotificationTimeState extends State<NotificationTime> {
   Future<void> ringTheBell() async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     bool? isDoseTime = sharedPreferences.getBool("isDoseTime");
-    debugPrint('In notification dosetime is $isDoseTime');
+    ePrint('In notification dosetime is $isDoseTime');
     if (isDoseTime == true) {
       await FlutterRingtonePlayer.play(
         android: AndroidSounds.alarm,
@@ -314,7 +314,7 @@ class _NotificationTimeState extends State<NotificationTime> {
 
     if (sharedPreferences.getStringList('snoozedList') == null) {
       snoozedList = [];
-      print('in if in snoozenow');
+      ePrint('in if in snoozenow');
     } else {
       snoozedList = sharedPreferences.getStringList('snoozedList');
       ePrint('in else in snoozenow');
