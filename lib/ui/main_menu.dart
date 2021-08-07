@@ -44,7 +44,7 @@ class _MainMenuState extends State<MainMenu> with WidgetsBindingObserver {
   }
 
   callBack1() {
-    Timer.periodic(Duration(minutes: 1), (timer) {
+    Timer.periodic(Duration(seconds: 59), (timer) {
       //seconds: 57
       myCallBack();
     });
@@ -537,13 +537,12 @@ class _MainMenuState extends State<MainMenu> with WidgetsBindingObserver {
         DateFormat newdateFormating = DateFormat("dd-MM-yyyy HH:mm");
         DateTime snoozedDT = newdateFormating.parse(snoozedMed.dosetime!);
         //             new if structure start
-        if (snoozedMed.snoozedIteration != null &&
-            snoozedMed.snoozedIteration! < 3) {
+        if (snoozedMed.snoozedIteration! < 3) {
           if (DateTime.now().hour.compareTo(snoozedDT.hour) == 0) {
             ePrint('In MainMenu snooze hour is same');
             if (DateTime.now().minute.compareTo(snoozedDT.minute) == 0) {
               ePrint('snooze minute is also same');
-              ePrint('At index $i and j');
+              // ePrint('At index $i and j');
               sharedPreferences.setBool("isDoseTime", true);
               ////////  new code start here
               print('In MainMenu dosing list $dosingList');
@@ -582,7 +581,7 @@ class _MainMenuState extends State<MainMenu> with WidgetsBindingObserver {
           final response = await patch(
             url,
             body: {
-              "status": "Skipped",
+              "status": "Skippedz",
               "time": snoozedMed.dosetime, // "13:30",
               "medicine_time_id": '${snoozedMed.timeIndex}' // 2
             },

@@ -116,6 +116,7 @@ class _LogsState extends State<Logs> {
               backgroundColor: Colors.black,
               body: WatchShape(
                 builder: (context, shape, child) {
+                  // child = SizedBox();
                   return Container(
                     width: Get.width,
                     height: Get.height,
@@ -160,13 +161,7 @@ class _LogsState extends State<Logs> {
                                   .parse(logList[index].takenAt!);
                               ePrint('NEW DT $index IS this $newDT');
                               String mTime = DateFormat('HH:mm').format(newDT);
-                              return
-                                  //  index == logList.length
-                                  //     ? SizedBox(
-                                  //         height: 50,
-                                  //       )
-                                  //     :
-                                  LogButtons(
+                              return LogButtons(
                                 setHead: true,
                                 name: logList[index].medicineName,
                                 text: '${logList[index].status} at $mTime',
@@ -184,7 +179,7 @@ class _LogsState extends State<Logs> {
           } else {
             return Scaffold(
               body: Center(
-                child: Text('No Record Yet'),
+                child: Text(tr('no record')),
               ),
             );
           }

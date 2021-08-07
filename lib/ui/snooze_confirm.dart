@@ -6,7 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart';
+import 'package:restart_app/restart_app.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:watch_it/main.dart';
 import 'package:watch_it/ui/main_menu.dart';
 import 'package:watch_it/ui/medications_list.dart';
 import 'package:wear/wear.dart';
@@ -39,16 +41,15 @@ class SnoozeConfirm extends StatelessWidget {
 
   Future<void> getPatientInfo() async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-    // if (isPaired != null && isPaired == true) {
     pName = sharedPreferences.getString('p_name')!;
     pEmail = sharedPreferences.getString('p_email')!;
     pCode = sharedPreferences.getString('p_code')!;
     doctor = sharedPreferences.getString('doctor')!;
-    // }
   }
 
   @override
   Widget build(BuildContext context) {
+    getPatientInfo();
     return Scaffold(
       body: WatchShape(
         builder: (context, shape, child) {
@@ -236,13 +237,15 @@ class SnoozeConfirm extends StatelessWidget {
     ePrint('isDoseTime is set false');
     // SystemNavigator.pop();
     // Get.offAll(MedicationList());
+    // Restart.restartApp();
     Navigator.pushAndRemoveUntil(
-        context,
-        new MaterialPageRoute(
-          builder: (context) =>
-              MainMenu(pname: pName, pemail: pEmail, pcode: pCode),
-        ),
-        (route) => false);
+      context,
+      new MaterialPageRoute(
+        builder: (context) => SplashScreen(),
+        // MainMenu(pname: pName, pemail: pEmail, pcode: pCode),
+      ),
+      (route) => false,
+    );
   }
 
   List<String>? logList;
@@ -268,7 +271,6 @@ class SnoozeConfirm extends StatelessWidget {
     sharedPreferences.setStringList('logList', logList!);
     ePrint('logAdded');
     // SystemNavigator.pop();
-    // Get.offAll(MedicationList());
     Navigator.pushAndRemoveUntil(
         context,
         new MaterialPageRoute(

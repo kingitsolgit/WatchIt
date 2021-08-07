@@ -3,12 +3,10 @@ import 'dart:convert';
 
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:watch_it/ui/main_menu.dart';
-import 'package:watch_it/ui/medications_list.dart';
 import 'package:wear/wear.dart';
 
 import 'package:watch_it/links/baserurl.dart';
@@ -234,8 +232,11 @@ class _TakeItNowState extends State<TakeItNow> {
     if (sharedPreferences.getStringList('dosingList') != null) {
       List<String>? encodedStringList =
           sharedPreferences.getStringList('dosingList');
-      for (var i = 0; i < encodedStringList!.length; i++) {
-        ePrint('list obj $i is ${encodedStringList[i]}');
+      // for (var i = 0; i < encodedStringList!.length; i++) {
+      int i = 0;
+      while (i < encodedStringList!.length) {
+        ePrint(
+            'list of length ${encodedStringList.length} obj $i is ${encodedStringList[i]}');
         Map<String, dynamic> dosingMaplistobj =
             jsonDecode(encodedStringList[i]);
         Meducine meducine = Meducine.fromJson(dosingMaplistobj);
@@ -247,8 +248,19 @@ class _TakeItNowState extends State<TakeItNow> {
         DateTime newDT = newdateFormating.parse(meducine.medicineTime!);
         ePrint('new Dt is $newDT');
         ePrint('gone');
-        return updateStatus(meducine);
+        i++;
+        updateStatus(meducine).whenComplete(() {
+          if (i == encodedStringList.length) {
+            return updateStatus(meducine);
+          } else {
+            i++;
+          }
+        }).onError((error, stackTrace) {
+          showMyDialog('Some Error Occur');
+        });
+        // return updateStatus(meducine);
       }
+      // }
     }
   }
 
@@ -265,7 +277,6 @@ class _TakeItNowState extends State<TakeItNow> {
       "medicine_time_id": '${meducine.medicinetimeindex}'
     });
     print('what is happening here');
-
     if (response.statusCode == 200) {
       print(response.body);
       addLogData(meducine);
