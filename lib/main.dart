@@ -28,6 +28,7 @@ import 'package:watch_it/ui/snooze_confirm.dart';
 import 'package:watch_it/ui/snooze_duration.dart';
 import 'package:watch_it/ui/take_it_now.dart';
 
+// RAH-620474
 getAndCheck() async {
   DateTime nowExact = DateTime.now();
   ePrint('In Main.dart: getAndCheck Call back start time ${DateTime.now()}');
@@ -152,7 +153,7 @@ getAndCheck() async {
       DateTime snoozedDT = newdateFormating.parse(snoozedMed.dosetime!);
       //                 new if structure start
       if (snoozedMed.snoozedIteration != null &&
-          snoozedMed.snoozedIteration! <= 3) {
+          snoozedMed.snoozedIteration! <= 2) {
         if (nowExact.hour.compareTo(snoozedDT.hour) == 0) {
           // ePrint('In Main.dart: snooze hour is same');
           if (nowExact.minute.compareTo(snoozedDT.minute) == 0) {
@@ -201,7 +202,7 @@ getAndCheck() async {
           ePrint(
               'In Main.dart: removed by index and snoozedList is $snoozedList');
           sharedPreferences.setStringList('snoozedList', snoozedList);
-          ePrint('In Main.dart: snooze list submitted after skipped');
+          ePrint('In Main.dart: snooze list submitted in if after autoskipped');
         } else {
           ePrint('In Main.dart: ${response.body}');
         }
@@ -542,7 +543,7 @@ getAndCheckFromLocal() async {
         final response = await patch(
           url,
           body: {
-            "status": "Skippedz",
+            "status": "Skipped",
             "time": snoozedMed.dosetime, // "13:30",
             "medicine_time_id": '${snoozedMed.timeIndex}' // 2
           },

@@ -346,7 +346,7 @@ class _MainMenuState extends State<MainMenu> with WidgetsBindingObserver {
             DateTime snoozedDT = newdateFormating.parse(snoozedMed.dosetime!);
             //             new if structure start
             if (snoozedMed.snoozedIteration != null &&
-                snoozedMed.snoozedIteration! < 3) {
+                snoozedMed.snoozedIteration! <= 2) {
               if (DateTime.now().hour.compareTo(snoozedDT.hour) == 0) {
                 ePrint('In MainMenu snooze hour is same');
                 if (DateTime.now().minute.compareTo(snoozedDT.minute) == 0) {
