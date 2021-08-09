@@ -30,7 +30,7 @@ import 'package:watch_it/ui/take_it_now.dart';
 
 // RAH-620474
 getAndCheck() async {
-  DateTime nowExact = DateTime.now();
+  DateTime nowExact = DateTime.now(); //.subtract(Duration(seconds: 5));
   ePrint('In Main.dart: getAndCheck Call back start time ${DateTime.now()}');
   List<String> dosingList = [];
   SharedPreferences sharedPreferences = await SharedPreferences.getInstance();

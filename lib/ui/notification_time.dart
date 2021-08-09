@@ -300,15 +300,27 @@ class _NotificationTimeState extends State<NotificationTime> {
         asAlarm: true,
       );
     }
-    Timer(Duration(seconds: 50), () {
+    Timer(Duration(minutes: 1), () {
       FlutterRingtonePlayer.stop();
       snoozeNow(context);
+      Navigator.pushAndRemoveUntil(
+          context,
+          new MaterialPageRoute(builder: (context) => SplashScreen()),
+          (route) => false);
+      // goToNext();
+      // snoozeNow(context).then((value) {
+      //   Timer(Duration(seconds: 5), () {});
+      // });
     });
   }
 
-  late final List<String>? medicatedList;
+  String? dosesNames = '';
+  List<String>? encodedStringList;
+  List<String>? snoozedList;
+  List<String>? medicatedList;
 
   Future<void> snoozeNow(BuildContext context) async {
+    medicatedList = encodedStringList;
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     int? n = duration;
 
@@ -349,12 +361,28 @@ class _NotificationTimeState extends State<NotificationTime> {
     ePrint('snoozed added');
     sharedPreferences.setBool("isDoseTime", false);
     ePrint('isDoseTime is set false');
-    // SystemNavigator.pop();
-    // Get.offAll(MedicationList());
-    Navigator.pushAndRemoveUntil(
-        context,
-        new MaterialPageRoute(builder: (context) => MedicationList()),
-        (route) => false);
+    // Navigator.pushAndRemoveUntil(
+    //     context,
+    //     new MaterialPageRoute(builder: (context) => MedicationList()),
+    //     (route) => false);
+  }
+
+  goToNext() {
+    snoozeNow(context).then((value) {
+      Navigator.pushAndRemoveUntil(
+          context,
+          new MaterialPageRoute(builder: (context) => SplashScreen()),
+          (route) => false);
+      // Timer(
+      //   Duration(seconds: 5),
+      //   () {
+      //     Navigator.pushAndRemoveUntil(
+      //         context,
+      //         new MaterialPageRoute(builder: (context) => MedicationList()),
+      //         (route) => false);
+      //   },
+      // );
+    });
   }
 
   setSnoozedIteration(int? snoozedIteration) {
@@ -371,9 +399,9 @@ class _NotificationTimeState extends State<NotificationTime> {
     return iteration;
   }
 
-  String? dosesNames = '';
-  List<String>? encodedStringList;
-  List<String>? snoozedList;
+  // String? dosesNames = '';
+  // List<String>? encodedStringList;
+  // List<String>? snoozedList;
 
   Future<void> getMedicatedData() async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();

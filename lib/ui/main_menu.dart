@@ -203,8 +203,8 @@ class _MainMenuState extends State<MainMenu> with WidgetsBindingObserver {
     }
     print('position get started');
     // _determinePosition();
-    Position? position = await Geolocator.getCurrentPosition();
-
+    Position? position = await Geolocator.getCurrentPosition()
+        .onError((error, stackTrace) => notify(error));
     // position = _determinePosition() as Position?;
     print(position.latitude);
     emergencyAlertStatus(
@@ -224,6 +224,7 @@ class _MainMenuState extends State<MainMenu> with WidgetsBindingObserver {
     });
     if (response.statusCode == 200) {
       ePrint(response.body);
+      showMyDialog('Emergency sent to Caretaker.');
     } else {
       ePrint(response.body);
     }
@@ -581,7 +582,7 @@ class _MainMenuState extends State<MainMenu> with WidgetsBindingObserver {
           final response = await patch(
             url,
             body: {
-              "status": "Skippedz",
+              "status": "Skipped",
               "time": snoozedMed.dosetime, // "13:30",
               "medicine_time_id": '${snoozedMed.timeIndex}' // 2
             },
@@ -612,6 +613,37 @@ class _MainMenuState extends State<MainMenu> with WidgetsBindingObserver {
     }
     ePrint('In MainMenu ontMainMenuCallBack FunctionEndTime ${DateTime.now()}');
     ////////////////////////////////////////////////////////////////////////
+  }
+
+  Future showMyDialog(String message) {
+    return showDialog(
+      context: context,
+      builder: (context) {
+        return SimpleDialog(
+          backgroundColor: Color.fromARGB(255, 161, 33, 22),
+          titlePadding: EdgeInsets.all(8),
+          title: Center(
+            child: Column(
+              children: [
+                Text(
+                  message,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 12,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  notify(Object? error) {
+    ePrint('location error is $error');
+    showMyDialog(error.toString());
   }
 }
 
