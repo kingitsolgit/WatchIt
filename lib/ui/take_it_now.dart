@@ -251,7 +251,7 @@ class _TakeItNowState extends State<TakeItNow> {
         i++;
         updateStatus(meducine).whenComplete(() {
           if (i == encodedStringList.length) {
-            return updateStatus(meducine);
+            return true; // updateStatus(meducine);
           } else {
             i++;
           }

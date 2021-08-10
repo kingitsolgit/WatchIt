@@ -36,13 +36,16 @@ class _NotificationTimeState extends State<NotificationTime> {
   List<String>? currentMedicines;
   var pillName;
   String? medicinesName;
+  int? state = 0;
 
   bool? isDoseTime;
   @override
   void initState() {
     super.initState();
-    getData();
-    ringTheBell();
+    if (state == 0) {
+      getData();
+      ringTheBell();
+    }
   }
 
   Future<void> getData() async {
@@ -191,6 +194,9 @@ class _NotificationTimeState extends State<NotificationTime> {
                             InkWell(
                               onTap: () async {
                                 FlutterRingtonePlayer.stop();
+                                setState(() {
+                                  state = 1;
+                                });
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
@@ -234,6 +240,9 @@ class _NotificationTimeState extends State<NotificationTime> {
                             InkWell(
                               onTap: () {
                                 FlutterRingtonePlayer.stop();
+                                setState(() {
+                                  state = 1;
+                                });
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
@@ -302,11 +311,13 @@ class _NotificationTimeState extends State<NotificationTime> {
     }
     Timer(Duration(minutes: 1), () {
       FlutterRingtonePlayer.stop();
-      snoozeNow(context);
-      Navigator.pushAndRemoveUntil(
-          context,
-          new MaterialPageRoute(builder: (context) => SplashScreen()),
-          (route) => false);
+      if (state == 0) {
+        snoozeNow(context);
+        Navigator.pushAndRemoveUntil(
+            context,
+            new MaterialPageRoute(builder: (context) => SplashScreen()),
+            (route) => false);
+      }
       // goToNext();
       // snoozeNow(context).then((value) {
       //   Timer(Duration(seconds: 5), () {});

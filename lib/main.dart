@@ -149,9 +149,11 @@ getAndCheck() async {
       Map<String, dynamic> dosingMaplistobj = jsonDecode(snoozedList[i]);
       var snoozedMed = SnoozedMedicine.fromJson(dosingMaplistobj);
       // ePrint('In Main.dart: snoozedmedicinename: ${snoozedMed.name}, snoozedmedicinetime:  ${snoozedMed.dosetime}');
-      DateFormat newdateFormating = DateFormat("dd-MM-yyyy HH:mm");
+      DateFormat newdateFormating = DateFormat("yyyy-MM-dd HH:mm");
+      //("dd-MM-yyyy HH:mm");
       DateTime snoozedDT = newdateFormating.parse(snoozedMed.dosetime!);
       //                 new if structure start
+      ePrint('snoozeMedTime ${snoozedMed.dosetime} and snoozDt $snoozedDT');
       if (snoozedMed.snoozedIteration != null &&
           snoozedMed.snoozedIteration! <= 2) {
         if (nowExact.hour.compareTo(snoozedDT.hour) == 0) {

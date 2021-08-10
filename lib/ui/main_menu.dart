@@ -343,7 +343,8 @@ class _MainMenuState extends State<MainMenu> with WidgetsBindingObserver {
             Map<String, dynamic> dosingMaplistobj = jsonDecode(snoozedList[i]);
             var snoozedMed = SnoozedMedicine.fromJson(dosingMaplistobj);
             // ePrint('In MainMenu snoozedmedicinename: ${snoozedMed.name}, snoozedmedicinetime:  ${snoozedMed.dosetime}');
-            DateFormat newdateFormating = DateFormat("dd-MM-yyyy HH:mm");
+            DateFormat newdateFormating = DateFormat("yyyy-MM-dd HH:mm");
+            //("dd-MM-yyyy HH:mm");
             DateTime snoozedDT = newdateFormating.parse(snoozedMed.dosetime!);
             //             new if structure start
             if (snoozedMed.snoozedIteration != null &&
