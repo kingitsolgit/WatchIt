@@ -237,15 +237,15 @@ class SnoozeConfirm extends StatelessWidget {
     ePrint('isDoseTime is set false');
     // SystemNavigator.pop();
     // Get.offAll(MedicationList());
-    // Restart.restartApp();
-    Navigator.pushAndRemoveUntil(
-      context,
-      new MaterialPageRoute(
-        builder: (context) => SplashScreen(),
-        // MainMenu(pname: pName, pemail: pEmail, pcode: pCode),
-      ),
-      (route) => false,
-    );
+    Restart.restartApp();
+    // Navigator.pushAndRemoveUntil(
+    //   context,
+    //   new MaterialPageRoute(
+    //     builder: (context) => SplashScreen(),
+    //     // MainMenu(pname: pName, pemail: pEmail, pcode: pCode),
+    //   ),
+    //   (route) => false,
+    // );
   }
 
   List<String>? logList;

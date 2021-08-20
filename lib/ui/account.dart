@@ -26,15 +26,20 @@ class _AccountScreenState extends State<AccountScreen> {
   String? pEmail;
   String? pCode;
   String? doctor;
+  bool? isLoaded = false;
   @override
-  // void initState() {
-  //   super.initState();
-  //   getPatientInfo();
-  // }
+  void initState() {
+    super.initState();
+    getPatientInfo().whenComplete(() {
+      setState(() {
+        isLoaded = true;
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    getPatientInfo();
+    // getPatientInfo();
     return Scaffold(
       backgroundColor: Color.fromARGB(255, 81, 17, 6),
       body: WatchShape(
@@ -42,10 +47,7 @@ class _AccountScreenState extends State<AccountScreen> {
           return ListView(
             children: <Widget>[
               Container(
-                padding: EdgeInsets.symmetric(
-                  vertical: 0,
-                  horizontal: 5,
-                ),
+                padding: EdgeInsets.symmetric(horizontal: 5),
                 height: (Get.height / 4) - 20,
                 width: Get.width,
                 color: Colors.black,
@@ -61,10 +63,7 @@ class _AccountScreenState extends State<AccountScreen> {
                 ),
               ),
               Container(
-                padding: EdgeInsets.symmetric(
-                  vertical: 0,
-                  horizontal: 5,
-                ),
+                padding: EdgeInsets.symmetric(horizontal: 5),
                 height: (Get.height / 4) + 10,
                 width: Get.width,
                 color: Colors.black,
@@ -96,10 +95,7 @@ class _AccountScreenState extends State<AccountScreen> {
                 ),
               ),
               Container(
-                padding: EdgeInsets.symmetric(
-                  vertical: 0,
-                  horizontal: 25,
-                ),
+                padding: EdgeInsets.symmetric(horizontal: 25),
                 width: Get.width,
                 color: Color.fromARGB(255, 81, 17, 6),
                 child: Column(
@@ -125,17 +121,21 @@ class _AccountScreenState extends State<AccountScreen> {
                     widget.accesspoint == 0
                         ? IconButton(
                             onPressed: () {
-                              // Restart.restartApp();
-                              Navigator.of(context).pushReplacement(
-                                new MaterialPageRoute(
-                                  builder: (BuildContext context) {
-                                    return new MainMenu(
-                                        pname: pName,
-                                        pemail: pEmail,
-                                        pcode: pCode);
-                                  },
-                                ),
-                              );
+                              print('pressed..!');
+                              if (isLoaded!) {
+                                print('Loaded, you can proceed..!');
+                                Restart.restartApp();
+                              }
+                              // Navigator.of(context).pushReplacement(
+                              //   new MaterialPageRoute(
+                              //     builder: (BuildContext context) {
+                              //       return new MainMenu(
+                              //           pname: pName,
+                              //           pemail: pEmail,
+                              //           pcode: pCode);
+                              //     },
+                              //   ),
+                              // );
                             },
                             icon: Icon(
                               Icons.arrow_forward_ios_sharp,
@@ -149,13 +149,6 @@ class _AccountScreenState extends State<AccountScreen> {
             ],
           );
         },
-        child: AmbientMode(
-          builder: (context, mode, child) {
-            return Text(
-              'Mode: ${mode == WearMode.active ? 'Active' : 'Ambient'}',
-            );
-          },
-        ),
       ),
     );
   }
